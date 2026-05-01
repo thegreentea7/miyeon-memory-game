@@ -669,67 +669,98 @@ h1{
 }
 
 .booster-play-window{
-  width:min(820px,96vw);
-  max-height:min(620px,92vh);
+  width:min(760px,96vw);
+  max-height:min(650px,92vh);
   display:grid;
-  grid-template-rows:auto auto auto;
+  grid-template-rows:auto auto auto auto;
   gap:12px;
 }
 
-.roulette-wrap{
-  position:relative;
-  margin:0;
-  padding:12px 0;
-  overflow:hidden;
+.pack-stage{
+  min-height:230px;
+  display:grid;
+  place-items:center;
   border-radius:24px;
   background:rgba(255,255,255,.7);
   border:1px solid rgba(255,255,255,.9);
+  overflow:hidden;
+  position:relative;
 }
 
-.roulette-line{
-  display:flex;
-  gap:10px;
-  width:max-content;
-  transform:translateX(0);
-}
-
-.roulette-line.spin{
-  animation:rouletteSpin 2.8s cubic-bezier(.12,.72,.12,1) forwards;
-}
-
-@keyframes rouletteSpin{
-  from{transform:translateX(0)}
-  to{transform:translateX(-58%)}
-}
-
-.roulette-card{
-  width:78px;
+.pack{
+  width:min(250px,72vw);
   aspect-ratio:3/4;
-  flex:0 0 auto;
-  border-radius:14px;
-  padding:4px;
-  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
-  box-shadow:0 8px 18px rgba(113,74,92,.12);
+  border-radius:28px;
+  position:relative;
+  display:grid;
+  place-items:center;
+  padding:22px;
+  overflow:hidden;
+  color:#7b4d62;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.85),transparent 24%),
+    linear-gradient(145deg,#ffd8e7,#fff6fb 48%,#e5f8ec);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 22px 60px rgba(113,74,92,.22);
+  transition:.22s;
 }
 
-.roulette-card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  border-radius:10px;
-  display:block;
+.pack:hover{
+  transform:translateY(-3px) scale(1.01);
+  box-shadow:0 28px 70px rgba(113,74,92,.28);
 }
 
-.roulette-pointer{
+.pack.opening{
+  animation:packShake .7s ease both;
+}
+
+@keyframes packShake{
+  0%,100%{transform:rotate(0) scale(1)}
+  18%{transform:rotate(-4deg) scale(1.03)}
+  36%{transform:rotate(4deg) scale(1.04)}
+  54%{transform:rotate(-3deg) scale(1.05)}
+  72%{transform:rotate(3deg) scale(1.04)}
+}
+
+.pack-shine{
   position:absolute;
-  top:0;
-  bottom:0;
-  left:50%;
-  width:3px;
-  transform:translateX(-50%);
-  background:linear-gradient(180deg,transparent,#f49aba,transparent);
-  box-shadow:0 0 18px rgba(244,154,186,.8);
+  inset:-40%;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.65) 50%,transparent 65%);
+  transform:translateX(-40%) rotate(10deg);
+  animation:shineMove 2.4s linear infinite;
+}
+
+@keyframes shineMove{
+  to{transform:translateX(40%) rotate(10deg)}
+}
+
+.pack-icon{
+  position:relative;
+  z-index:1;
+  font-size:58px;
+  margin-bottom:30px;
+}
+
+.pack-title{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:54px;
+  z-index:1;
+  font-size:22px;
+  font-weight:900;
+  color:#6b4a59;
+}
+
+.pack-subtitle{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:28px;
+  z-index:1;
+  font-size:12px;
+  color:#9b7a88;
+  font-weight:900;
 }
 
 .booster-actions{
@@ -767,6 +798,51 @@ h1{
 }
 
 .booster-rewards.show{display:grid}
+
+.booster-card-back{
+  aspect-ratio:3/4;
+  border-radius:18px;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.82),transparent 22%),
+    linear-gradient(145deg,#f7adc7,#ffdcea 48%,#dff3e6);
+  box-shadow:0 12px 24px rgba(113,74,92,.12);
+  border:1px solid rgba(255,255,255,.9);
+  transition:.18s;
+}
+
+.booster-card-back:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 34px rgba(113,74,92,.2);
+}
+
+.booster-card-back::before{
+  content:"MY";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:white;
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:.14em;
+  text-shadow:0 3px 12px rgba(106,64,84,.22);
+}
+
+.booster-card-back::after{
+  content:"выбрать";
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  padding:6px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.62);
+  color:#8a5f72;
+  font-size:11px;
+  font-weight:900;
+}
 
 .confetti{
   position:absolute;
@@ -985,21 +1061,25 @@ h1{
     <div class="booster-head">
       <div>
         <h2 id="boosterPlayTitle">Бустер</h2>
-        <p id="boosterPlayText">Сначала нажми «Запустить», потом выбери одну из трёх карт ♡</p>
+        <p id="boosterPlayText">Открой бустер-пак и выбери одну карту ♡</p>
       </div>
       <button class="booster-x" id="boosterPlayClose">×</button>
     </div>
 
-    <div class="roulette-wrap" id="rouletteWrap">
-      <div class="roulette-line" id="rouletteLine"></div>
-      <div class="roulette-pointer"></div>
+    <div class="pack-stage" id="packStage">
+      <button class="pack" id="packButton" type="button">
+        <span class="pack-shine"></span>
+        <span class="pack-icon">💌</span>
+        <span class="pack-title">Booster Pack</span>
+        <span class="pack-subtitle">нажми, чтобы открыть</span>
+      </button>
     </div>
 
     <div class="booster-rewards" id="boosterRewards"></div>
 
     <div class="booster-actions">
       <button class="booster-action-btn" id="boosterBackBtn">← Назад к бустерам</button>
-      <button class="booster-action-btn main" id="boosterStartBtn">🎰 Запустить за 5 баллов</button>
+      <button class="booster-action-btn main" id="boosterStartBtn">✨ Открыть за 5 баллов</button>
     </div>
   </div>
 </section>
@@ -1075,8 +1155,9 @@ const boosterTypes = document.getElementById("boosterTypes");
 const boosterText = document.getElementById("boosterText");
 const boosterPlayTitle = document.getElementById("boosterPlayTitle");
 const boosterPlayText = document.getElementById("boosterPlayText");
-const rouletteLine = document.getElementById("rouletteLine");
 const boosterRewards = document.getElementById("boosterRewards");
+const packStage = document.getElementById("packStage");
+const packButton = document.getElementById("packButton");
 
 let firstCard = null;
 let secondCard = null;
@@ -1096,7 +1177,8 @@ let ownedOnly = false;
 let collectionVisibleLimit = 48;
 let currentFilteredCollection = [];
 let currentBooster = "iam";
-let currentRouletteLine = [];
+let currentBoosterOptions = [];
+let boosterPackOpened = false;
 let boosterPoints = Number(localStorage.getItem("miyeon_booster_points") || "0");
 
 async function loadConfig(){
@@ -1612,17 +1694,14 @@ async function openBooster(){
   boosterModal.classList.add("show");
 }
 
-function renderStaticRoulette(images){
-  rouletteLine.classList.remove("spin");
-  rouletteLine.innerHTML = "";
-  currentRouletteLine = shuffle([...images, ...images]).slice(0, 18);
-
-  currentRouletteLine.forEach(image => {
-    const item = document.createElement("div");
-    item.className = "roulette-card";
-    item.innerHTML = `<img src="${image.src}" alt="roulette card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">`;
-    rouletteLine.appendChild(item);
-  });
+function resetBoosterPack(){
+  boosterPackOpened = false;
+  currentBoosterOptions = [];
+  boosterRewards.classList.remove("show");
+  boosterRewards.innerHTML = "";
+  packStage.style.display = "grid";
+  packButton.classList.remove("opening");
+  packButton.disabled = false;
 }
 
 async function openBoosterPlay(){
@@ -1630,21 +1709,16 @@ async function openBoosterPlay(){
   const booster = config.boosters[currentBooster];
   const images = await getBoosterImages();
 
-  boosterPlayTitle.textContent = `🎰 ${booster.title}`;
-  boosterStartBtn.textContent = `🎰 Запустить за ${booster.cost || 5} баллов`;
-  boosterPlayText.textContent = `В бустере ${images.length} карт. Рулетка уже заполнена, нажми «Запустить» ♡`;
+  boosterPlayTitle.textContent = `🎁 ${booster.title}`;
+  boosterStartBtn.textContent = `✨ Открыть за ${booster.cost || 5} баллов`;
+  boosterPlayText.textContent = `В бустере ${images.length} карт. Открой пак и выбери одну карту ♡`;
 
-  boosterRewards.classList.remove("show");
-  boosterRewards.innerHTML = "";
-  rouletteLine.classList.remove("spin");
-  rouletteLine.innerHTML = "";
+  resetBoosterPack();
 
-  const rouletteImages = shuffle(images).slice(0, Math.min(images.length, 18));
-
-  if(rouletteImages.length >= 3){
-    renderStaticRoulette(rouletteImages);
-  }else{
-    rouletteLine.innerHTML = `<div style="padding:20px;color:#9b7a88;">В этом бустере пока мало карт ♡</div>`;
+  if(images.length < 3){
+    packButton.disabled = true;
+    boosterStartBtn.disabled = true;
+    boosterPlayText.textContent = "В этом бустере пока мало карт ♡";
   }
 
   boosterPlayModal.classList.add("show");
@@ -1655,51 +1729,28 @@ function renderBoosterRewards(){
   boosterRewards.innerHTML = "";
   boosterRewards.classList.add("show");
 
-  const visibleCards = [...rouletteLine.querySelectorAll(".roulette-card")];
-  const wrapRect = rouletteLine.parentElement.getBoundingClientRect();
-  const pointerX = wrapRect.left + wrapRect.width / 2;
-
-  let centerIndex = 0;
-  let bestDistance = Infinity;
-
-  visibleCards.forEach((card, index) => {
-    const rect = card.getBoundingClientRect();
-    const cardCenter = rect.left + rect.width / 2;
-    const distance = Math.abs(cardCenter - pointerX);
-
-    if(distance < bestDistance){
-      bestDistance = distance;
-      centerIndex = index;
-    }
-  });
-
-  let indexes = [centerIndex - 1, centerIndex, centerIndex + 1].filter(index => index >= 0 && index < currentRouletteLine.length);
-
-  while(indexes.length < 3 && indexes[0] > 0){
-    indexes.unshift(indexes[0] - 1);
-  }
-
-  while(indexes.length < 3 && indexes[indexes.length - 1] < currentRouletteLine.length - 1){
-    indexes.push(indexes[indexes.length - 1] + 1);
-  }
-
-  const options = indexes.slice(0, 3).map(index => currentRouletteLine[index]);
-
-  options.forEach(image => {
+  currentBoosterOptions.forEach(image => {
     const isNew = !isCardCollected(image.src);
     const btn = document.createElement("button");
     btn.className = "booster-reward-card";
     btn.innerHTML = `
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
-      <img src="${image.src}" alt="booster reward" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      <div class="booster-card-back"></div>
     `;
 
     btn.addEventListener("click", () => {
       const already = isCardCollected(image.src);
       collectCard(image.src);
+      btn.innerHTML = `
+        <span class="reward-badge ${already ? "old" : ""}">${already ? "Уже есть" : "NEW"}</span>
+        <img src="${image.src}" alt="booster reward" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      `;
       showToast(already ? "Повторка, но красивая ♡" : "Новая карта из бустера 💌");
-      boosterPlayModal.classList.remove("show");
-      openCollection();
+
+      setTimeout(() => {
+        boosterPlayModal.classList.remove("show");
+        openCollection();
+      }, 800);
     });
 
     boosterRewards.appendChild(btn);
@@ -1707,32 +1758,38 @@ function renderBoosterRewards(){
 }
 
 async function startSelectedBooster(){
+  if(boosterPackOpened) return;
+
   const config = await loadConfig();
   const booster = config.boosters[currentBooster];
   const cost = booster.cost || 5;
+  const images = await getBoosterImages();
 
   if(boosterPoints < cost){
     showToast(`Для этого бустера нужно ${cost} баллов ♡`);
     return;
   }
 
-  if(currentRouletteLine.length < 3){
+  if(images.length < 3){
     showToast("В этом бустере нужно минимум 3 карты ♡");
     return;
   }
 
   spendBoosterPoints(cost);
-  boosterRewards.classList.remove("show");
-  boosterPlayText.textContent = `🎰 ${booster.title} крутится...`;
+  boosterPackOpened = true;
+  packButton.disabled = true;
+  boosterStartBtn.disabled = true;
+  boosterPlayText.textContent = `Открываю ${booster.title}...`;
+  packButton.classList.add("opening");
 
-  rouletteLine.classList.remove("spin");
-  void rouletteLine.offsetWidth;
-  rouletteLine.classList.add("spin");
+  currentBoosterOptions = shuffle(images).slice(0, 3);
 
   setTimeout(() => {
-    boosterPlayText.textContent = "Рулетка остановилась. Выбери одну карту, которая попадёт в коллекцию ♡";
+    packStage.style.display = "none";
+    boosterPlayText.textContent = "Выбери одну карту, которая попадёт в коллекцию ♡";
     renderBoosterRewards();
-  }, 2900);
+    updateBoosterUI();
+  }, 850);
 }
 
 function hint(){
@@ -1833,17 +1890,19 @@ boosterModal.addEventListener("click", event => {
   if(event.target === boosterModal) boosterModal.classList.remove("show");
 });
 
-boosterPlayClose.addEventListener("click", () => boosterPlayModal.classList.remove("show"));
+boosterPlayClose.addEventListener("click", () => { boosterPlayModal.classList.remove("show"); resetBoosterPack(); });
 boosterPlayModal.addEventListener("click", event => {
   if(event.target === boosterPlayModal) boosterPlayModal.classList.remove("show");
 });
 
 boosterBackBtn.addEventListener("click", () => {
   boosterPlayModal.classList.remove("show");
+  resetBoosterPack();
   openBooster();
 });
 
 boosterStartBtn.addEventListener("click", startSelectedBooster);
+packButton.addEventListener("click", startSelectedBooster);
 
 modeButtons.forEach(btn => {
   btn.addEventListener("click", () => {
