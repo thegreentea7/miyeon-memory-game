@@ -298,6 +298,22 @@ h1{
   background:linear-gradient(135deg,#ffe1eb,#ffffff);
 }
 
+
+
+.image-placeholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:#b48b9e;
+  font-size:11px;
+  line-height:1.25;
+  padding:8px;
+  border-radius:12px;
+  background:linear-gradient(145deg,#fff,#fff4fa);
+}
+
 .toast{
   position:fixed;
   left:50%;
@@ -652,10 +668,10 @@ h1{
 }
 
 .booster-play-window{
-  width:min(900px,96vw);
-  height:min(760px,92vh);
+  width:min(820px,96vw);
+  max-height:min(620px,92vh);
   display:grid;
-  grid-template-rows:auto auto auto 1fr;
+  grid-template-rows:auto auto auto;
   gap:12px;
 }
 
@@ -741,51 +757,10 @@ h1{
   cursor:not-allowed;
 }
 
-.booster-preview{
-  display:block;
-  margin:0;
-  padding:12px;
-  border-radius:22px;
-  background:rgba(255,255,255,.7);
-  border:1px solid rgba(255,255,255,.9);
-  max-height:none;
-  min-height:0;
-  overflow:hidden;
-}
 
-.booster-preview-title{
-  text-align:left;
-  color:#6b4a59;
-  font-weight:900;
-  margin-bottom:10px;
-}
 
-.booster-preview-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(58px,1fr));
-  gap:8px;
-  max-height:none;
-  height:100%;
-  overflow:auto;
-  padding-right:4px;
-}
 
-.booster-preview-card{
-  aspect-ratio:3/4;
-  border-radius:12px;
-  padding:3px;
-  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
-  box-shadow:0 8px 16px rgba(113,74,92,.1);
-}
 
-.booster-preview-card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  border-radius:9px;
-  display:block;
-}
 
 .booster-rewards{
   display:none;
@@ -1026,11 +1001,6 @@ h1{
       <button class="booster-action-btn" id="boosterBackBtn">← Назад к бустерам</button>
       <button class="booster-action-btn main" id="boosterStartBtn">🎰 Запустить за 5 баллов</button>
     </div>
-
-    <div class="booster-preview" id="boosterPreview">
-      <div class="booster-preview-title" id="boosterPreviewTitle">Состав бустера</div>
-      <div class="booster-preview-grid" id="boosterPreviewGrid"></div>
-    </div>
   </div>
 </section>
 
@@ -1120,8 +1090,6 @@ const boosterPlayText = document.getElementById("boosterPlayText");
 const rouletteWrap = document.getElementById("rouletteWrap");
 const rouletteLine = document.getElementById("rouletteLine");
 const boosterRewards = document.getElementById("boosterRewards");
-const boosterPreviewTitle = document.getElementById("boosterPreviewTitle");
-const boosterPreviewGrid = document.getElementById("boosterPreviewGrid");
 
 let firstCard = null;
 let secondCard = null;
@@ -1171,6 +1139,28 @@ function checkImage(src){
     img.onerror = () => resolve(null);
     img.src = src;
   });
+}
+
+function preloadImage(src){
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
+async function filterLoadableCards(cards){
+  const checks = await Promise.all(cards.map(async card => {
+    const ok = await preloadImage(card.src);
+    return ok ? card : null;
+  }));
+
+  return checks.filter(Boolean);
+}
+
+function imageErrorHTML(src){
+  return `<div class="image-placeholder">Не найдено<br>${src.split("/").slice(-2).join("/")}</div>`;
 }
 
 async function loadConfig(){
@@ -1365,7 +1355,20 @@ async function buildDeck(cols, rows){
     return { error:true, available:availableImages.length, needed };
   }
 
-  const selected = shuffle(availableImages).slice(0, needed);
+  const candidates = shuffle(availableImages);
+  const selected = [];
+
+  for(const card of candidates){
+    if(selected.length >= needed) break;
+    const ok = await preloadImage(card.src);
+    if(ok) selected.push(card);
+  }
+
+  if(selected.length < needed){
+    currentLevelImages = [];
+    return { error:true, available:selected.length, needed };
+  }
+
   currentLevelImages = selected;
 
   return {
@@ -1423,7 +1426,7 @@ async function startGame(cols = currentCols, rows = currentRows){
       <div class="inner">
         <div class="face back"><div class="back-design">🐰</div></div>
         <div class="face front">
-          <img src="${card.src}" alt="card" decoding="async">
+          <img src="${card.src}" alt="card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
         </div>
       </div>
     `;
@@ -1565,7 +1568,7 @@ function renderRewardOptions(){
     btn.className = "reward-card";
     btn.innerHTML = `
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
-      <img src="${image.src}" alt="reward card" decoding="async">
+      <img src="${image.src}" alt="reward card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
     `;
 
     btn.addEventListener("click", () => {
@@ -1634,7 +1637,7 @@ async function renderCollection(){
     cell.dataset.number = String(index + 1).padStart(2, "0");
 
     if(opened){
-      cell.innerHTML = `<img src="${img.src}" alt="collection card" loading="lazy" decoding="async">`;
+      cell.innerHTML = `<img src="${img.src}" alt="collection card" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">`;
     }
 
     collectionGrid.appendChild(cell);
@@ -1678,27 +1681,6 @@ async function renderBoosterTypes(){
   });
 }
 
-async function showBoosterPreview(){
-  const images = await getBoosterImages();
-  const config = await loadConfig();
-  const booster = config.boosters[currentBooster];
-
-  boosterPreviewTitle.textContent = `🎰 ${booster.title}: ${images.length} карт`;
-  boosterPreviewGrid.innerHTML = "";
-
-  if(!images.length){
-    boosterPreviewGrid.innerHTML = `<div style="color:#9b7a88;line-height:1.4;">В этом бустере пока нет карт ♡</div>`;
-    return;
-  }
-
-  images.forEach(image => {
-    const card = document.createElement("div");
-    card.className = "booster-preview-card";
-    card.innerHTML = `<img src="${image.src}" alt="booster preview" loading="lazy" decoding="async">`;
-    boosterPreviewGrid.appendChild(card);
-  });
-}
-
 async function openBooster(){
   await renderBoosterTypes();
   boosterText.textContent = "Выбери бустер. После выбора откроется рулетка и состав бустера ♡";
@@ -1713,7 +1695,7 @@ function renderStaticRoulette(images){
   currentRouletteLine.forEach(image => {
     const item = document.createElement("div");
     item.className = "roulette-card";
-    item.innerHTML = `<img src="${image.src}" alt="roulette card" decoding="async">`;
+    item.innerHTML = `<img src="${image.src}" alt="roulette card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">`;
     rouletteLine.appendChild(item);
   });
 }
@@ -1725,20 +1707,21 @@ async function openBoosterPlay(){
 
   boosterPlayTitle.textContent = `🎰 ${booster.title}`;
   boosterStartBtn.textContent = `🎰 Запустить за ${booster.cost || 5} баллов`;
-  boosterPlayText.textContent = "Рулетка уже заполнена картами. Нажми «Запустить», чтобы начать ♡";
+  boosterPlayText.textContent = `В бустере ${images.length} карт. Рулетка уже заполнена, нажми «Запустить» ♡`;
 
   boosterRewards.classList.remove("show");
   boosterRewards.innerHTML = "";
   rouletteLine.classList.remove("spin");
   rouletteLine.innerHTML = "";
 
-  if(images.length >= 3){
-    renderStaticRoulette(images);
+  const loadableImages = await filterLoadableCards(shuffle(images).slice(0, Math.min(images.length, 40)));
+
+  if(loadableImages.length >= 3){
+    renderStaticRoulette(loadableImages);
   }else{
-    rouletteLine.innerHTML = `<div style="padding:20px;color:#9b7a88;">В этом бустере пока мало карт ♡</div>`;
+    rouletteLine.innerHTML = `<div style="padding:20px;color:#9b7a88;">В этом бустере пока мало доступных карт ♡</div>`;
   }
 
-  await showBoosterPreview();
   boosterPlayModal.classList.add("show");
   updateBoosterUI();
 }
@@ -1783,7 +1766,7 @@ function renderBoosterRewards(){
     btn.className = "booster-reward-card";
     btn.innerHTML = `
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
-      <img src="${image.src}" alt="booster reward" decoding="async">
+      <img src="${image.src}" alt="booster reward" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
     `;
 
     btn.addEventListener("click", () => {
@@ -1940,7 +1923,6 @@ boosterBackBtn.addEventListener("click", () => {
 });
 
 boosterStartBtn.addEventListener("click", startSelectedBooster);
-
 modeButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     modeButtons.forEach(item => item.classList.remove("active"));
