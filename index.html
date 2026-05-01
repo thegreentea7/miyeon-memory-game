@@ -941,7 +941,7 @@ h1{
       <div class="stat"><span>Ходы</span><strong id="moves">0</strong></div>
       <div class="stat"><span>Пары</span><strong class="inline-counter"><span id="pairs">0</span>/<span id="totalPairs">6</span></strong></div>
       <div class="stat"><span>Время</span><strong id="time">00:00</strong></div>
-      <div class="stat"><span>Бустер</span><strong><span id="boosterPoints">0</span>/5</strong></div>
+      <div class="stat"><span>Бустер</span><strong><span id="boosterPoints">0</span> очков</strong></div>
     </div>
 
     <div class="block-title">Режим</div>
@@ -961,15 +961,16 @@ h1{
     <div class="shape-panel" id="shapePanel">
       <div class="block-title">Форма поля</div>
       <div class="shape-grid">
+        <button class="shape-btn" data-shape="moon">Луна</button>
         <button class="shape-btn active" data-shape="classic">Классика</button>
-        <button class="shape-btn" data-shape="heart">❤️ Сердце</button>
-        <button class="shape-btn" data-shape="g">🅶 G</button>
-        <button class="shape-btn" data-shape="crown">👑 Корона</button>
-        <button class="shape-btn" data-shape="bunny">🐰 Кролик</button>
-        <button class="shape-btn" data-shape="flower">🌸 Цветок</button>
-        <button class="shape-btn" data-shape="bow">🎀 Бантик</button>
-        <button class="shape-btn" data-shape="snowflake">❄️ Снежинка</button>
-        <button class="shape-btn" data-shape="sun">☀️ Солнце</button>
+        <button class="shape-btn" data-shape="heart">Сердце</button>
+        <button class="shape-btn" data-shape="g">G</button>
+        <button class="shape-btn" data-shape="crown">Корона</button>
+        <button class="shape-btn" data-shape="bunny">Кролик</button>
+        <button class="shape-btn" data-shape="flower">Цветок</button>
+        <button class="shape-btn" data-shape="bow">Бантик</button>
+        <button class="shape-btn" data-shape="snowflake">Снежинка</button>
+        <button class="shape-btn" data-shape="sun">Солнце</button>
       </div>
     </div>
 
@@ -981,10 +982,6 @@ h1{
     <button class="fun-btn" id="shuffleBtn">
       <b>🌀 Перемешать</b>
       <small>переставит закрытые карточки</small>
-    </button>
-    <button class="fun-btn" id="vibeBtn">
-      <b>💌 Вайб</b>
-      <small>маленькое сообщение</small>
     </button>
     <button class="restart" id="restart">Новая игра</button>
   </aside>
@@ -1140,6 +1137,15 @@ const SHAPES = {
     "00011000"
   ],
 
+  moon: [
+    "00111100",
+    "01111110",
+    "11111000",
+    "11111000",
+    "01111110",
+    "00111100"
+  ],
+
   g: [
     "01111110",
     "10000000",
@@ -1150,12 +1156,11 @@ const SHAPES = {
   ],
 
   crown: [
-    "10011001",
-    "11011011",
-    "11111111",
-    "11111111",
-    "01111110",
-    "00111100"
+    "100010001",
+    "110111011",
+    "111111111",
+    "111111111",
+    "111111111"
   ],
 
   bunny: [
@@ -1276,6 +1281,7 @@ let currentFilteredCollection = [];
 let currentBooster = "all";
 let currentRouletteLine = [];
 let boosterPoints = Number(localStorage.getItem("miyeon_booster_points") || "0");
+let boosterReadyNotified = boosterPoints >= 5;
 
 function showToast(text){
   toast.textContent = text;
@@ -1713,9 +1719,19 @@ function getBoosterCost(boosterKey, booster){
 function updateBoosterUI(){
   boosterPointsEl.textContent = boosterPoints;
   boosterOpen.classList.toggle("ready", boosterPoints >= 5);
+
   if(boosterStartBtn){
     const currentCost = getBoosterCost(currentBooster, CARD_CONFIG?.boosters?.[currentBooster]);
     boosterStartBtn.disabled = boosterPoints < currentCost;
+  }
+
+  if(boosterPoints >= 5 && !boosterReadyNotified){
+    boosterReadyNotified = true;
+    showToast("Можно открыть 1 бустер 🎁");
+  }
+
+  if(boosterPoints < 5){
+    boosterReadyNotified = false;
   }
 }
 
@@ -1899,7 +1915,7 @@ async function renderBoosterTypes(){
     btn.dataset.booster = key;
     btn.innerHTML = `
       <b>🎰 ${booster.title}</b>
-      <small>стоимость: ${booster.cost || 5} баллов</small>
+      <small>стоимость: ${getBoosterCost(key, booster)} баллов</small>
       <span class="open-note">Открыть рулетку →</span>
     `;
 
@@ -2090,18 +2106,6 @@ function shuffleClosed(){
   showToast("Закрытые карточки перемешаны 🌀");
 }
 
-function vibe(){
-  const messages = [
-    "Коллекционная удача уже рядом 💌",
-    "Сегодня вайб нежный, почти весенний 🌸",
-    "Кажется, эта пара сама хочет найтись 🐰",
-    "Настоящий коллекционер на поле 👑",
-    "Ещё чуть-чуть, и бустер твой ✨"
-  ];
-
-  showToast(messages[Math.floor(Math.random() * messages.length)]);
-}
-
 function launchConfetti(){
   const colors = ["#f7b6cd","#a8d9bd","#ffd166","#8ecae6","#cdb4db","#ffffff"];
 
@@ -2190,8 +2194,6 @@ restartBtn.addEventListener("click", () => startGame());
 againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
 document.getElementById("shuffleBtn").addEventListener("click", shuffleClosed);
-document.getElementById("vibeBtn").addEventListener("click", vibe);
-
 loadConfig()
   .then(() => {
     updateBoosterUI();
