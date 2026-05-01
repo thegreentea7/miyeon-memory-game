@@ -264,17 +264,18 @@ h1{
 
 .shape-panel.show{
   display:block;
+  padding:2px 0;
 }
 
 .shape-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(3,1fr);
   gap:7px;
   margin-top:7px;
 }
 
 .shape-btn{
-  padding:9px;
+  padding:9px 7px;
   border-radius:16px;
   background:rgba(255,255,255,.72);
   color:#6c4c5b;
@@ -879,7 +880,7 @@ h1{
   .block-title{display:none}
   .shape-panel{grid-column:1 / -1}
   .shape-panel .block-title{display:block;margin:0 0 6px}
-  .shape-grid{grid-template-columns:repeat(4,1fr)}
+  .shape-grid{grid-template-columns:repeat(3,1fr)}
   .mode-btn small,.fun-btn small,.collection-open small,.booster-open small{display:none}
   .restart{margin-top:0}
   .collection-grid{grid-template-columns:repeat(auto-fill,66px);grid-auto-rows:88px;gap:10px}
@@ -961,9 +962,14 @@ h1{
       <div class="block-title">Форма поля</div>
       <div class="shape-grid">
         <button class="shape-btn active" data-shape="classic">Классика</button>
-        <button class="shape-btn" data-shape="heart">Сердце</button>
-        <button class="shape-btn" data-shape="star">Звезда</button>
-        <button class="shape-btn" data-shape="g">G</button>
+        <button class="shape-btn" data-shape="heart">❤️ Сердце</button>
+        <button class="shape-btn" data-shape="g">🅶 G</button>
+        <button class="shape-btn" data-shape="crown">👑 Корона</button>
+        <button class="shape-btn" data-shape="bunny">🐰 Кролик</button>
+        <button class="shape-btn" data-shape="flower">🌸 Цветок</button>
+        <button class="shape-btn" data-shape="bow">🎀 Бантик</button>
+        <button class="shape-btn" data-shape="snowflake">❄️ Снежинка</button>
+        <button class="shape-btn" data-shape="sun">☀️ Солнце</button>
       </div>
     </div>
 
@@ -1124,27 +1130,77 @@ const ALBUMS = {
 
 const SHAPES = {
   classic: null,
+
   heart: [
-    "0110110",
-    "1111111",
-    "1111111",
-    "0111110",
-    "0011100",
-    "0001000"
+    "01100110",
+    "11111111",
+    "11111111",
+    "01111110",
+    "00111100",
+    "00011000"
   ],
-  star: [
-    "0010100",
-    "0111110",
-    "1111111",
-    "0111110",
-    "1011101"
-  ],
+
   g: [
-    "0111110",
-    "1000000",
-    "1001110",
-    "1000010",
-    "0111110"
+    "01111110",
+    "10000000",
+    "10011110",
+    "10000110",
+    "10000010",
+    "01111110"
+  ],
+
+  crown: [
+    "10011001",
+    "11011011",
+    "11111111",
+    "11111111",
+    "01111110",
+    "00111100"
+  ],
+
+  bunny: [
+    "01000010",
+    "11100111",
+    "11111111",
+    "11111111",
+    "01111110",
+    "00111100"
+  ],
+
+  flower: [
+    "00111100",
+    "01111110",
+    "11111111",
+    "11111111",
+    "01111110",
+    "00111100"
+  ],
+
+  bow: [
+    "11000011",
+    "11100111",
+    "00111100",
+    "00111100",
+    "11100111",
+    "11000011"
+  ],
+
+  snowflake: [
+    "10011001",
+    "01011010",
+    "00111100",
+    "00111100",
+    "01011010",
+    "10011001"
+  ],
+
+  sun: [
+    "10100101",
+    "01111110",
+    "11111111",
+    "11111111",
+    "01111110",
+    "10100101"
   ]
 };
 
@@ -1897,62 +1953,28 @@ async function openBoosterPlay(){
   updateBoosterUI();
 }
 
-function renderBoosterRewards(){
-  boosterRewards.innerHTML = "";
-  boosterRewards.classList.add("show");
+function renderBoosterRewards(cards){
+  let newCount = 0;
 
-  const visibleCards = [...rouletteLine.querySelectorAll(".roulette-card")];
-  const wrapRect = rouletteLine.parentElement.getBoundingClientRect();
-  const pointerX = wrapRect.left + wrapRect.width / 2;
-
-  let centerIndex = 0;
-  let bestDistance = Infinity;
-
-  visibleCards.forEach((card, index) => {
-    const rect = card.getBoundingClientRect();
-    const cardCenter = rect.left + rect.width / 2;
-    const distance = Math.abs(cardCenter - pointerX);
-
-    if(distance < bestDistance){
-      bestDistance = distance;
-      centerIndex = index;
-    }
+  cards.forEach(card => {
+    const already = isCardCollected(card.src);
+    if(!already) newCount++;
+    collectCard(card.src);
   });
 
-  let indexes = [centerIndex - 1, centerIndex, centerIndex + 1].filter(index => index >= 0 && index < currentRouletteLine.length);
+  launchConfetti();
 
-  while(indexes.length < 3 && indexes[0] > 0){
-    indexes.unshift(indexes[0] - 1);
-  }
+  showToast(
+    newCount
+      ? `+${newCount} новых карт добавлено 💌`
+      : "Все карты уже были в коллекции ♡"
+  );
 
-  while(indexes.length < 3 && indexes[indexes.length - 1] < currentRouletteLine.length - 1){
-    indexes.push(indexes[indexes.length - 1] + 1);
-  }
-
-  const options = indexes.slice(0, 3).map(index => currentRouletteLine[index]);
-
-  options.forEach(image => {
-    const isNew = !isCardCollected(image.src);
-    const btn = document.createElement("button");
-    btn.className = "booster-reward-card";
-    btn.innerHTML = `
-      <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
-      <img src="${image.src}" alt="booster reward" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
-    `;
-
-    btn.addEventListener("click", () => {
-      const already = isCardCollected(image.src);
-      collectCard(image.src);
-      showToast(already ? "Повторка, но красивая ♡" : "Новая карта из бустера 💌");
-      boosterPlayModal.classList.remove("show");
-      openCollection();
-    });
-
-    boosterRewards.appendChild(btn);
-  });
+  boosterPlayModal.classList.remove("show");
+  openCollection();
 }
 
-async function startSelectedBooster(){
+async async function startSelectedBooster(){
   const config = await loadConfig();
   const booster = config.boosters[currentBooster];
   const cost = booster.cost || 5;
@@ -1970,21 +1992,14 @@ async function startSelectedBooster(){
   }
 
   spendBoosterPoints(cost);
-  boosterRewards.classList.remove("show");
-  boosterPlayText.textContent = `🎰 ${booster.title} крутится...`;
 
-  if(!currentRouletteLine.length){
-    renderStaticRoulette(images);
-  }
+  const cards = shuffle(images).slice(0, 3);
 
-  rouletteLine.classList.remove("spin");
-  void rouletteLine.offsetWidth;
-  rouletteLine.classList.add("spin");
+  showToast("Открываешь бустер... 💌");
 
   setTimeout(() => {
-    boosterPlayText.textContent = "Рулетка остановилась. Выбери одну карту, которая попадёт в коллекцию ♡";
-    renderBoosterRewards();
-  }, 2900);
+    renderBoosterRewards(cards);
+  }, 400);
 }
 
 function hint(){
