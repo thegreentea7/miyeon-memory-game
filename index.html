@@ -387,7 +387,7 @@ h1{
 
 .collection-controls{
   display:grid;
-  grid-template-columns:1fr 1fr auto;
+  grid-template-columns:1fr auto;
   gap:10px;
   align-items:end;
 }
@@ -1043,17 +1043,6 @@ h1{
 <script>
 const CONFIG_PATH = "cards_config.json";
 
-const MEMBERS = {
-  all: { title: "Все участницы", icon: "💿", folder: null },
-  miyeon: { title: "Миён", icon: "🐰", folder: "miyeon" },
-  minnie: { title: "Минни", icon: "🐱", folder: "minnie" },
-  soyeon: { title: "Соён", icon: "🦁", folder: "soyeon" },
-  yuqi: { title: "Юци", icon: "🐶", folder: "yuqi" },
-  shuhua: { title: "Шухуа", icon: "🦋", folder: "shuhua" },
-  soojin: { title: "Суджин", icon: "💃", folder: "soojin" },
-  group: { title: "Юнитки и групповые", icon: "👥", folder: "group" }
-};
-
 const ALBUMS = {
   all: { title: "Все альбомы" },
   iam: { title: "I AM" },
@@ -1071,7 +1060,6 @@ const ALBUMS = {
 let CARD_CONFIG = null;
 let allImageCache = null;
 const scanCache = {};
-
 const boardArea = document.getElementById("boardArea");
 const board = document.getElementById("board");
 const movesEl = document.getElementById("moves");
@@ -1096,7 +1084,6 @@ const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 const collectionProgressText = document.getElementById("collectionProgressText");
 const collectionProgressBar = document.getElementById("collectionProgressBar");
 const collectionProgressTitle = document.getElementById("collectionProgressTitle");
-const memberFilter = document.getElementById("memberFilter");
 const albumFilter = document.getElementById("albumFilter");
 const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
 
@@ -1128,12 +1115,11 @@ let currentRows = 3;
 let currentDifficulty = "easy";
 let started = false;
 let currentLevelImages = [];
-let currentMemberFilter = "all";
 let currentAlbumFilter = "all";
 let ownedOnly = false;
 let collectionVisibleLimit = 48;
 let currentFilteredCollection = [];
-let currentBooster = "all";
+let currentBooster = "iam";
 let currentRouletteLine = [];
 let boosterPoints = Number(localStorage.getItem("miyeon_booster_points") || "0");
 
@@ -1249,11 +1235,9 @@ async function getAllImages(){
   const config = await loadConfig();
   const cards = [];
 
-  Object.entries(config.albums || {}).forEach(([member, albums]) => {
-    Object.entries(albums || {}).forEach(([album, ranges]) => {
-      expandRanges(ranges).forEach(number => {
-        cards.push(makeCard(member, number, album));
-      });
+  Object.entries(config.albums?.miyeon || {}).forEach(([album, ranges]) => {
+    expandRanges(ranges).forEach(number => {
+      cards.push(makeCard("miyeon", number, album));
     });
   });
 
@@ -1266,49 +1250,28 @@ async function getAllImages(){
   return allImageCache;
 }
 
-function getAlbumCards(member, album){
-  const albums = CARD_CONFIG?.albums?.[member] || {};
-  return expandRanges(albums[album] || []).map(number => makeCard(member, number, album));
-}
-
-function getMemberCards(member){
-  const albums = CARD_CONFIG?.albums?.[member] || {};
-  const cards = [];
-
-  Object.entries(albums).forEach(([album, ranges]) => {
-    expandRanges(ranges).forEach(number => cards.push(makeCard(member, number, album)));
-  });
-
-  const unique = new Map();
-  cards.forEach(card => {
-    if(!unique.has(card.src)) unique.set(card.src, card);
-  });
-
-  return [...unique.values()];
+function getAlbumCards(album){
+  const albums = CARD_CONFIG?.albums?.miyeon || {};
+  return expandRanges(albums[album] || []).map(number => makeCard("miyeon", number, album));
 }
 
 async function resolveBoosterEntry(entry){
   const allCards = await getAllImages();
 
-  if(entry.all_cards && !entry.member){
+  if(entry.all_cards){
     return allCards;
   }
 
-  if(entry.member && entry.all_cards){
-    return getMemberCards(entry.member);
+  if(entry.member === "miyeon" && entry.all_cards){
+    return allCards;
   }
 
-  if(entry.all_members && entry.album){
-    const members = Object.keys(CARD_CONFIG.albums || {}).filter(member => member !== "group");
-    return members.flatMap(member => getAlbumCards(member, entry.album));
+  if(entry.member === "miyeon" && entry.album){
+    return getAlbumCards(entry.album);
   }
 
-  if(entry.member && entry.album){
-    return getAlbumCards(entry.member, entry.album);
-  }
-
-  if(entry.member && entry.cards){
-    return expandRanges(entry.cards).map(number => makeCard(entry.member, number, "other"));
+  if(entry.member === "miyeon" && entry.cards){
+    return expandRanges(entry.cards).map(number => makeCard("miyeon", number, "other"));
   }
 
   return [];
@@ -1618,16 +1581,14 @@ function finishGame(){
 
 function applyCollectionFilters(images){
   return images.filter(img => {
-    const memberOk = currentMemberFilter === "all" || img.member === currentMemberFilter;
     const albumOk = currentAlbumFilter === "all" || img.album === currentAlbumFilter;
     const ownedOk = !ownedOnly || isCardCollected(img.src);
 
-    return memberOk && albumOk && ownedOk;
+    return albumOk && ownedOk;
   });
 }
 
 function updateCollectionControls(){
-  memberFilter.value = currentMemberFilter;
   albumFilter.value = currentAlbumFilter;
   ownedOnlyToggle.classList.toggle("active", ownedOnly);
 }
@@ -1643,10 +1604,9 @@ async function renderCollection(){
   const collectedInFilter = images.filter(img => isCardCollected(img.src)).length;
   const percent = totalInFilter ? Math.round(collectedInFilter / totalInFilter * 100) : 0;
 
-  const memberTitle = currentMemberFilter === "all" ? "Все участницы" : MEMBERS[currentMemberFilter].title;
   const albumTitle = currentAlbumFilter === "all" ? "Все альбомы" : ALBUMS[currentAlbumFilter].title;
 
-  collectionProgressTitle.textContent = `${memberTitle} · ${albumTitle}${ownedOnly ? " · В коллекции" : ""}`;
+  collectionProgressTitle.textContent = `Миён · ${albumTitle}${ownedOnly ? " · В коллекции" : ""}`;
   collectionProgressText.textContent = `${collectedInFilter}/${totalInFilter}`;
   collectionProgressBar.style.width = `${percent}%`;
   collectionGrid.innerHTML = "";
@@ -1910,12 +1870,6 @@ function launchConfetti(){
     setTimeout(() => piece.remove(), 4600);
   }
 }
-
-memberFilter.addEventListener("change", () => {
-  currentMemberFilter = memberFilter.value;
-  collectionVisibleLimit = 48;
-  renderCollection();
-});
 
 albumFilter.addEventListener("change", () => {
   currentAlbumFilter = albumFilter.value;
