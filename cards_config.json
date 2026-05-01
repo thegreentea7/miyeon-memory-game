@@ -33,216 +33,26 @@
       "other": [
         "27-30"
       ]
-    },
-    "minnie": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
-    },
-    "soyeon": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
-    },
-    "yuqi": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
-    },
-    "shuhua": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
-    },
-    "soojin": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
-    },
-    "group": {
-      "iam": [
-        "13-18"
-      ],
-      "latata": [
-        "11-12"
-      ],
-      "imade": [
-        "19-24"
-      ],
-      "dumdi_dumdi": [
-        "1-5"
-      ],
-      "itrust": [
-        "7-10"
-      ],
-      "oh_my_god": [
-        "6"
-      ],
-      "other": []
     }
   },
   "boosters": {
-    "all": {
-      "title": "Все карты",
-      "cost": 5,
-      "cards": [
-        {
-          "all_cards": true
-        }
-      ]
-    },
     "iam": {
       "title": "I AM",
       "cost": 5,
       "cards": [
         {
-          "all_members": true,
+          "member": "miyeon",
           "album": "iam"
+        }
+      ]
+    },
+    "latata": {
+      "title": "LATATA",
+      "cost": 5,
+      "cards": [
+        {
+          "member": "miyeon",
+          "album": "latata"
         }
       ]
     },
@@ -251,8 +61,38 @@
       "cost": 5,
       "cards": [
         {
-          "all_members": true,
+          "member": "miyeon",
           "album": "imade"
+        }
+      ]
+    },
+    "dumdi_dumdi": {
+      "title": "DUMDI DUMDI",
+      "cost": 5,
+      "cards": [
+        {
+          "member": "miyeon",
+          "album": "dumdi_dumdi"
+        }
+      ]
+    },
+    "uh-oh": {
+      "title": "UH-OH",
+      "cost": 5,
+      "cards": [
+        {
+          "member": "miyeon",
+          "album": "uh-oh"
+        }
+      ]
+    },
+    "hann": {
+      "title": "HANN",
+      "cost": 5,
+      "cards": [
+        {
+          "member": "miyeon",
+          "album": "hann"
         }
       ]
     },
@@ -261,8 +101,18 @@
       "cost": 5,
       "cards": [
         {
-          "all_members": true,
+          "member": "miyeon",
           "album": "itrust"
+        }
+      ]
+    },
+    "oh_my_god": {
+      "title": "OH MY GOD",
+      "cost": 5,
+      "cards": [
+        {
+          "member": "miyeon",
+          "album": "oh_my_god"
         }
       ]
     },
@@ -271,80 +121,20 @@
       "cost": 5,
       "cards": [
         {
-          "all_members": true,
+          "member": "miyeon",
           "album": "iburn"
         }
       ]
     },
-    "miyeon": {
-      "title": "Миён",
+    "other": {
+      "title": "Разное",
       "cost": 5,
       "cards": [
         {
           "member": "miyeon",
-          "all_cards": true
-        }
-      ]
-    },
-    "minnie": {
-      "title": "Минни",
-      "cost": 5,
-      "cards": [
-        {
-          "member": "minnie",
-          "all_cards": true
-        }
-      ]
-    },
-    "soyeon": {
-      "title": "Соён",
-      "cost": 5,
-      "cards": [
-        {
-          "member": "soyeon",
-          "all_cards": true
-        }
-      ]
-    },
-    "yuqi": {
-      "title": "Юци",
-      "cost": 5,
-      "cards": [
-        {
-          "member": "yuqi",
-          "all_cards": true
-        }
-      ]
-    },
-    "shuhua": {
-      "title": "Шухуа",
-      "cost": 5,
-      "cards": [
-        {
-          "member": "shuhua",
-          "all_cards": true
-        }
-      ]
-    },
-    "soojin": {
-      "title": "Суджин",
-      "cost": 5,
-      "cards": [
-        {
-          "member": "soojin",
-          "all_cards": true
-        }
-      ]
-    },
-    "group": {
-      "title": "Юнитки и групповые",
-      "cost": 5,
-      "cards": [
-        {
-          "member": "group",
-          "all_cards": true
+          "album": "other"
         }
       ]
     }
   }
-} 
+}
