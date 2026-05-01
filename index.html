@@ -468,6 +468,25 @@ h1{
   background:linear-gradient(90deg,#f7adc7,#a8d9bd);
 }
 
+.collection-more-wrap{
+  display:flex;
+  justify-content:center;
+  padding:8px 0 2px;
+}
+
+.collection-more-btn{
+  border-radius:999px;
+  padding:10px 18px;
+  color:#744b5e;
+  font-weight:900;
+  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+}
+
+.collection-more-btn.hidden{
+  display:none;
+}
+
 .collection-grid{
   min-height:0;
   overflow:auto;
@@ -964,6 +983,9 @@ h1{
     </div>
 
     <div class="collection-grid" id="collectionGrid"></div>
+    <div class="collection-more-wrap">
+      <button class="collection-more-btn hidden" id="collectionMoreBtn">Показать ещё</button>
+    </div>
   </div>
 </section>
 
@@ -1070,6 +1092,7 @@ const collectionOpen = document.getElementById("collectionOpen");
 const collectionClose = document.getElementById("collectionClose");
 const collectionModal = document.getElementById("collectionModal");
 const collectionGrid = document.getElementById("collectionGrid");
+const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 const collectionProgressText = document.getElementById("collectionProgressText");
 const collectionProgressBar = document.getElementById("collectionProgressBar");
 const collectionProgressTitle = document.getElementById("collectionProgressTitle");
@@ -1108,6 +1131,8 @@ let currentLevelImages = [];
 let currentMemberFilter = "all";
 let currentAlbumFilter = "all";
 let ownedOnly = false;
+let collectionVisibleLimit = 48;
+let currentFilteredCollection = [];
 let currentBooster = "all";
 let currentRouletteLine = [];
 let boosterPoints = Number(localStorage.getItem("miyeon_booster_points") || "0");
@@ -1356,14 +1381,7 @@ async function buildDeck(cols, rows){
     return { error:true, available:availableImages.length, needed };
   }
 
-  const candidates = shuffle(availableImages);
-  const selected = [];
-
-  for(const card of candidates){
-    if(selected.length >= needed) break;
-    const ok = await preloadImage(card.src);
-    if(ok) selected.push(card);
-  }
+  const selected = shuffle(availableImages).slice(0, needed);
 
   if(selected.length < needed){
     currentLevelImages = [];
@@ -1400,7 +1418,7 @@ async function startGame(cols = currentCols, rows = currentRows){
   timeEl.textContent = "00:00";
   win.classList.remove("show");
 
-  board.innerHTML = `<div class="loading">Загружаю карты из cards_config.json ♡</div>`;
+  board.innerHTML = `<div class="loading">Подгружаю карты ♡</div>`;
 
   const deckResult = await buildDeck(currentCols, currentRows);
 
@@ -1618,6 +1636,9 @@ async function renderCollection(){
   const all = await getAllImages();
   const images = applyCollectionFilters(all);
 
+  currentFilteredCollection = images;
+  const visibleImages = currentFilteredCollection.slice(0, collectionVisibleLimit);
+
   const totalInFilter = images.length;
   const collectedInFilter = images.filter(img => isCardCollected(img.src)).length;
   const percent = totalInFilter ? Math.round(collectedInFilter / totalInFilter * 100) : 0;
@@ -1631,7 +1652,7 @@ async function renderCollection(){
   collectionGrid.innerHTML = "";
   updateCollectionControls();
 
-  images.forEach((img, index) => {
+  visibleImages.forEach((img, index) => {
     const opened = isCardCollected(img.src);
     const cell = document.createElement("div");
     cell.className = opened ? "collection-cell" : "collection-cell locked";
@@ -1644,12 +1665,16 @@ async function renderCollection(){
     collectionGrid.appendChild(cell);
   });
 
+  collectionMoreBtn.classList.toggle("hidden", collectionVisibleLimit >= currentFilteredCollection.length);
+
   if(!images.length){
     collectionGrid.innerHTML = `<div class="loading">По выбранным фильтрам пока нет карт ♡</div>`;
+    collectionMoreBtn.classList.add("hidden");
   }
 }
 
 function openCollection(){
+  collectionVisibleLimit = 48;
   collectionModal.classList.add("show");
   renderCollection();
 }
@@ -1691,7 +1716,7 @@ async function openBooster(){
 function renderStaticRoulette(images){
   rouletteLine.classList.remove("spin");
   rouletteLine.innerHTML = "";
-  currentRouletteLine = shuffle([...images, ...images, ...images, ...images]).slice(0, 36);
+  currentRouletteLine = shuffle([...images, ...images]).slice(0, 18);
 
   currentRouletteLine.forEach(image => {
     const item = document.createElement("div");
@@ -1715,12 +1740,12 @@ async function openBoosterPlay(){
   rouletteLine.classList.remove("spin");
   rouletteLine.innerHTML = "";
 
-  const loadableImages = await filterLoadableCards(shuffle(images).slice(0, Math.min(images.length, 40)));
+  const rouletteImages = shuffle(images).slice(0, Math.min(images.length, 18));
 
-  if(loadableImages.length >= 3){
-    renderStaticRoulette(loadableImages);
+  if(rouletteImages.length >= 3){
+    renderStaticRoulette(rouletteImages);
   }else{
-    rouletteLine.innerHTML = `<div style="padding:20px;color:#9b7a88;">В этом бустере пока мало доступных карт ♡</div>`;
+    rouletteLine.innerHTML = `<div style="padding:20px;color:#9b7a88;">В этом бустере пока мало карт ♡</div>`;
   }
 
   boosterPlayModal.classList.add("show");
@@ -1888,16 +1913,24 @@ function launchConfetti(){
 
 memberFilter.addEventListener("change", () => {
   currentMemberFilter = memberFilter.value;
+  collectionVisibleLimit = 48;
   renderCollection();
 });
 
 albumFilter.addEventListener("change", () => {
   currentAlbumFilter = albumFilter.value;
+  collectionVisibleLimit = 48;
   renderCollection();
 });
 
 ownedOnlyToggle.addEventListener("click", () => {
   ownedOnly = !ownedOnly;
+  collectionVisibleLimit = 48;
+  renderCollection();
+});
+
+collectionMoreBtn.addEventListener("click", () => {
+  collectionVisibleLimit += 48;
   renderCollection();
 });
 
