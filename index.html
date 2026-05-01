@@ -1705,11 +1705,16 @@ function getDifficultyPoints(){
   return 1;
 }
 
+function getBoosterCost(boosterKey, booster){
+  if(boosterKey === "group") return 10;
+  return booster?.cost || 5;
+}
+
 function updateBoosterUI(){
   boosterPointsEl.textContent = boosterPoints;
   boosterOpen.classList.toggle("ready", boosterPoints >= 5);
   if(boosterStartBtn){
-    const currentCost = CARD_CONFIG?.boosters?.[currentBooster]?.cost || 5;
+    const currentCost = getBoosterCost(currentBooster, CARD_CONFIG?.boosters?.[currentBooster]);
     boosterStartBtn.disabled = boosterPoints < currentCost;
   }
 }
@@ -1933,7 +1938,7 @@ async function openBoosterPlay(){
   const images = await getBoosterImages();
 
   boosterPlayTitle.textContent = `🎰 ${booster.title}`;
-  boosterStartBtn.textContent = `🎰 Запустить за ${booster.cost || 5} баллов`;
+  boosterStartBtn.textContent = `🎰 Запустить за ${getBoosterCost(currentBooster, booster)} баллов`;
   boosterPlayText.textContent = `В бустере ${images.length} карт. Рулетка уже заполнена, нажми «Запустить» ♡`;
 
   boosterRewards.classList.remove("show");
@@ -1953,13 +1958,45 @@ async function openBoosterPlay(){
   updateBoosterUI();
 }
 
-function renderBoosterRewards(cards){
+function renderBoosterRewards(){
+  boosterRewards.innerHTML = "";
+  boosterRewards.classList.add("show");
+
+  const visibleCards = [...rouletteLine.querySelectorAll(".roulette-card")];
+  const wrapRect = rouletteLine.parentElement.getBoundingClientRect();
+  const pointerX = wrapRect.left + wrapRect.width / 2;
+
+  let centerIndex = 0;
+  let bestDistance = Infinity;
+
+  visibleCards.forEach((card, index) => {
+    const rect = card.getBoundingClientRect();
+    const cardCenter = rect.left + rect.width / 2;
+    const distance = Math.abs(cardCenter - pointerX);
+
+    if(distance < bestDistance){
+      bestDistance = distance;
+      centerIndex = index;
+    }
+  });
+
+  let indexes = [centerIndex - 1, centerIndex, centerIndex + 1].filter(index => index >= 0 && index < currentRouletteLine.length);
+
+  while(indexes.length < 3 && indexes[0] > 0){
+    indexes.unshift(indexes[0] - 1);
+  }
+
+  while(indexes.length < 3 && indexes[indexes.length - 1] < currentRouletteLine.length - 1){
+    indexes.push(indexes[indexes.length - 1] + 1);
+  }
+
+  const options = indexes.slice(0, 3).map(index => currentRouletteLine[index]);
   let newCount = 0;
 
-  cards.forEach(card => {
-    const already = isCardCollected(card.src);
+  options.forEach(image => {
+    const already = isCardCollected(image.src);
     if(!already) newCount++;
-    collectCard(card.src);
+    collectCard(image.src);
   });
 
   launchConfetti();
@@ -1970,14 +2007,18 @@ function renderBoosterRewards(cards){
       : "Все карты уже были в коллекции ♡"
   );
 
-  boosterPlayModal.classList.remove("show");
-  openCollection();
+  boosterPlayText.textContent = "Три карты из бустера добавлены в коллекцию ♡";
+
+  setTimeout(() => {
+    boosterPlayModal.classList.remove("show");
+    openCollection();
+  }, 700);
 }
 
-async async function startSelectedBooster(){
+async function startSelectedBooster(){
   const config = await loadConfig();
   const booster = config.boosters[currentBooster];
-  const cost = booster.cost || 5;
+  const cost = getBoosterCost(currentBooster, booster);
 
   if(boosterPoints < cost){
     showToast(`Для этого бустера нужно ${cost} баллов ♡`);
@@ -1992,14 +2033,21 @@ async async function startSelectedBooster(){
   }
 
   spendBoosterPoints(cost);
+  boosterRewards.classList.remove("show");
+  boosterPlayText.textContent = `🎰 ${booster.title} крутится...`;
 
-  const cards = shuffle(images).slice(0, 3);
+  if(!currentRouletteLine.length){
+    renderStaticRoulette(images);
+  }
 
-  showToast("Открываешь бустер... 💌");
+  rouletteLine.classList.remove("spin");
+  void rouletteLine.offsetWidth;
+  rouletteLine.classList.add("spin");
 
   setTimeout(() => {
-    renderBoosterRewards(cards);
-  }, 400);
+    boosterPlayText.textContent = "Рулетка остановилась. Три карты добавляются в коллекцию ♡";
+    renderBoosterRewards();
+  }, 2900);
 }
 
 function hint(){
