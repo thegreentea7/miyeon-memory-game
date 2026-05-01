@@ -258,6 +258,47 @@ h1{
   white-space:nowrap;
 }
 
+.shape-panel{
+  display:none;
+}
+
+.shape-panel.show{
+  display:block;
+}
+
+.shape-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:7px;
+}
+
+.shape-btn{
+  padding:9px;
+  border-radius:16px;
+  background:rgba(255,255,255,.72);
+  color:#6c4c5b;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  font-size:12px;
+  font-weight:900;
+  transition:.18s;
+}
+
+.shape-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 13px 28px rgba(113,74,92,.14);
+}
+
+.shape-btn.active{
+  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
+  outline:2px solid rgba(247,182,205,.72);
+}
+
+.board.shaped{
+  grid-auto-flow:row;
+}
+
 .block-title{
   font-size:12px;
   color:#9b7a88;
@@ -836,6 +877,9 @@ h1{
   .panel-title{display:none}
   .stats{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}
   .block-title{display:none}
+  .shape-panel{grid-column:1 / -1}
+  .shape-panel .block-title{display:block;margin:0 0 6px}
+  .shape-grid{grid-template-columns:repeat(4,1fr)}
   .mode-btn small,.fun-btn small,.collection-open small,.booster-open small{display:none}
   .restart{margin-top:0}
   .collection-grid{grid-template-columns:repeat(auto-fill,66px);grid-auto-rows:88px;gap:10px}
@@ -912,6 +956,16 @@ h1{
       <b>Сложный</b>
       <small>5 карт, 2 новые, +3 балла</small>
     </button>
+
+    <div class="shape-panel" id="shapePanel">
+      <div class="block-title">Форма поля</div>
+      <div class="shape-grid">
+        <button class="shape-btn active" data-shape="classic">Классика</button>
+        <button class="shape-btn" data-shape="heart">Сердце</button>
+        <button class="shape-btn" data-shape="star">Звезда</button>
+        <button class="shape-btn" data-shape="g">G</button>
+      </div>
+    </div>
 
     <div class="block-title">Приколы</div>
     <button class="fun-btn" id="hintBtn">
@@ -1068,6 +1122,33 @@ const ALBUMS = {
   other: { title: "Разное" }
 };
 
+const SHAPES = {
+  classic: null,
+  heart: [
+    "0110110",
+    "1111111",
+    "1111111",
+    "0111110",
+    "0011100",
+    "0001000"
+  ],
+  star: [
+    "0010100",
+    "0111110",
+    "1111111",
+    "0111110",
+    "1011101"
+  ],
+  g: [
+    "0111110",
+    "1000000",
+    "1001110",
+    "1000010",
+    "0111110"
+  ]
+};
+
+
 let CARD_CONFIG = null;
 let allImageCache = null;
 const scanCache = {};
@@ -1087,6 +1168,8 @@ const collectorBadge = document.getElementById("collectorBadge");
 const rewardOptions = document.getElementById("rewardOptions");
 const toast = document.getElementById("toast");
 const modeButtons = document.querySelectorAll(".mode-btn");
+const shapePanel = document.getElementById("shapePanel");
+const shapeButtons = document.querySelectorAll(".shape-btn");
 
 const collectionOpen = document.getElementById("collectionOpen");
 const collectionClose = document.getElementById("collectionClose");
@@ -1126,6 +1209,7 @@ let timerId = null;
 let currentCols = 4;
 let currentRows = 3;
 let currentDifficulty = "easy";
+let currentShape = "classic";
 let started = false;
 let currentLevelImages = [];
 let currentMemberFilter = "all";
@@ -1342,17 +1426,64 @@ function collectCard(src){
   localStorage.setItem(getCollectionKey(src), "1");
 }
 
+
+function getShapeCells(shapeKey){
+  const shape = SHAPES[shapeKey];
+
+  if(!shape || currentDifficulty !== "hard"){
+    return null;
+  }
+
+  const cells = [];
+
+  shape.forEach((row, rowIndex) => {
+    row.split("").forEach((cell, colIndex) => {
+      if(cell === "1"){
+        cells.push({ row: rowIndex + 1, col: colIndex + 1 });
+      }
+    });
+  });
+
+  if(cells.length % 2 !== 0){
+    cells.pop();
+  }
+
+  return {
+    cells,
+    rows: shape.length,
+    cols: shape[0].length
+  };
+}
+
+function getBoardCardCount(cols, rows){
+  const shapeData = getShapeCells(currentShape);
+  return shapeData ? shapeData.cells.length : cols * rows;
+}
+
+function updateShapePanel(){
+  const isHard = currentDifficulty === "hard";
+  shapePanel.classList.toggle("show", isHard);
+
+  if(!isHard && currentShape !== "classic"){
+    currentShape = "classic";
+    shapeButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.shape === "classic"));
+  }
+}
+
 function fitBoard(){
   const area = boardArea.getBoundingClientRect();
-  const gap = currentCols === 6 ? 7 : 10;
+  const shapeData = getShapeCells(currentShape);
+  const visualCols = shapeData ? shapeData.cols : currentCols;
+  const visualRows = shapeData ? shapeData.rows : currentRows;
+  const gap = visualCols >= 6 ? 7 : 10;
   const availableW = area.width;
   const availableH = area.height;
-  const cardWByWidth = (availableW - gap * (currentCols - 1)) / currentCols;
-  const cardWByHeight = ((availableH - gap * (currentRows - 1)) / currentRows) * 3 / 4;
+  const cardWByWidth = (availableW - gap * (visualCols - 1)) / visualCols;
+  const cardWByHeight = ((availableH - gap * (visualRows - 1)) / visualRows) * 3 / 4;
   const cardW = Math.max(20, Math.min(cardWByWidth, cardWByHeight));
 
-  board.style.width = `${cardW * currentCols + gap * (currentCols - 1)}px`;
-  board.style.height = `${(cardW * 4 / 3) * currentRows + gap * (currentRows - 1)}px`;
+  board.style.width = `${cardW * visualCols + gap * (visualCols - 1)}px`;
+  board.style.height = `${(cardW * 4 / 3) * visualRows + gap * (visualRows - 1)}px`;
 }
 
 window.addEventListener("resize", fitBoard);
@@ -1373,7 +1504,8 @@ function stopTimer(){
 }
 
 async function buildDeck(cols, rows){
-  const needed = (cols * rows) / 2;
+  const activeCards = getBoardCardCount(cols, rows);
+  const needed = activeCards / 2;
   const availableImages = await getAllImages();
 
   if(availableImages.length < needed){
@@ -1402,7 +1534,8 @@ async function buildDeck(cols, rows){
 async function startGame(cols = currentCols, rows = currentRows){
   currentCols = Number(cols);
   currentRows = Number(rows);
-  totalPairs = (currentCols * currentRows) / 2;
+  const activeCards = getBoardCardCount(currentCols, currentRows);
+  totalPairs = activeCards / 2;
 
   stopTimer();
   seconds = 0;
@@ -1422,9 +1555,14 @@ async function startGame(cols = currentCols, rows = currentRows){
 
   const deckResult = await buildDeck(currentCols, currentRows);
 
-  board.style.setProperty("--cols", currentCols);
-  board.style.setProperty("--rows", currentRows);
-  board.style.setProperty("--gap", currentCols === 6 ? "7px" : "10px");
+  const shapeData = getShapeCells(currentShape);
+  const visualCols = shapeData ? shapeData.cols : currentCols;
+  const visualRows = shapeData ? shapeData.rows : currentRows;
+
+  board.style.setProperty("--cols", visualCols);
+  board.style.setProperty("--rows", visualRows);
+  board.style.setProperty("--gap", visualCols >= 6 ? "7px" : "10px");
+  board.classList.toggle("shaped", !!shapeData);
 
   if(deckResult.error){
     board.innerHTML = `<div class="loading">В коллекции найдено ${deckResult.available} изображений.<br>Для режима нужно минимум ${deckResult.needed} ♡</div>`;
@@ -1434,12 +1572,19 @@ async function startGame(cols = currentCols, rows = currentRows){
 
   board.innerHTML = "";
 
-  deckResult.deck.forEach(card => {
+  const shapeCells = shapeData ? shapeData.cells : null;
+
+  deckResult.deck.forEach((card, index) => {
     const el = document.createElement("button");
     el.className = "card";
     el.type = "button";
     el.dataset.id = card.id;
     el.dataset.src = card.src;
+
+    if(shapeCells){
+      el.style.gridRow = shapeCells[index].row;
+      el.style.gridColumn = shapeCells[index].col;
+    }
 
     el.innerHTML = `
       <div class="inner">
@@ -1962,7 +2107,19 @@ modeButtons.forEach(btn => {
     modeButtons.forEach(item => item.classList.remove("active"));
     btn.classList.add("active");
     currentDifficulty = btn.dataset.difficulty || "easy";
+    updateShapePanel();
     startGame(btn.dataset.cols, btn.dataset.rows);
+  });
+});
+
+shapeButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    if(currentDifficulty !== "hard") return;
+
+    shapeButtons.forEach(item => item.classList.remove("active"));
+    btn.classList.add("active");
+    currentShape = btn.dataset.shape || "classic";
+    startGame(currentCols, currentRows);
   });
 });
 
@@ -1975,6 +2132,7 @@ document.getElementById("vibeBtn").addEventListener("click", vibe);
 loadConfig()
   .then(() => {
     updateBoosterUI();
+    updateShapePanel();
     startGame(4,3);
   })
   .catch(error => {
