@@ -1176,7 +1176,7 @@ function checkImage(src){
 async function loadConfig(){
   if(CARD_CONFIG) return CARD_CONFIG;
 
-  const response = await fetch(CONFIG_PATH + "?v=" + Date.now());
+  const response = await fetch(CONFIG_PATH);
 
   if(!response.ok){
     throw new Error("Не удалось загрузить cards_config.json");
@@ -1396,7 +1396,7 @@ async function startGame(cols = currentCols, rows = currentRows){
   timeEl.textContent = "00:00";
   win.classList.remove("show");
 
-  board.innerHTML = `<div class="loading">Загружаю картинки из общей коллекции ♡</div>`;
+  board.innerHTML = `<div class="loading">Загружаю карты из cards_config.json ♡</div>`;
 
   const deckResult = await buildDeck(currentCols, currentRows);
 
@@ -1423,7 +1423,7 @@ async function startGame(cols = currentCols, rows = currentRows){
       <div class="inner">
         <div class="face back"><div class="back-design">🐰</div></div>
         <div class="face front">
-          <img src="${card.src}" alt="card">
+          <img src="${card.src}" alt="card" decoding="async">
         </div>
       </div>
     `;
@@ -1565,7 +1565,7 @@ function renderRewardOptions(){
     btn.className = "reward-card";
     btn.innerHTML = `
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
-      <img src="${image.src}" alt="reward card">
+      <img src="${image.src}" alt="reward card" decoding="async">
     `;
 
     btn.addEventListener("click", () => {
@@ -1634,7 +1634,7 @@ async function renderCollection(){
     cell.dataset.number = String(index + 1).padStart(2, "0");
 
     if(opened){
-      cell.innerHTML = `<img src="${img.src}" alt="collection card">`;
+      cell.innerHTML = `<img src="${img.src}" alt="collection card" loading="lazy" decoding="async">`;
     }
 
     collectionGrid.appendChild(cell);
@@ -1694,7 +1694,7 @@ async function showBoosterPreview(){
   images.forEach(image => {
     const card = document.createElement("div");
     card.className = "booster-preview-card";
-    card.innerHTML = `<img src="${image.src}" alt="booster preview">`;
+    card.innerHTML = `<img src="${image.src}" alt="booster preview" loading="lazy" decoding="async">`;
     boosterPreviewGrid.appendChild(card);
   });
 }
@@ -1713,7 +1713,7 @@ function renderStaticRoulette(images){
   currentRouletteLine.forEach(image => {
     const item = document.createElement("div");
     item.className = "roulette-card";
-    item.innerHTML = `<img src="${image.src}" alt="roulette card">`;
+    item.innerHTML = `<img src="${image.src}" alt="roulette card" decoding="async">`;
     rouletteLine.appendChild(item);
   });
 }
@@ -1783,7 +1783,7 @@ function renderBoosterRewards(){
     btn.className = "booster-reward-card";
     btn.innerHTML = `
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
-      <img src="${image.src}" alt="booster reward">
+      <img src="${image.src}" alt="booster reward" decoding="async">
     `;
 
     btn.addEventListener("click", () => {
