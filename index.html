@@ -298,22 +298,6 @@ h1{
   background:linear-gradient(135deg,#ffe1eb,#ffffff);
 }
 
-
-
-.image-placeholder{
-  width:100%;
-  height:100%;
-  display:grid;
-  place-items:center;
-  text-align:center;
-  color:#b48b9e;
-  font-size:11px;
-  line-height:1.25;
-  padding:8px;
-  border-radius:12px;
-  background:linear-gradient(145deg,#fff,#fff4fa);
-}
-
 .toast{
   position:fixed;
   left:50%;
@@ -358,7 +342,7 @@ h1{
   box-shadow:0 28px 90px rgba(50,33,42,.28);
   border:1px solid rgba(255,255,255,.92);
   display:grid;
-  grid-template-rows:auto auto auto 1fr;
+  grid-template-rows:auto auto auto 1fr auto;
   gap:12px;
   padding:18px;
   overflow:hidden;
@@ -468,25 +452,6 @@ h1{
   background:linear-gradient(90deg,#f7adc7,#a8d9bd);
 }
 
-.collection-more-wrap{
-  display:flex;
-  justify-content:center;
-  padding:8px 0 2px;
-}
-
-.collection-more-btn{
-  border-radius:999px;
-  padding:10px 18px;
-  color:#744b5e;
-  font-weight:900;
-  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
-  box-shadow:0 9px 20px rgba(113,74,92,.08);
-}
-
-.collection-more-btn.hidden{
-  display:none;
-}
-
 .collection-grid{
   min-height:0;
   overflow:auto;
@@ -535,6 +500,23 @@ h1{
   font-weight:900;
   font-size:16px;
 }
+
+.collection-more-wrap{
+  display:flex;
+  justify-content:center;
+  padding:8px 0 2px;
+}
+
+.collection-more-btn{
+  border-radius:999px;
+  padding:10px 18px;
+  color:#744b5e;
+  font-weight:900;
+  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+}
+
+.collection-more-btn.hidden{display:none}
 
 .win-card{
   position:relative;
@@ -776,11 +758,6 @@ h1{
   cursor:not-allowed;
 }
 
-
-
-
-
-
 .booster-rewards{
   display:none;
   grid-template-columns:repeat(3,1fr);
@@ -814,6 +791,20 @@ h1{
   padding:20px;
   font-size:16px;
   line-height:1.45;
+}
+
+.image-placeholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:#b48b9e;
+  font-size:11px;
+  line-height:1.25;
+  padding:8px;
+  border-radius:12px;
+  background:linear-gradient(145deg,#fff,#fff4fa);
 }
 
 @media(max-width:850px){
@@ -889,7 +880,7 @@ h1{
   <aside class="panel">
     <div class="panel-title">
       <b>Панель игры</b>
-      <span>режимы, счёт и большая коллекция карт</span>
+      <span>режимы, счёт и коллекция Миён</span>
     </div>
 
     <div class="stats">
@@ -942,19 +933,6 @@ h1{
 
     <div class="collection-controls">
       <div class="collection-control">
-        <label for="memberFilter">Участница</label>
-        <select class="collection-select" id="memberFilter">
-          <option value="all">Все участницы</option>
-          <option value="miyeon">Миён</option>
-          <option value="minnie">Минни</option>
-          <option value="soyeon">Соён</option>
-          <option value="yuqi">Юци</option>
-          <option value="shuhua">Шухуа</option>
-          <option value="soojin">Суджин</option>
-        </select>
-      </div>
-
-      <div class="collection-control">
         <label for="albumFilter">Альбом</label>
         <select class="collection-select" id="albumFilter">
           <option value="all">Все альбомы</option>
@@ -994,7 +972,7 @@ h1{
     <div class="booster-head">
       <div>
         <h2>Бустеры</h2>
-        <p id="boosterText">Выбери тематический бустер. После выбора откроется рулетка и состав бустера ♡</p>
+        <p id="boosterText">Выбери альбомный бустер Миён. После выбора откроется рулетка ♡</p>
       </div>
       <button class="booster-x" id="boosterClose">×</button>
     </div>
@@ -1023,7 +1001,6 @@ h1{
       <button class="booster-action-btn" id="boosterBackBtn">← Назад к бустерам</button>
       <button class="booster-action-btn main" id="boosterStartBtn">🎰 Запустить за 5 баллов</button>
     </div>
-
   </div>
 </section>
 
@@ -1059,7 +1036,7 @@ const ALBUMS = {
 
 let CARD_CONFIG = null;
 let allImageCache = null;
-const scanCache = {};
+
 const boardArea = document.getElementById("boardArea");
 const board = document.getElementById("board");
 const movesEl = document.getElementById("moves");
@@ -1080,12 +1057,12 @@ const collectionOpen = document.getElementById("collectionOpen");
 const collectionClose = document.getElementById("collectionClose");
 const collectionModal = document.getElementById("collectionModal");
 const collectionGrid = document.getElementById("collectionGrid");
-const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 const collectionProgressText = document.getElementById("collectionProgressText");
 const collectionProgressBar = document.getElementById("collectionProgressBar");
 const collectionProgressTitle = document.getElementById("collectionProgressTitle");
 const albumFilter = document.getElementById("albumFilter");
 const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
+const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 
 const boosterOpen = document.getElementById("boosterOpen");
 const boosterModal = document.getElementById("boosterModal");
@@ -1098,7 +1075,6 @@ const boosterTypes = document.getElementById("boosterTypes");
 const boosterText = document.getElementById("boosterText");
 const boosterPlayTitle = document.getElementById("boosterPlayTitle");
 const boosterPlayText = document.getElementById("boosterPlayText");
-const rouletteWrap = document.getElementById("rouletteWrap");
 const rouletteLine = document.getElementById("rouletteLine");
 const boosterRewards = document.getElementById("boosterRewards");
 
@@ -1122,58 +1098,6 @@ let currentFilteredCollection = [];
 let currentBooster = "iam";
 let currentRouletteLine = [];
 let boosterPoints = Number(localStorage.getItem("miyeon_booster_points") || "0");
-
-function showToast(text){
-  toast.textContent = text;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1800);
-}
-
-function shuffle(array){
-  const copy = [...array];
-  for(let i = copy.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-function formatTime(value){
-  const min = String(Math.floor(value / 60)).padStart(2,"0");
-  const sec = String(value % 60).padStart(2,"0");
-  return `${min}:${sec}`;
-}
-
-function checkImage(src){
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(src);
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
-}
-
-function preloadImage(src){
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = src;
-  });
-}
-
-async function filterLoadableCards(cards){
-  const checks = await Promise.all(cards.map(async card => {
-    const ok = await preloadImage(card.src);
-    return ok ? card : null;
-  }));
-
-  return checks.filter(Boolean);
-}
-
-function imageErrorHTML(src){
-  return `<div class="image-placeholder">Не найдено<br>${src.split("/").slice(-2).join("/")}</div>`;
-}
 
 async function loadConfig(){
   if(CARD_CONFIG) return CARD_CONFIG;
@@ -1206,7 +1130,7 @@ function expandRanges(ranges){
           result.push(number);
         }
       }
-    } else {
+    }else{
       const number = Number(value);
       if(Number.isInteger(number)) result.push(number);
     }
@@ -1215,17 +1139,17 @@ function expandRanges(ranges){
   return [...new Set(result)];
 }
 
-function getCardSrc(member, number){
-  return `images/${member}/${number}.jpg`;
+function getCardSrc(number){
+  return `images/miyeon/${number}.jpg`;
 }
 
-function makeCard(member, number, album = "other"){
+function makeCard(number, album = "other"){
   return {
-    id: `${member}_${number}`,
-    member,
+    id: `miyeon_${number}`,
+    member: "miyeon",
     number,
     album,
-    src: getCardSrc(member, number)
+    src: getCardSrc(number)
   };
 }
 
@@ -1237,7 +1161,7 @@ async function getAllImages(){
 
   Object.entries(config.albums?.miyeon || {}).forEach(([album, ranges]) => {
     expandRanges(ranges).forEach(number => {
-      cards.push(makeCard("miyeon", number, album));
+      cards.push(makeCard(number, album));
     });
   });
 
@@ -1252,7 +1176,7 @@ async function getAllImages(){
 
 function getAlbumCards(album){
   const albums = CARD_CONFIG?.albums?.miyeon || {};
-  return expandRanges(albums[album] || []).map(number => makeCard("miyeon", number, album));
+  return expandRanges(albums[album] || []).map(number => makeCard(number, album));
 }
 
 async function resolveBoosterEntry(entry){
@@ -1262,16 +1186,12 @@ async function resolveBoosterEntry(entry){
     return allCards;
   }
 
-  if(entry.member === "miyeon" && entry.all_cards){
-    return allCards;
-  }
-
   if(entry.member === "miyeon" && entry.album){
     return getAlbumCards(entry.album);
   }
 
   if(entry.member === "miyeon" && entry.cards){
-    return expandRanges(entry.cards).map(number => makeCard("miyeon", number, "other"));
+    return expandRanges(entry.cards).map(number => makeCard(number, "other"));
   }
 
   return [];
@@ -1303,6 +1223,31 @@ function isCardCollected(src){
 
 function collectCard(src){
   localStorage.setItem(getCollectionKey(src), "1");
+}
+
+function imageErrorHTML(src){
+  return `<div class="image-placeholder">Не найдено<br>${src.split("/").slice(-2).join("/")}</div>`;
+}
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
+}
+
+function shuffle(array){
+  const copy = [...array];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function formatTime(value){
+  const min = String(Math.floor(value / 60)).padStart(2,"0");
+  const sec = String(value % 60).padStart(2,"0");
+  return `${min}:${sec}`;
 }
 
 function fitBoard(){
@@ -1338,12 +1283,6 @@ function stopTimer(){
 async function buildDeck(cols, rows){
   const needed = (cols * rows) / 2;
   const availableImages = await getAllImages();
-
-  if(availableImages.length < needed){
-    currentLevelImages = [];
-    return { error:true, available:availableImages.length, needed };
-  }
-
   const selected = shuffle(availableImages).slice(0, needed);
 
   if(selected.length < needed){
@@ -1470,6 +1409,7 @@ function getDifficultyPoints(){
 function updateBoosterUI(){
   boosterPointsEl.textContent = boosterPoints;
   boosterOpen.classList.toggle("ready", boosterPoints >= 5);
+
   if(boosterStartBtn){
     const currentCost = CARD_CONFIG?.boosters?.[currentBooster]?.cost || 5;
     boosterStartBtn.disabled = boosterPoints < currentCost;
@@ -1603,7 +1543,6 @@ async function renderCollection(){
   const totalInFilter = images.length;
   const collectedInFilter = images.filter(img => isCardCollected(img.src)).length;
   const percent = totalInFilter ? Math.round(collectedInFilter / totalInFilter * 100) : 0;
-
   const albumTitle = currentAlbumFilter === "all" ? "Все альбомы" : ALBUMS[currentAlbumFilter].title;
 
   collectionProgressTitle.textContent = `Миён · ${albumTitle}${ownedOnly ? " · В коллекции" : ""}`;
@@ -1669,7 +1608,7 @@ async function renderBoosterTypes(){
 
 async function openBooster(){
   await renderBoosterTypes();
-  boosterText.textContent = "Выбери бустер. После выбора откроется рулетка и состав бустера ♡";
+  boosterText.textContent = "Выбери альбомный бустер Миён. После выбора откроется рулетка ♡";
   boosterModal.classList.add("show");
 }
 
@@ -1777,9 +1716,7 @@ async function startSelectedBooster(){
     return;
   }
 
-  const images = await getBoosterImages();
-
-  if(images.length < 3){
+  if(currentRouletteLine.length < 3){
     showToast("В этом бустере нужно минимум 3 карты ♡");
     return;
   }
@@ -1787,10 +1724,6 @@ async function startSelectedBooster(){
   spendBoosterPoints(cost);
   boosterRewards.classList.remove("show");
   boosterPlayText.textContent = `🎰 ${booster.title} крутится...`;
-
-  if(!currentRouletteLine.length){
-    renderStaticRoulette(images);
-  }
 
   rouletteLine.classList.remove("spin");
   void rouletteLine.offsetWidth;
@@ -1911,6 +1844,7 @@ boosterBackBtn.addEventListener("click", () => {
 });
 
 boosterStartBtn.addEventListener("click", startSelectedBooster);
+
 modeButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     modeButtons.forEach(item => item.classList.remove("active"));
