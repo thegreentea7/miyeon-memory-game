@@ -375,7 +375,7 @@ h1{
   overflow:hidden;
 }
 
-.collection-window{grid-template-rows:auto auto auto 1fr auto}
+.collection-window{grid-template-rows:auto auto auto auto 1fr auto}
 .shop-window{grid-template-rows:auto auto 1fr}
 
 .modal-head{
@@ -1126,6 +1126,115 @@ h1{
   font-size:12px;
 }
 
+
+
+/* Achievements and collection gifts */
+.achievement-open{
+  min-width:150px;
+  padding:9px 14px;
+  border-radius:18px;
+  text-align:left;
+  background:linear-gradient(135deg,#fff6d8,#f3eeff);
+  color:#6c4c5b;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  transition:.18s;
+}
+.achievement-open:hover{transform:translateY(-1px);box-shadow:0 13px 28px rgba(113,74,92,.14)}
+.achievement-open b{display:block;font-size:14px}
+.achievement-open small{display:block;margin-top:3px;color:#9b7a88;font-size:11px}
+.achievement-window{
+  width:min(980px,96vw);
+  height:min(730px,90vh);
+  border-radius:30px;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,246,250,.96));
+  box-shadow:0 28px 90px rgba(50,33,42,.28);
+  border:1px solid rgba(255,255,255,.92);
+  display:grid;
+  grid-template-rows:auto auto 1fr;
+  gap:12px;
+  padding:18px;
+  overflow:hidden;
+}
+.achievement-summary{
+  padding:12px;
+  border-radius:20px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(255,255,255,.9);
+  color:#6b4a59;
+  font-weight:900;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.achievement-grid{
+  min-height:0;
+  overflow:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:10px;
+  align-content:start;
+  padding-right:4px;
+}
+.achievement-card{
+  padding:12px;
+  border-radius:20px;
+  background:rgba(255,255,255,.74);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  color:#6c4c5b;
+  position:relative;
+  overflow:hidden;
+}
+.achievement-card.unlocked{background:linear-gradient(135deg,#fff0b8,#ffe1eb)}
+.achievement-card.locked{opacity:.72;filter:saturate(.7)}
+.achievement-card b{display:block;font-size:14px;margin-bottom:5px}
+.achievement-card small{display:block;color:#9b7a88;font-size:12px;line-height:1.35}
+.achievement-card strong{display:block;margin-top:8px;color:#744b5e;font-size:12px}
+.collection-gifts{
+  padding:12px;
+  border-radius:20px;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(255,255,255,.9);
+  overflow:auto;
+}
+.collection-gifts-title{
+  color:#9b7a88;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+}
+.gift-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:8px;
+}
+.gift-card{
+  padding:10px;
+  border-radius:16px;
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 8px 16px rgba(113,74,92,.07);
+  color:#6c4c5b;
+}
+.gift-card.available{background:linear-gradient(135deg,#fff0b8,#ffe1eb);outline:2px solid rgba(255,209,102,.55)}
+.gift-card.claimed{opacity:.62}
+.gift-card b{display:block;font-size:13px;margin-bottom:3px}
+.gift-card small{display:block;color:#9b7a88;font-size:11px;line-height:1.3;margin-bottom:8px}
+.gift-card button{
+  width:100%;
+  padding:8px 10px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
+  color:#744b5e;
+  font-weight:900;
+}
+.gift-card button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:850px){.achievement-open small{display:none}.collection-gifts{max-height:170px}.gift-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
+
 </style>
 </head>
 
@@ -1143,6 +1252,10 @@ h1{
         <button class="shop-open" id="shopOpen">
           <b>🛍 Магазин очков</b>
           <small>паки с картами</small>
+        </button>
+        <button class="achievement-open" id="achievementsOpen">
+          <b>🏆 Достижения</b>
+          <small>ачивки и награды</small>
         </button>
       </div>
     </div>
@@ -1273,6 +1386,11 @@ h1{
       <div class="collection-bar"><i id="collectionProgressBar"></i></div>
     </div>
 
+    <div class="collection-gifts">
+      <div class="collection-gifts-title">🎁 Подарки за прогресс коллекции</div>
+      <div class="gift-grid" id="collectionGiftGrid"></div>
+    </div>
+
     <div class="collection-grid" id="collectionGrid"></div>
     <div class="collection-more-wrap">
       <button class="collection-more-btn hidden" id="collectionMoreBtn">Показать ещё</button>
@@ -1304,6 +1422,24 @@ h1{
       <div class="shop-subtitle">Улучшения на следующий уровень</div>
       <div class="upgrade-grid" id="upgradeGrid"></div>
     </div>
+  </div>
+</section>
+
+
+<section class="modal" id="achievementsModal">
+  <div class="achievement-window">
+    <div class="modal-head">
+      <div>
+        <h2>Достижения</h2>
+        <p>Фандомные ачивки за игру, паки, редкость и коллекцию ♡</p>
+      </div>
+      <button class="modal-close" id="achievementsClose">×</button>
+    </div>
+    <div class="achievement-summary">
+      <span id="achievementProgressText">0/25 открыто</span>
+      <span id="achievementRewardText">Награды выдаются автоматически</span>
+    </div>
+    <div class="achievement-grid" id="achievementGrid"></div>
   </div>
 </section>
 
@@ -1438,6 +1574,13 @@ const albumFilter = document.getElementById("albumFilter");
 const rarityFilter = document.getElementById("rarityFilter");
 const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
 const collectionMoreBtn = document.getElementById("collectionMoreBtn");
+const collectionGiftGrid = document.getElementById("collectionGiftGrid");
+const achievementsOpen = document.getElementById("achievementsOpen");
+const achievementsClose = document.getElementById("achievementsClose");
+const achievementsModal = document.getElementById("achievementsModal");
+const achievementGrid = document.getElementById("achievementGrid");
+const achievementProgressText = document.getElementById("achievementProgressText");
+const achievementRewardText = document.getElementById("achievementRewardText");
 
 const shopOpen = document.getElementById("shopOpen");
 const shopClose = document.getElementById("shopClose");
@@ -1500,6 +1643,12 @@ let lastOpenedPack = null;
 let currentOpenedPackContext = null;
 let packRevealInProgress = false;
 let achievements = JSON.parse(localStorage.getItem("miyeon_achievements") || "{}");
+let collectionRewards = JSON.parse(localStorage.getItem("miyeon_collection_rewards") || "{}");
+let gameStats = JSON.parse(localStorage.getItem("miyeon_game_stats") || "{}");
+let currentGameMistakes = 0;
+let maxComboThisGame = 0;
+let currentNoCommonGame = false;
+let noCommonRewardStreak = Number(gameStats.noCommonRewardStreak || 0);
 const PACK_RATES = {
   basic: { common:70, rare:25, ultra:5 },
   rare: { common:50, rare:40, ultra:10 },
@@ -1624,6 +1773,8 @@ function saveMetaProgress(){
   localStorage.setItem("miyeon_ultra_pity", String(ultraPity));
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
   localStorage.setItem("miyeon_achievements", JSON.stringify(achievements));
+  localStorage.setItem("miyeon_collection_rewards", JSON.stringify(collectionRewards));
+  localStorage.setItem("miyeon_game_stats", JSON.stringify(gameStats));
 }
 
 function unlockAchievement(key, title, reward = 0){
@@ -1634,27 +1785,283 @@ function unlockAchievement(key, title, reward = 0){
   showRarityReaction(`🏆 Достижение: ${title}${reward ? ` · +${reward} очков` : ""}`);
 }
 
-async function checkRarityAchievements(){
-  const all = await getAllImages();
-  const owned = all.filter(card => isCardCollected(card.src));
-  const rareCount = owned.filter(card => card.rarity === "rare").length;
-  const ultraCount = owned.filter(card => card.rarity === "ultra").length;
+const ACHIEVEMENT_DEFS = [
+  { key:"first_comeback", title:"Первый камбэк", desc:"Пройти первый уровень", reward:3 },
+  { key:"stage_beast", title:"Сценический зверь", desc:"Пройти 10 сложных уровней", reward:10 },
+  { key:"perfect_live", title:"Идеальный лайв", desc:"Пройти 3 уровня подряд без ошибок", reward:8 },
+  { key:"idol_sync", title:"Синхрон как у айдолов", desc:"Собрать 3 пары подряд", reward:5 },
+  { key:"dance_machine", title:"Танцевальная машина", desc:"Сделать 5 комбо за одну игру", reward:7 },
+  { key:"faster_comeback", title:"Быстрее камбэка", desc:"Пройти уровень быстрее 40 секунд", reward:6 },
+  { key:"first_photocard", title:"Первая фотокарта", desc:"Открыть первый пак", reward:3 },
+  { key:"collector_stan", title:"Коллекционер-стэн", desc:"Открыть 50 паков", reward:15 },
+  { key:"legendary_drop", title:"Легендарный дроп", desc:"Выбить 2 ultra в одном паке", reward:15 },
+  { key:"idol_gift", title:"Подарок от айдолов", desc:"Забрать бесплатный пак", reward:5 },
+  { key:"loyal_fan", title:"Верный фан", desc:"Зайти 3 дня подряд", reward:8 },
+  { key:"collection_start", title:"Начало коллекции", desc:"Собрать 10 карт", reward:5 },
+  { key:"bias_room_full", title:"Bias room заполнен", desc:"Собрать 100 карт", reward:15 },
+  { key:"rare_catch", title:"Редкий улов", desc:"Собрать 10 rare-карт", reward:10 },
+  { key:"ultra_hunter", title:"Охотник за ультрами", desc:"Собрать 5 ultra-карт", reward:15 },
+  { key:"miyeon_heart", title:"Миён в сердечке ♡", desc:"Собрать 20 карт Миён", reward:10 },
+  { key:"ot6_forever", title:"OT6 навсегда", desc:"Собрать хотя бы по 1 карте каждой участницы", reward:12 },
+  { key:"favorite_era", title:"Любимая эра", desc:"Полностью собрать I BURN", reward:15 },
+  { key:"eras_collection", title:"Эпохи в коллекции", desc:"Полностью собрать 3 альбома", reward:20 },
+  { key:"full_discography", title:"Полная дискография", desc:"Полностью собрать все альбомы", reward:30 },
+  { key:"comeback_investor", title:"Инвестор камбэка", desc:"Купить первое постоянное улучшение", reward:8 },
+  { key:"rng_producer", title:"Продюсер RNG", desc:"Использовать фокус на участницу или альбом", reward:5 },
+  { key:"generous_fan", title:"Щедрый фан", desc:"Выбрать 2 карты в награде", reward:8 },
+  { key:"cold_selection", title:"Холодный отбор", desc:"Не брать common-карты в 3 играх подряд", reward:12 },
+  { key:"lucky_hand", title:"Рука удачи", desc:"Выбить ultra без временных бустов", reward:15 }
+];
 
-  if(rareCount >= 10) unlockAchievement("rare_10", "10 rare-карт", 5);
-  if(rareCount >= 25) unlockAchievement("rare_25", "25 rare-карт", 10);
-  if(ultraCount >= 3) unlockAchievement("ultra_3", "3 ultra-карты", 8);
-  if(ultraCount >= 10) unlockAchievement("ultra_10", "10 ultra-карт", 15);
-  if(openedPacksCount >= 10) unlockAchievement("packs_10", "10 открытых паков", 8);
+function renderAchievements(){
+  if(!achievementGrid) return;
+  const unlockedCount = ACHIEVEMENT_DEFS.filter(item => achievements[item.key]).length;
+  achievementProgressText.textContent = `${unlockedCount}/${ACHIEVEMENT_DEFS.length} открыто`;
+  achievementRewardText.textContent = unlockedCount === ACHIEVEMENT_DEFS.length ? "Все ачивки собраны ♡" : "Награды начисляются один раз";
+  achievementGrid.innerHTML = "";
 
+  ACHIEVEMENT_DEFS.forEach(item => {
+    const opened = !!achievements[item.key];
+    const card = document.createElement("div");
+    card.className = `achievement-card ${opened ? "unlocked" : "locked"}`;
+    card.innerHTML = `
+      <b>${opened ? "🏆" : "🔒"} ${item.title}</b>
+      <small>${item.desc}</small>
+      <strong>${opened ? "Получено" : `Награда: +${item.reward} очк.`}</strong>
+    `;
+    achievementGrid.appendChild(card);
+  });
+}
+
+function openAchievements(){
+  renderAchievements();
+  achievementsModal.classList.add("show");
+}
+
+function closeAchievements(){
+  achievementsModal.classList.remove("show");
+}
+
+function saveGameStats(){
+  gameStats.noCommonRewardStreak = noCommonRewardStreak;
+  localStorage.setItem("miyeon_game_stats", JSON.stringify(gameStats));
+}
+
+function getOwnedCards(){
+  return (allImageCache || []).filter(card => isCardCollected(card.src));
+}
+
+function getAlbumCompletionCount(){
+  let count = 0;
   Object.entries(CARD_CONFIG?.albums || {}).forEach(([member, albums]) => {
     Object.entries(albums || {}).forEach(([album, ranges]) => {
-      const albumCards = expandRanges(ranges).map(number => makeCard(member, number, album));
-      if(albumCards.length && albumCards.every(card => isCardCollected(card.src))){
-        unlockAchievement(`album_${member}_${album}`, `собран альбом ${getMemberTitle(member)} · ${getAlbumTitle(album)}`, 10);
-      }
+      const cards = expandRanges(ranges).map(number => makeCard(member, number, album));
+      if(cards.length && cards.every(card => isCardCollected(card.src))) count++;
+    });
+  });
+  return count;
+}
+
+function isAlbumComplete(albumKey){
+  const cards = [];
+  Object.entries(CARD_CONFIG?.albums || {}).forEach(([member, albums]) => {
+    expandRanges(albums?.[albumKey] || []).forEach(number => cards.push(makeCard(member, number, albumKey)));
+  });
+  return cards.length > 0 && cards.every(card => isCardCollected(card.src));
+}
+
+async function checkAchievements(){
+  await getAllImages();
+  const owned = getOwnedCards();
+  const rareCount = owned.filter(card => card.rarity === "rare").length;
+  const ultraCount = owned.filter(card => card.rarity === "ultra").length;
+  const memberKeys = ["miyeon","minnie","soyeon","yuqi","shuhua","soojin"];
+
+  if((gameStats.levelsCompleted || 0) >= 1) unlockAchievement("first_comeback", "Первый камбэк", 3);
+  if((gameStats.hardCompleted || 0) >= 10) unlockAchievement("stage_beast", "Сценический зверь", 10);
+  if((gameStats.flawlessStreak || 0) >= 3) unlockAchievement("perfect_live", "Идеальный лайв", 8);
+  if((gameStats.bestCombo || 0) >= 3) unlockAchievement("idol_sync", "Синхрон как у айдолов", 5);
+  if((gameStats.bestCombo || 0) >= 5) unlockAchievement("dance_machine", "Танцевальная машина", 7);
+  if((gameStats.fastUnder40 || 0) >= 1) unlockAchievement("faster_comeback", "Быстрее камбэка", 6);
+  if(openedPacksCount >= 1) unlockAchievement("first_photocard", "Первая фотокарта", 3);
+  if(openedPacksCount >= 50) unlockAchievement("collector_stan", "Коллекционер-стэн", 15);
+  if((gameStats.twoUltraPack || 0) >= 1) unlockAchievement("legendary_drop", "Легендарный дроп", 15);
+  if((gameStats.freePackClaimed || 0) >= 1) unlockAchievement("idol_gift", "Подарок от айдолов", 5);
+  if((gameStats.loginStreak || 0) >= 3) unlockAchievement("loyal_fan", "Верный фан", 8);
+  if(owned.length >= 10) unlockAchievement("collection_start", "Начало коллекции", 5);
+  if(owned.length >= 100) unlockAchievement("bias_room_full", "Bias room заполнен", 15);
+  if(rareCount >= 10) unlockAchievement("rare_catch", "Редкий улов", 10);
+  if(ultraCount >= 5) unlockAchievement("ultra_hunter", "Охотник за ультрами", 15);
+  if(owned.filter(card => card.member === "miyeon").length >= 20) unlockAchievement("miyeon_heart", "Миён в сердечке ♡", 10);
+  if(memberKeys.every(member => owned.some(card => card.member === member))) unlockAchievement("ot6_forever", "OT6 навсегда", 12);
+  if(isAlbumComplete("iburn")) unlockAchievement("favorite_era", "Любимая эра", 15);
+  const completedAlbums = getAlbumCompletionCount();
+  if(completedAlbums >= 3) unlockAchievement("eras_collection", "Эпохи в коллекции", 20);
+  if(completedAlbums >= getTotalAlbumCount()) unlockAchievement("full_discography", "Полная дискография", 30);
+  if((gameStats.permanentUpgradesBought || 0) >= 1) unlockAchievement("comeback_investor", "Инвестор камбэка", 8);
+  if((gameStats.focusUsed || 0) >= 1) unlockAchievement("rng_producer", "Продюсер RNG", 5);
+  if((gameStats.extraRewardPick || 0) >= 1) unlockAchievement("generous_fan", "Щедрый фан", 8);
+  if(noCommonRewardStreak >= 3) unlockAchievement("cold_selection", "Холодный отбор", 12);
+  if((gameStats.ultraWithoutBoosts || 0) >= 1) unlockAchievement("lucky_hand", "Рука удачи", 15);
+  renderAchievements();
+}
+
+function getTotalAlbumCount(){
+  let count = 0;
+  Object.values(CARD_CONFIG?.albums || {}).forEach(albums => {
+    Object.entries(albums || {}).forEach(([album, ranges]) => {
+      if(expandRanges(ranges).length) count++;
+    });
+  });
+  return count || 1;
+}
+
+async function checkRarityAchievements(){
+  await checkAchievements();
+}
+
+function updateDailyLoginStreak(){
+  const today = getTodayKey();
+  const last = gameStats.lastLoginDate;
+  if(last === today) return;
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yKey = yesterday.toISOString().slice(0,10);
+  gameStats.loginStreak = last === yKey ? Number(gameStats.loginStreak || 0) + 1 : 1;
+  gameStats.lastLoginDate = today;
+  saveGameStats();
+}
+
+function recordFinishedLevel(){
+  gameStats.levelsCompleted = Number(gameStats.levelsCompleted || 0) + 1;
+  if(currentDifficulty === "hard") gameStats.hardCompleted = Number(gameStats.hardCompleted || 0) + 1;
+  if(currentGameMistakes === 0) gameStats.flawlessStreak = Number(gameStats.flawlessStreak || 0) + 1;
+  else gameStats.flawlessStreak = 0;
+  gameStats.bestCombo = Math.max(Number(gameStats.bestCombo || 0), maxComboThisGame);
+  if(seconds < 40) gameStats.fastUnder40 = Number(gameStats.fastUnder40 || 0) + 1;
+  saveGameStats();
+  checkAchievements();
+}
+
+function recordRewardPick(card, picksBeforeClick){
+  currentNoCommonGame = card.rarity !== "common";
+  if(card.rarity === "common") noCommonRewardStreak = 0;
+  else noCommonRewardStreak = Number(noCommonRewardStreak || 0) + 1;
+  if(picksBeforeClick > 1) gameStats.extraRewardPick = Number(gameStats.extraRewardPick || 0) + 1;
+  if(card.rarity === "ultra" && !preGameBoosts.combo && !preGameBoosts.member && !preGameBoosts.album && !activeBoosts.extraPick){
+    gameStats.ultraWithoutBoosts = Number(gameStats.ultraWithoutBoosts || 0) + 1;
+  }
+  saveGameStats();
+  checkAchievements();
+}
+
+function recordPackAchievements(cards, isFree = false){
+  if(isFree) gameStats.freePackClaimed = Number(gameStats.freePackClaimed || 0) + 1;
+  if(cards.filter(card => card.rarity === "ultra").length >= 2) gameStats.twoUltraPack = Number(gameStats.twoUltraPack || 0) + 1;
+  saveGameStats();
+  checkAchievements();
+}
+
+function recordPermanentUpgradeBought(){
+  gameStats.permanentUpgradesBought = Number(gameStats.permanentUpgradesBought || 0) + 1;
+  saveGameStats();
+  checkAchievements();
+}
+
+function recordFocusUsed(){
+  gameStats.focusUsed = Number(gameStats.focusUsed || 0) + 1;
+  saveGameStats();
+  checkAchievements();
+}
+
+const COLLECTION_REWARD_STEPS = [
+  { threshold:10, title:"10 карт", desc:"+3 очка за старт коллекции", type:"points", points:3 },
+  { threshold:25, title:"25 карт", desc:"бесплатный пак участницы", type:"memberPack" },
+  { threshold:50, title:"50 карт", desc:"1 карта rare или ultra этой участницы", type:"rareCard" },
+  { threshold:75, title:"75 карт", desc:"премиум-пак участницы", type:"premiumMemberPack" }
+];
+
+function getMemberOwnedCount(member){
+  return (allImageCache || []).filter(card => card.member === member && isCardCollected(card.src)).length;
+}
+
+function isCollectionRewardClaimed(member, threshold){
+  return collectionRewards?.[member]?.[threshold] === true;
+}
+
+function markCollectionRewardClaimed(member, threshold){
+  if(!collectionRewards[member]) collectionRewards[member] = {};
+  collectionRewards[member][threshold] = true;
+  saveMetaProgress();
+}
+
+async function renderCollectionRewards(){
+  if(!collectionGiftGrid) return;
+  await getAllImages();
+  const memberKeys = currentMemberFilter === "all" ? ["miyeon","minnie","soyeon","yuqi","shuhua","soojin"] : [currentMemberFilter].filter(member => member !== "group");
+  collectionGiftGrid.innerHTML = "";
+
+  if(!memberKeys.length){
+    collectionGiftGrid.innerHTML = `<div class="gift-card"><b>Юнитки</b><small>Подарки пока доступны только для участниц ♡</small></div>`;
+    return;
+  }
+
+  memberKeys.forEach(member => {
+    const owned = getMemberOwnedCount(member);
+    COLLECTION_REWARD_STEPS.forEach(step => {
+      const claimed = isCollectionRewardClaimed(member, step.threshold);
+      const available = owned >= step.threshold && !claimed;
+      const card = document.createElement("div");
+      card.className = `gift-card ${available ? "available" : ""} ${claimed ? "claimed" : ""}`;
+      card.innerHTML = `
+        <b>${getMemberTitle(member)} · ${step.title}</b>
+        <small>${owned}/${step.threshold} · ${step.desc}</small>
+        <button ${available ? "" : "disabled"}>${claimed ? "Получено" : (available ? "Забрать" : "Закрыто")}</button>
+      `;
+      card.querySelector("button").addEventListener("click", () => claimCollectionReward(member, step));
+      collectionGiftGrid.appendChild(card);
     });
   });
 }
+
+async function claimCollectionReward(member, step){
+  await getAllImages();
+  if(getMemberOwnedCount(member) < step.threshold || isCollectionRewardClaimed(member, step.threshold)) return;
+
+  markCollectionRewardClaimed(member, step.threshold);
+
+  if(step.type === "points"){
+    addShopPoints(step.points);
+    showRarityReaction(`🎁 ${getMemberTitle(member)}: подарок +${step.points} очка ♡`);
+  }
+
+  if(step.type === "memberPack"){
+    const pool = getMemberCards(member);
+    const cards = pickWeightedCards(pool, Math.min(3, pool.length), PACK_RATES.basic);
+    showPackResult(cards, { type:"collectionReward", member, step });
+    showRarityReaction(`🎁 Пак ${getMemberTitle(member)} за прогресс коллекции ♡`);
+  }
+
+  if(step.type === "rareCard"){
+    const pool = getMemberCards(member).filter(card => card.rarity !== "common");
+    const fallback = getMemberCards(member);
+    const card = pickWeightedCards(pool.length ? pool : fallback, 1, { common:0, rare:80, ultra:20 });
+    showPackResult(card, { type:"collectionReward", member, step });
+    showRarityReaction(`💎 Редкий подарок ${getMemberTitle(member)} ♡`);
+  }
+
+  if(step.type === "premiumMemberPack"){
+    const pool = getMemberCards(member);
+    const cards = pickWeightedCards(pool, Math.min(4, pool.length), PACK_RATES.premium);
+    showPackResult(cards, { type:"collectionReward", member, step });
+    showRarityReaction(`👑 Премиум-подарок ${getMemberTitle(member)} ♡`);
+  }
+
+  renderCollectionRewards();
+  checkAchievements();
+}
+
 
 function makeCard(member, number, album = "other"){
   const rarity = getCardRarity(member, number);
@@ -1841,6 +2248,7 @@ function buyPermanentUpgrade(key, cost){
   spendPoints(cost);
   permanentUpgrades[key] = true;
   savePermanentUpgrades();
+  recordPermanentUpgradeBought();
   renderUpgradeGrid();
   showToast("Постоянное улучшение куплено ⭐");
 }
@@ -2013,6 +2421,9 @@ async function buildDeck(cols, rows){
 async function startGame(cols = currentCols, rows = currentRows){
   currentCols = Number(cols);
   currentRows = Number(rows);
+  currentGameMistakes = 0;
+  maxComboThisGame = 0;
+  currentNoCommonGame = false;
   const activeCards = getBoardCardCount(currentCols, currentRows);
   totalPairs = activeCards / 2;
 
@@ -2102,6 +2513,7 @@ function flipCard(el){
       firstCard.classList.add("matched");
       secondCard.classList.add("matched");
       comboStreak++;
+      maxComboThisGame = Math.max(maxComboThisGame, comboStreak);
 
       if(preGameBoosts.combo && comboStreak % 2 === 0){
         points += 1;
@@ -2117,6 +2529,7 @@ function flipCard(el){
       if(matched === totalPairs) finishGame();
     }, 250);
   }else{
+    currentGameMistakes++;
     comboStreak = 0;
     setTimeout(() => {
       firstCard.classList.remove("open");
@@ -2272,8 +2685,10 @@ function renderRewardOptions(){
     `;
 
     btn.addEventListener("click", () => {
+      const picksBeforeClick = rewardPicksLeft;
       const already = isCardCollected(image.src);
       collectCard(image.src);
+      recordRewardPick(image, picksBeforeClick);
 
       if(hasUpgrade("collectorIntuition") && image.rarity === "common"){
         collectorIntuitionTicks = Math.min(5, collectorIntuitionTicks + 1);
@@ -2297,6 +2712,7 @@ function renderRewardOptions(){
         extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
         showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
         renderCollection();
+        renderCollectionRewards();
         return;
       }
 
@@ -2306,6 +2722,7 @@ function renderRewardOptions(){
       showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
       win.classList.remove("show");
       renderCollection();
+      renderCollectionRewards();
     });
 
     rewardOptions.appendChild(btn);
@@ -2315,6 +2732,7 @@ function renderRewardOptions(){
 function finishGame(){
   stopTimer();
   addPoints();
+  recordFinishedLevel();
   launchConfetti();
 
   setTimeout(() => {
@@ -2401,6 +2819,8 @@ async function renderCollection(){
     collectionGrid.innerHTML = `<div class="loading">По выбранным фильтрам пока нет карт ♡</div>`;
     collectionMoreBtn.classList.add("hidden");
   }
+
+  renderCollectionRewards();
 }
 
 function openCollection(){
@@ -2469,6 +2889,7 @@ function buyMemberFocus(member){
 
   spendPoints(10);
   preGameBoosts.member = member;
+  recordFocusUsed();
   updateBoostStatus();
   showToast(`🐰 Фокус: ${getMemberTitle(member)}`);
 }
@@ -2487,6 +2908,7 @@ function buyAlbumFocus(album){
 
   spendPoints(10);
   preGameBoosts.album = album;
+  recordFocusUsed();
   updateBoostStatus();
   showToast(`💿 Эра: ${getAlbumTitle(album)}`);
 }
@@ -2675,6 +3097,12 @@ function updateOpenAgainButton(){
   let canOpen = false;
   let label = "🔁 Открыть ещё";
 
+  if(currentOpenedPackContext.type === "collectionReward"){
+    openAgainBtn.textContent = "🔁 Открыть ещё";
+    openAgainBtn.disabled = true;
+    return;
+  }
+
   if(currentOpenedPackContext.type === "special"){
     const cost = currentOpenedPackContext.pack.cost;
     canOpen = points >= cost;
@@ -2705,6 +3133,7 @@ function claimOpenedPack({ close = true, silent = false } = {}){
   }
 
   checkRarityAchievements();
+  renderCollectionRewards();
   lastOpenedPack = null;
 
   if(close){
@@ -2803,6 +3232,7 @@ async function buySpecialPack(pack){
   showPackResult(cards, { type:"special", pack });
   openedPacksCount++;
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
+  recordPackAchievements(cards, false);
   updateUltraPity(cards, images);
 
   if((hasUpgrade("recycling") || hasUpgrade("smartRecycling")) && repeatCards.length){
@@ -2867,6 +3297,7 @@ async function buyPack(packKey, rateKey = "basic"){
 
   openedPacksCount++;
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
+  recordPackAchievements(cards, isFree);
   updateUltraPity(cards, images);
 
   if((hasUpgrade("recycling") || hasUpgrade("smartRecycling")) && repeatCount > 0){
@@ -3038,6 +3469,12 @@ collectionModal.addEventListener("click", event => {
   if(event.target === collectionModal) closeCollection();
 });
 
+achievementsOpen.addEventListener("click", openAchievements);
+achievementsClose.addEventListener("click", closeAchievements);
+achievementsModal.addEventListener("click", event => {
+  if(event.target === achievementsModal) closeAchievements();
+});
+
 shopOpen.addEventListener("click", openShop);
 shopClose.addEventListener("click", closeShop);
 shopModal.addEventListener("click", event => {
@@ -3110,9 +3547,12 @@ document.getElementById("rememberAllBtn").addEventListener("click", rememberAll)
 
 loadConfig()
   .then(() => {
+    updateDailyLoginStreak();
     updatePointsUI();
     updateBoostStatus();
     updateShapePanel();
+    checkAchievements();
+    renderAchievements();
     startGame(4,3);
   })
   .catch(error => {
