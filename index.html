@@ -694,6 +694,16 @@ h1{
 .booster-window h2{font-size:32px;color:#6b4a59;margin-bottom:8px}
 .booster-window p{color:#8c6d7b;line-height:1.45}
 
+.shop-subtitle{
+  margin:16px 0 8px;
+  text-align:left;
+  color:#9b7a88;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
 .booster-types{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -920,8 +930,8 @@ h1{
           <small>собранные карты</small>
         </button>
         <button class="booster-open" id="boosterOpen">
-          <b>🎰 Бустеры</b>
-          <small>открыть меню</small>
+          <b>🛍 Магазин очков</b>
+          <small>паки с картами</small>
         </button>
       </div>
     </div>
@@ -941,7 +951,7 @@ h1{
       <div class="stat"><span>Ходы</span><strong id="moves">0</strong></div>
       <div class="stat"><span>Пары</span><strong class="inline-counter"><span id="pairs">0</span>/<span id="totalPairs">6</span></strong></div>
       <div class="stat"><span>Время</span><strong id="time">00:00</strong></div>
-      <div class="stat"><span>Бустер</span><strong><span id="boosterPoints">0</span> очков</strong></div>
+      <div class="stat"><span>Очки</span><strong><span id="boosterPoints">0</span></strong></div>
     </div>
 
     <div class="block-title">Режим</div>
@@ -951,37 +961,28 @@ h1{
     </button>
     <button class="mode-btn" data-cols="4" data-rows="4" data-difficulty="medium">
       <b>Средний</b>
-      <small>4 карты, 1 новая, +2 балла</small>
+      <small>4 карты на выбор, +2 балла</small>
     </button>
     <button class="mode-btn" data-cols="6" data-rows="4" data-difficulty="hard">
       <b>Сложный</b>
-      <small>5 карт, 2 новые, +3 балла</small>
+      <small>5 карт на выбор, +3 балла</small>
     </button>
 
     <div class="shape-panel" id="shapePanel">
       <div class="block-title">Форма поля</div>
       <div class="shape-grid">
-        <button class="shape-btn" data-shape="moon">Луна</button>
         <button class="shape-btn active" data-shape="classic">Классика</button>
         <button class="shape-btn" data-shape="heart">Сердце</button>
         <button class="shape-btn" data-shape="g">G</button>
-        <button class="shape-btn" data-shape="crown">Корона</button>
-        <button class="shape-btn" data-shape="bunny">Кролик</button>
-        <button class="shape-btn" data-shape="flower">Цветок</button>
-        <button class="shape-btn" data-shape="bow">Бантик</button>
+        <button class="shape-btn" data-shape="moon">Луна</button>
         <button class="shape-btn" data-shape="snowflake">Снежинка</button>
-        <button class="shape-btn" data-shape="sun">Солнце</button>
       </div>
     </div>
 
     <div class="block-title">Приколы</div>
     <button class="fun-btn" id="hintBtn">
       <b>💡 Подсказка</b>
-      <small>на секунду покажет одну пару</small>
-    </button>
-    <button class="fun-btn" id="shuffleBtn">
-      <b>🌀 Перемешать</b>
-      <small>переставит закрытые карточки</small>
+      <small>покажет одну пару за 1 очко</small>
     </button>
     <button class="restart" id="restart">Новая игра</button>
   </aside>
@@ -1050,11 +1051,12 @@ h1{
   <div class="booster-window">
     <div class="booster-head">
       <div>
-        <h2>Бустеры</h2>
-        <p id="boosterText">Выбери тематический бустер. После выбора откроется рулетка и состав бустера ♡</p>
+        <h2>Магазин очков</h2>
+        <p id="boosterText">Выбери пак с картами, чтобы пополнить коллекцию ♡</p>
       </div>
       <button class="booster-x" id="boosterClose">×</button>
     </div>
+    <div class="shop-subtitle">Паки</div>
     <div class="booster-types" id="boosterTypes"></div>
   </div>
 </section>
@@ -1155,41 +1157,6 @@ const SHAPES = {
     "01111110"
   ],
 
-  crown: [
-    "100010001",
-    "110111011",
-    "111111111",
-    "111111111",
-    "111111111"
-  ],
-
-  bunny: [
-    "01000010",
-    "11100111",
-    "11111111",
-    "11111111",
-    "01111110",
-    "00111100"
-  ],
-
-  flower: [
-    "00111100",
-    "01111110",
-    "11111111",
-    "11111111",
-    "01111110",
-    "00111100"
-  ],
-
-  bow: [
-    "11000011",
-    "11100111",
-    "00111100",
-    "00111100",
-    "11100111",
-    "11000011"
-  ],
-
   snowflake: [
     "10011001",
     "01011010",
@@ -1197,103 +1164,7 @@ const SHAPES = {
     "00111100",
     "01011010",
     "10011001"
-  ],
-
-  sun: [
-    "10100101",
-    "01111110",
-    "11111111",
-    "11111111",
-    "01111110",
-    "10100101"
-  ]
-};
-
-
-let CARD_CONFIG = null;
-let allImageCache = null;
-const scanCache = {};
-
-const boardArea = document.getElementById("boardArea");
-const board = document.getElementById("board");
-const movesEl = document.getElementById("moves");
-const pairsEl = document.getElementById("pairs");
-const totalPairsEl = document.getElementById("totalPairs");
-const timeEl = document.getElementById("time");
-const boosterPointsEl = document.getElementById("boosterPoints");
-const restartBtn = document.getElementById("restart");
-const againBtn = document.getElementById("again");
-const win = document.getElementById("win");
-const winText = document.getElementById("winText");
-const collectorBadge = document.getElementById("collectorBadge");
-const rewardOptions = document.getElementById("rewardOptions");
-const toast = document.getElementById("toast");
-const modeButtons = document.querySelectorAll(".mode-btn");
-const shapePanel = document.getElementById("shapePanel");
-const shapeButtons = document.querySelectorAll(".shape-btn");
-
-const collectionOpen = document.getElementById("collectionOpen");
-const collectionClose = document.getElementById("collectionClose");
-const collectionModal = document.getElementById("collectionModal");
-const collectionGrid = document.getElementById("collectionGrid");
-const collectionMoreBtn = document.getElementById("collectionMoreBtn");
-const collectionProgressText = document.getElementById("collectionProgressText");
-const collectionProgressBar = document.getElementById("collectionProgressBar");
-const collectionProgressTitle = document.getElementById("collectionProgressTitle");
-const memberFilter = document.getElementById("memberFilter");
-const albumFilter = document.getElementById("albumFilter");
-const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
-
-const boosterOpen = document.getElementById("boosterOpen");
-const boosterModal = document.getElementById("boosterModal");
-const boosterClose = document.getElementById("boosterClose");
-const boosterPlayModal = document.getElementById("boosterPlayModal");
-const boosterPlayClose = document.getElementById("boosterPlayClose");
-const boosterBackBtn = document.getElementById("boosterBackBtn");
-const boosterStartBtn = document.getElementById("boosterStartBtn");
-const boosterTypes = document.getElementById("boosterTypes");
-const boosterText = document.getElementById("boosterText");
-const boosterPlayTitle = document.getElementById("boosterPlayTitle");
-const boosterPlayText = document.getElementById("boosterPlayText");
-const rouletteWrap = document.getElementById("rouletteWrap");
-const rouletteLine = document.getElementById("rouletteLine");
-const boosterRewards = document.getElementById("boosterRewards");
-
-let firstCard = null;
-let secondCard = null;
-let locked = false;
-let moves = 0;
-let matched = 0;
-let totalPairs = 6;
-let seconds = 0;
-let timerId = null;
-let currentCols = 4;
-let currentRows = 3;
-let currentDifficulty = "easy";
-let currentShape = "classic";
-let started = false;
-let currentLevelImages = [];
-let currentMemberFilter = "all";
-let currentAlbumFilter = "all";
-let ownedOnly = false;
-let collectionVisibleLimit = 48;
-let currentFilteredCollection = [];
-let currentBooster = "all";
-let currentRouletteLine = [];
-let boosterPoints = Number(localStorage.getItem("miyeon_booster_points") || "0");
-let boosterReadyNotified = boosterPoints >= 5;
-
-function showToast(text){
-  toast.textContent = text;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1800);
-}
-
-function shuffle(array){
-  const copy = [...array];
-  for(let i = copy.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+  ], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
 }
@@ -1727,7 +1598,7 @@ function updateBoosterUI(){
 
   if(boosterPoints >= 5 && !boosterReadyNotified){
     boosterReadyNotified = true;
-    showToast("Можно открыть 1 бустер 🎁");
+    showToast("Можно открыть 1 пак 🎁");
   }
 
   if(boosterPoints < 5){
@@ -1817,7 +1688,6 @@ function renderRewardOptions(){
       collectCard(image.src);
       showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
       win.classList.remove("show");
-      openCollection();
     });
 
     rewardOptions.appendChild(btn);
@@ -1832,7 +1702,7 @@ function finishGame(){
   setTimeout(() => {
     const rank = getCollectorRank();
     collectorBadge.textContent = rank;
-    winText.textContent = `Ты собрала ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. ${getRewardSettings().label}. Выбери одну карту для коллекции ♡`;
+    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${getRewardSettings().count} карты на выбор, выберите 1 карту для добавления её в коллекцию ♡`;
     renderRewardOptions();
     win.classList.add("show");
   }, 350);
@@ -1916,7 +1786,7 @@ async function renderBoosterTypes(){
     btn.innerHTML = `
       <b>🎰 ${booster.title}</b>
       <small>стоимость: ${getBoosterCost(key, booster)} баллов</small>
-      <span class="open-note">Открыть рулетку →</span>
+      <span class="open-note">Открыть пак →</span>
     `;
 
     btn.addEventListener("click", async () => {
@@ -1931,7 +1801,7 @@ async function renderBoosterTypes(){
 
 async function openBooster(){
   await renderBoosterTypes();
-  boosterText.textContent = "Выбери бустер. После выбора откроется рулетка и состав бустера ♡";
+  boosterText.textContent = "Выбери пак с картами, чтобы пополнить коллекцию ♡";
   boosterModal.classList.add("show");
 }
 
@@ -2069,6 +1939,11 @@ async function startSelectedBooster(){
 function hint(){
   if(locked) return;
 
+  if(boosterPoints < 1){
+    showToast("Для подсказки нужно 1 очко ♡");
+    return;
+  }
+
   const closed = [...document.querySelectorAll(".card:not(.open):not(.matched)")];
   const groups = {};
 
@@ -2085,6 +1960,7 @@ function hint(){
     return;
   }
 
+  spendBoosterPoints(1);
   locked = true;
   pair[0].classList.add("open");
   pair[1].classList.add("open");
@@ -2094,16 +1970,6 @@ function hint(){
     pair[1].classList.remove("open");
     locked = false;
   }, 900);
-}
-
-function shuffleClosed(){
-  const all = [...board.children].filter(el => el.classList.contains("card"));
-  const opened = all.filter(card => card.classList.contains("open") || card.classList.contains("matched"));
-  const closed = all.filter(card => !card.classList.contains("open") && !card.classList.contains("matched"));
-
-  board.innerHTML = "";
-  [...opened, ...shuffle(closed)].forEach(card => board.appendChild(card));
-  showToast("Закрытые карточки перемешаны 🌀");
 }
 
 function launchConfetti(){
@@ -2193,7 +2059,6 @@ shapeButtons.forEach(btn => {
 restartBtn.addEventListener("click", () => startGame());
 againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
-document.getElementById("shuffleBtn").addEventListener("click", shuffleClosed);
 loadConfig()
   .then(() => {
     updateBoosterUI();
