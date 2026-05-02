@@ -123,6 +123,7 @@ h1{
   display:grid;
   place-items:center;
   overflow:hidden;
+  padding:8px;
 }
 
 .board{
@@ -140,6 +141,7 @@ h1{
 .card{
   width:100%;
   height:100%;
+  aspect-ratio:3 / 4;
   position:relative;
   border:0;
   background:transparent;
@@ -985,6 +987,7 @@ h1{
 
 @media(max-width:520px){
   .app{padding:8px;gap:8px}
+  .board-area{padding:4px}
   h1{font-size:26px}
   .tag{display:none}
   .panel{grid-template-columns:repeat(2,1fr);max-height:42vh}
@@ -1858,11 +1861,12 @@ function fitBoard(){
   const visualCols = shapeData ? shapeData.cols : currentCols;
   const visualRows = shapeData ? shapeData.rows : currentRows;
   const gap = visualCols >= 6 ? 7 : 10;
-  const availableW = area.width;
-  const availableH = area.height;
+  const safetyPadding = 20;
+  const availableW = Math.max(0, area.width - safetyPadding);
+  const availableH = Math.max(0, area.height - safetyPadding);
   const cardWByWidth = (availableW - gap * (visualCols - 1)) / visualCols;
   const cardWByHeight = ((availableH - gap * (visualRows - 1)) / visualRows) * 3 / 4;
-  const cardW = Math.max(20, Math.min(cardWByWidth, cardWByHeight));
+  const cardW = Math.max(20, Math.floor(Math.min(cardWByWidth, cardWByHeight)));
 
   board.style.width = `${cardW * visualCols + gap * (visualCols - 1)}px`;
   board.style.height = `${(cardW * 4 / 3) * visualRows + gap * (visualRows - 1)}px`;
