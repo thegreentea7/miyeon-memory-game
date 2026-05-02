@@ -91,7 +91,7 @@ h1{
   flex-wrap:wrap;
 }
 
-.collection-open,.booster-open{
+.collection-open,.shop-open{
   min-width:150px;
   padding:9px 14px;
   border-radius:18px;
@@ -103,15 +103,15 @@ h1{
   transition:.18s;
 }
 
-.collection-open:hover,.booster-open:hover{
+.collection-open:hover,.shop-open:hover{
   transform:translateY(-1px);
   box-shadow:0 13px 28px rgba(113,74,92,.14);
 }
 
-.collection-open b,.booster-open b{display:block;font-size:14px}
-.collection-open small,.booster-open small{display:block;margin-top:3px;color:#9b7a88;font-size:11px}
+.collection-open b,.shop-open b{display:block;font-size:14px}
+.collection-open small,.shop-open small{display:block;margin-top:3px;color:#9b7a88;font-size:11px}
 
-.booster-open.ready{
+.shop-open.ready{
   background:linear-gradient(135deg,#fff0b8,#ffe1eb);
   outline:2px solid rgba(255,209,102,.75);
 }
@@ -258,48 +258,6 @@ h1{
   white-space:nowrap;
 }
 
-.shape-panel{
-  display:none;
-}
-
-.shape-panel.show{
-  display:block;
-  padding:2px 0;
-}
-
-.shape-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:7px;
-  margin-top:7px;
-}
-
-.shape-btn{
-  padding:9px 7px;
-  border-radius:16px;
-  background:rgba(255,255,255,.72);
-  color:#6c4c5b;
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:0 9px 20px rgba(113,74,92,.08);
-  font-size:12px;
-  font-weight:900;
-  transition:.18s;
-}
-
-.shape-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 13px 28px rgba(113,74,92,.14);
-}
-
-.shape-btn.active{
-  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
-  outline:2px solid rgba(247,182,205,.72);
-}
-
-.board.shaped{
-  grid-auto-flow:row;
-}
-
 .block-title{
   font-size:12px;
   color:#9b7a88;
@@ -325,7 +283,7 @@ h1{
   box-shadow:0 13px 28px rgba(113,74,92,.14);
 }
 
-.mode-btn.active{
+.mode-btn.active,.shape-btn.active{
   background:linear-gradient(135deg,#ffdbea,#ecf9ef);
   outline:2px solid rgba(247,182,205,.72);
 }
@@ -333,27 +291,37 @@ h1{
 .mode-btn b,.fun-btn b{display:block;font-size:14px}
 .mode-btn small,.fun-btn small{display:block;margin-top:3px;color:#9b7a88;font-size:11px}
 
+.shape-panel{display:none}
+.shape-panel.show{display:block;padding:2px 0}
+.shape-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:7px;
+}
+
+.shape-btn{
+  padding:9px 7px;
+  border-radius:16px;
+  background:rgba(255,255,255,.72);
+  color:#6c4c5b;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  font-size:12px;
+  font-weight:900;
+  transition:.18s;
+}
+
+.shape-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 13px 28px rgba(113,74,92,.14);
+}
+
 .restart{
   margin-top:auto;
   text-align:center;
   font-weight:900;
   background:linear-gradient(135deg,#ffe1eb,#ffffff);
-}
-
-
-
-.image-placeholder{
-  width:100%;
-  height:100%;
-  display:grid;
-  place-items:center;
-  text-align:center;
-  color:#b48b9e;
-  font-size:11px;
-  line-height:1.25;
-  padding:8px;
-  border-radius:12px;
-  background:linear-gradient(145deg,#fff,#fff4fa);
 }
 
 .toast{
@@ -377,7 +345,7 @@ h1{
   transform:translateX(-50%) translateY(0);
 }
 
-.collection-modal,.booster-modal,.win{
+.modal{
   position:fixed;
   inset:0;
   display:none;
@@ -390,9 +358,9 @@ h1{
   overflow:hidden;
 }
 
-.collection-modal.show,.booster-modal.show,.win.show{display:flex}
+.modal.show{display:flex}
 
-.collection-window{
+.collection-window,.shop-window{
   width:min(960px,96vw);
   height:min(720px,90vh);
   border-radius:30px;
@@ -400,23 +368,25 @@ h1{
   box-shadow:0 28px 90px rgba(50,33,42,.28);
   border:1px solid rgba(255,255,255,.92);
   display:grid;
-  grid-template-rows:auto auto auto 1fr;
   gap:12px;
   padding:18px;
   overflow:hidden;
 }
 
-.collection-head{
+.collection-window{grid-template-rows:auto auto auto 1fr auto}
+.shop-window{grid-template-rows:auto auto 1fr}
+
+.modal-head{
   display:flex;
   align-items:flex-start;
   justify-content:space-between;
   gap:12px;
 }
 
-.collection-head h2{font-size:32px;color:#6b4a59;line-height:1}
-.collection-head p{margin-top:5px;color:#9b7a88;font-size:13px}
+.modal-head h2{font-size:32px;color:#6b4a59;line-height:1}
+.modal-head p{margin-top:5px;color:#9b7a88;font-size:13px}
 
-.collection-close,.booster-x{
+.modal-close{
   width:42px;
   height:42px;
   border-radius:999px;
@@ -510,25 +480,6 @@ h1{
   background:linear-gradient(90deg,#f7adc7,#a8d9bd);
 }
 
-.collection-more-wrap{
-  display:flex;
-  justify-content:center;
-  padding:8px 0 2px;
-}
-
-.collection-more-btn{
-  border-radius:999px;
-  padding:10px 18px;
-  color:#744b5e;
-  font-weight:900;
-  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
-  box-shadow:0 9px 20px rgba(113,74,92,.08);
-}
-
-.collection-more-btn.hidden{
-  display:none;
-}
-
 .collection-grid{
   min-height:0;
   overflow:auto;
@@ -578,6 +529,128 @@ h1{
   font-size:16px;
 }
 
+.collection-more-wrap{
+  display:flex;
+  justify-content:center;
+  padding:8px 0 2px;
+}
+
+.collection-more-btn{
+  border-radius:999px;
+  padding:10px 18px;
+  color:#744b5e;
+  font-weight:900;
+  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+}
+
+.collection-more-btn.hidden{display:none}
+
+.shop-subtitle{
+  text-align:left;
+  color:#9b7a88;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.pack-grid{
+  min-height:0;
+  overflow:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:10px;
+  align-content:start;
+  padding-right:4px;
+}
+
+.pack-card{
+  padding:13px;
+  border-radius:20px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  text-align:left;
+  color:#6c4c5b;
+  transition:.18s;
+}
+
+.pack-card:hover{
+  transform:translateY(-1px);
+  box-shadow:0 13px 28px rgba(113,74,92,.14);
+}
+
+.pack-card b{display:block;font-size:15px}
+.pack-card small{display:block;margin-top:5px;color:#9b7a88;font-size:12px}
+.pack-card strong{display:block;margin-top:8px;color:#744b5e;font-size:13px}
+
+.simple-booster-result{
+  position:fixed;
+  left:50%;
+  top:22px;
+  transform:translateX(-50%) translateY(-20px);
+  opacity:0;
+  pointer-events:none;
+  z-index:35;
+  width:min(430px,92vw);
+  padding:14px;
+  border-radius:24px;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,246,250,.96));
+  border:1px solid rgba(255,255,255,.92);
+  box-shadow:0 22px 70px rgba(50,33,42,.25);
+  transition:.25s;
+}
+
+.simple-booster-result.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+  pointer-events:auto;
+}
+
+.simple-booster-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  color:#6b4a59;
+  margin-bottom:10px;
+}
+
+.simple-booster-head button{
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  background:#fff;
+  color:#8b6275;
+  font-size:18px;
+  font-weight:900;
+}
+
+.simple-booster-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.simple-booster-card{
+  position:relative;
+  border-radius:16px;
+  padding:4px;
+  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
+  box-shadow:0 10px 22px rgba(113,74,92,.12);
+  overflow:hidden;
+}
+
+.simple-booster-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  object-position:center;
+  border-radius:12px;
+  display:block;
+}
+
 .win-card{
   position:relative;
   z-index:3;
@@ -620,7 +693,7 @@ h1{
   max-width:min(520px,100%);
 }
 
-.reward-card,.booster-reward-card{
+.reward-card{
   border-radius:18px;
   padding:5px;
   background:linear-gradient(135deg,#ffdbea,#ecf9ef);
@@ -630,12 +703,12 @@ h1{
   position:relative;
 }
 
-.reward-card:hover,.booster-reward-card:hover{
+.reward-card:hover{
   transform:translateY(-3px);
   box-shadow:0 18px 34px rgba(113,74,92,.2);
 }
 
-.reward-card img,.booster-reward-card img{
+.reward-card img{
   width:100%;
   aspect-ratio:3/4;
   object-fit:cover;
@@ -672,177 +745,6 @@ h1{
   background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
 }
 
-.booster-window{
-  width:min(820px,96vw);
-  border-radius:30px;
-  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,246,250,.96));
-  box-shadow:0 28px 90px rgba(50,33,42,.28);
-  border:1px solid rgba(255,255,255,.92);
-  padding:22px;
-  overflow:hidden;
-  text-align:center;
-}
-
-.booster-head{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  align-items:flex-start;
-  text-align:left;
-}
-
-.booster-window h2{font-size:32px;color:#6b4a59;margin-bottom:8px}
-.booster-window p{color:#8c6d7b;line-height:1.45}
-
-.shop-subtitle{
-  margin:16px 0 8px;
-  text-align:left;
-  color:#9b7a88;
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-.booster-types{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin:16px 0 0;
-}
-
-.booster-type-card{
-  padding:12px;
-  border-radius:20px;
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:0 9px 20px rgba(113,74,92,.08);
-  text-align:left;
-  color:#6c4c5b;
-  transition:.18s;
-}
-
-.booster-type-card:hover{
-  transform:translateY(-1px);
-  box-shadow:0 13px 28px rgba(113,74,92,.14);
-}
-
-.booster-type-card b{display:block;font-size:15px}
-.booster-type-card small{display:block;margin-top:4px;color:#9b7a88;font-size:12px}
-
-.booster-type-card .open-note{
-  display:block;
-  margin-top:7px;
-  font-size:11px;
-  color:#b47a91;
-  font-weight:900;
-}
-
-.booster-play-window{
-  width:min(820px,96vw);
-  max-height:min(620px,92vh);
-  display:grid;
-  grid-template-rows:auto auto auto;
-  gap:12px;
-}
-
-.roulette-wrap{
-  position:relative;
-  margin:0;
-  padding:12px 0;
-  overflow:hidden;
-  border-radius:24px;
-  background:rgba(255,255,255,.7);
-  border:1px solid rgba(255,255,255,.9);
-}
-
-.roulette-line{
-  display:flex;
-  gap:10px;
-  width:max-content;
-  transform:translateX(0);
-}
-
-.roulette-line.spin{
-  animation:rouletteSpin 2.8s cubic-bezier(.12,.72,.12,1) forwards;
-}
-
-@keyframes rouletteSpin{
-  from{transform:translateX(0)}
-  to{transform:translateX(-58%)}
-}
-
-.roulette-card{
-  width:78px;
-  aspect-ratio:3/4;
-  flex:0 0 auto;
-  border-radius:14px;
-  padding:4px;
-  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
-  box-shadow:0 8px 18px rgba(113,74,92,.12);
-}
-
-.roulette-card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  border-radius:10px;
-  display:block;
-}
-
-.roulette-pointer{
-  position:absolute;
-  top:0;
-  bottom:0;
-  left:50%;
-  width:3px;
-  transform:translateX(-50%);
-  background:linear-gradient(180deg,transparent,#f49aba,transparent);
-  box-shadow:0 0 18px rgba(244,154,186,.8);
-}
-
-.booster-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:0;
-}
-
-.booster-action-btn{
-  border-radius:18px;
-  padding:12px;
-  color:#6c4c5b;
-  font-weight:900;
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:0 9px 20px rgba(113,74,92,.08);
-}
-
-.booster-action-btn.main{
-  background:linear-gradient(135deg,#fff0b8,#ffe1eb);
-}
-
-.booster-action-btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-
-
-
-
-
-.booster-rewards{
-  display:none;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin:0 auto;
-  max-width:420px;
-}
-
-.booster-rewards.show{display:grid}
-
 .confetti{
   position:absolute;
   width:10px;
@@ -868,6 +770,20 @@ h1{
   line-height:1.45;
 }
 
+.image-placeholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  color:#b48b9e;
+  font-size:11px;
+  line-height:1.25;
+  padding:8px;
+  border-radius:12px;
+  background:linear-gradient(145deg,#fff,#fff4fa);
+}
+
 @media(max-width:850px){
   .app{
     grid-template-columns:1fr;
@@ -891,7 +807,7 @@ h1{
   .shape-panel{grid-column:1 / -1}
   .shape-panel .block-title{display:block;margin:0 0 6px}
   .shape-grid{grid-template-columns:repeat(3,1fr)}
-  .mode-btn small,.fun-btn small,.collection-open small,.booster-open small{display:none}
+  .mode-btn small,.fun-btn small,.collection-open small,.shop-open small{display:none}
   .restart{margin-top:0}
   .collection-grid{grid-template-columns:repeat(auto-fill,66px);grid-auto-rows:88px;gap:10px}
   .collection-cell{width:66px;height:88px;border-radius:13px}
@@ -899,7 +815,6 @@ h1{
 }
 
 @media(max-width:650px){
-  .booster-types,.booster-actions{grid-template-columns:1fr}
   .collection-controls{grid-template-columns:1fr}
   .collection-owned-toggle{width:100%}
 }
@@ -929,7 +844,7 @@ h1{
           <b>📚 Коллекция</b>
           <small>собранные карты</small>
         </button>
-        <button class="booster-open" id="boosterOpen">
+        <button class="shop-open" id="shopOpen">
           <b>🛍 Магазин очков</b>
           <small>паки с картами</small>
         </button>
@@ -944,14 +859,14 @@ h1{
   <aside class="panel">
     <div class="panel-title">
       <b>Панель игры</b>
-      <span>режимы, счёт и большая коллекция карт</span>
+      <span>режимы, счёт и коллекция карт</span>
     </div>
 
     <div class="stats">
       <div class="stat"><span>Ходы</span><strong id="moves">0</strong></div>
       <div class="stat"><span>Пары</span><strong class="inline-counter"><span id="pairs">0</span>/<span id="totalPairs">6</span></strong></div>
       <div class="stat"><span>Время</span><strong id="time">00:00</strong></div>
-      <div class="stat"><span>Очки</span><strong><span id="boosterPoints">0</span></strong></div>
+      <div class="stat"><span>Очки</span><strong id="points">0</strong></div>
     </div>
 
     <div class="block-title">Режим</div>
@@ -984,18 +899,19 @@ h1{
       <b>💡 Подсказка</b>
       <small>покажет одну пару за 1 очко</small>
     </button>
+
     <button class="restart" id="restart">Новая игра</button>
   </aside>
 </main>
 
-<section class="collection-modal" id="collectionModal">
+<section class="modal" id="collectionModal">
   <div class="collection-window">
-    <div class="collection-head">
+    <div class="modal-head">
       <div>
         <h2>Коллекция</h2>
         <p>Открытые карты показываются, закрытые спрятаны под номерами ♡</p>
       </div>
-      <button class="collection-close" id="collectionClose">×</button>
+      <button class="modal-close" id="collectionClose">×</button>
     </div>
 
     <div class="collection-controls">
@@ -1009,6 +925,7 @@ h1{
           <option value="yuqi">Юци</option>
           <option value="shuhua">Шухуа</option>
           <option value="soojin">Суджин</option>
+          <option value="group">Юнитки и групповые</option>
         </select>
       </div>
 
@@ -1047,46 +964,22 @@ h1{
   </div>
 </section>
 
-<section class="booster-modal" id="boosterModal">
-  <div class="booster-window">
-    <div class="booster-head">
+<section class="modal" id="shopModal">
+  <div class="shop-window">
+    <div class="modal-head">
       <div>
         <h2>Магазин очков</h2>
-        <p id="boosterText">Выбери пак с картами, чтобы пополнить коллекцию ♡</p>
+        <p>Покупай паки с картами и пополняй коллекцию ♡</p>
       </div>
-      <button class="booster-x" id="boosterClose">×</button>
+      <button class="modal-close" id="shopClose">×</button>
     </div>
+
     <div class="shop-subtitle">Паки</div>
-    <div class="booster-types" id="boosterTypes"></div>
+    <div class="pack-grid" id="packGrid"></div>
   </div>
 </section>
 
-<section class="booster-modal" id="boosterPlayModal">
-  <div class="booster-window booster-play-window">
-    <div class="booster-head">
-      <div>
-        <h2 id="boosterPlayTitle">Бустер</h2>
-        <p id="boosterPlayText">Сначала нажми «Запустить», потом выбери одну из трёх карт ♡</p>
-      </div>
-      <button class="booster-x" id="boosterPlayClose">×</button>
-    </div>
-
-    <div class="roulette-wrap" id="rouletteWrap">
-      <div class="roulette-line" id="rouletteLine"></div>
-      <div class="roulette-pointer"></div>
-    </div>
-
-    <div class="booster-rewards" id="boosterRewards"></div>
-
-    <div class="booster-actions">
-      <button class="booster-action-btn" id="boosterBackBtn">← Назад к бустерам</button>
-      <button class="booster-action-btn main" id="boosterStartBtn">🎰 Запустить за 5 баллов</button>
-    </div>
-
-  </div>
-</section>
-
-<section class="win" id="win">
+<section class="modal" id="win">
   <div class="win-card">
     <div class="win-emoji">🎁</div>
     <h2>Уровень пройден!</h2>
@@ -1099,18 +992,26 @@ h1{
 
 <div class="toast" id="toast">♡</div>
 
+<div class="simple-booster-result" id="packResult">
+  <div class="simple-booster-head">
+    <b>🎁 Пак открыт</b>
+    <button id="packResultClose">×</button>
+  </div>
+  <div class="simple-booster-cards" id="packResultCards"></div>
+</div>
+
 <script>
 const CONFIG_PATH = "cards_config.json";
 
 const MEMBERS = {
-  all: { title: "Все участницы", icon: "💿", folder: null },
-  miyeon: { title: "Миён", icon: "🐰", folder: "miyeon" },
-  minnie: { title: "Минни", icon: "🐱", folder: "minnie" },
-  soyeon: { title: "Соён", icon: "🦁", folder: "soyeon" },
-  yuqi: { title: "Юци", icon: "🐶", folder: "yuqi" },
-  shuhua: { title: "Шухуа", icon: "🦋", folder: "shuhua" },
-  soojin: { title: "Суджин", icon: "💃", folder: "soojin" },
-  group: { title: "Юнитки и групповые", icon: "👥", folder: "group" }
+  all: { title: "Все участницы" },
+  miyeon: { title: "Миён" },
+  minnie: { title: "Минни" },
+  soyeon: { title: "Соён" },
+  yuqi: { title: "Юци" },
+  shuhua: { title: "Шухуа" },
+  soojin: { title: "Суджин" },
+  group: { title: "Юнитки и групповые" }
 };
 
 const ALBUMS = {
@@ -1129,7 +1030,6 @@ const ALBUMS = {
 
 const SHAPES = {
   classic: null,
-
   heart: [
     "01100110",
     "11111111",
@@ -1138,16 +1038,6 @@ const SHAPES = {
     "00111100",
     "00011000"
   ],
-
-  moon: [
-    "00111100",
-    "01111110",
-    "11111000",
-    "11111000",
-    "01111110",
-    "00111100"
-  ],
-
   g: [
     "01111110",
     "10000000",
@@ -1156,7 +1046,14 @@ const SHAPES = {
     "10000010",
     "01111110"
   ],
-
+  moon: [
+    "00111100",
+    "01111110",
+    "11111000",
+    "11111000",
+    "01111110",
+    "00111100"
+  ],
   snowflake: [
     "10011001",
     "01011010",
@@ -1164,47 +1061,71 @@ const SHAPES = {
     "00111100",
     "01011010",
     "10011001"
-  ], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
+  ]
+};
 
-function formatTime(value){
-  const min = String(Math.floor(value / 60)).padStart(2,"0");
-  const sec = String(value % 60).padStart(2,"0");
-  return `${min}:${sec}`;
-}
+let CARD_CONFIG = null;
+let allImageCache = null;
 
-function checkImage(src){
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(src);
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
-}
+const boardArea = document.getElementById("boardArea");
+const board = document.getElementById("board");
+const movesEl = document.getElementById("moves");
+const pairsEl = document.getElementById("pairs");
+const totalPairsEl = document.getElementById("totalPairs");
+const timeEl = document.getElementById("time");
+const pointsEl = document.getElementById("points");
+const restartBtn = document.getElementById("restart");
+const againBtn = document.getElementById("again");
+const win = document.getElementById("win");
+const winText = document.getElementById("winText");
+const collectorBadge = document.getElementById("collectorBadge");
+const rewardOptions = document.getElementById("rewardOptions");
+const toast = document.getElementById("toast");
+const modeButtons = document.querySelectorAll(".mode-btn");
+const shapePanel = document.getElementById("shapePanel");
+const shapeButtons = document.querySelectorAll(".shape-btn");
 
-function preloadImage(src){
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = src;
-  });
-}
+const collectionOpen = document.getElementById("collectionOpen");
+const collectionClose = document.getElementById("collectionClose");
+const collectionModal = document.getElementById("collectionModal");
+const collectionGrid = document.getElementById("collectionGrid");
+const collectionProgressText = document.getElementById("collectionProgressText");
+const collectionProgressBar = document.getElementById("collectionProgressBar");
+const collectionProgressTitle = document.getElementById("collectionProgressTitle");
+const memberFilter = document.getElementById("memberFilter");
+const albumFilter = document.getElementById("albumFilter");
+const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
+const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 
-async function filterLoadableCards(cards){
-  const checks = await Promise.all(cards.map(async card => {
-    const ok = await preloadImage(card.src);
-    return ok ? card : null;
-  }));
+const shopOpen = document.getElementById("shopOpen");
+const shopClose = document.getElementById("shopClose");
+const shopModal = document.getElementById("shopModal");
+const packGrid = document.getElementById("packGrid");
+const packResult = document.getElementById("packResult");
+const packResultCards = document.getElementById("packResultCards");
+const packResultClose = document.getElementById("packResultClose");
 
-  return checks.filter(Boolean);
-}
-
-function imageErrorHTML(src){
-  return `<div class="image-placeholder">Не найдено<br>${src.split("/").slice(-2).join("/")}</div>`;
-}
+let firstCard = null;
+let secondCard = null;
+let locked = false;
+let moves = 0;
+let matched = 0;
+let totalPairs = 6;
+let seconds = 0;
+let timerId = null;
+let currentCols = 4;
+let currentRows = 3;
+let currentDifficulty = "easy";
+let currentShape = "classic";
+let started = false;
+let currentLevelImages = [];
+let currentMemberFilter = "all";
+let currentAlbumFilter = "all";
+let ownedOnly = false;
+let collectionVisibleLimit = 48;
+let currentFilteredCollection = [];
+let points = Number(localStorage.getItem("miyeon_shop_points") || "0");
+let packReadyNotified = points >= 5;
 
 async function loadConfig(){
   if(CARD_CONFIG) return CARD_CONFIG;
@@ -1219,14 +1140,23 @@ async function loadConfig(){
   return CARD_CONFIG;
 }
 
+function splitRangeItems(ranges){
+  const items = [];
+
+  (ranges || []).forEach(item => {
+    String(item).split(",").forEach(part => {
+      const value = part.trim();
+      if(value) items.push(value);
+    });
+  });
+
+  return items;
+}
+
 function expandRanges(ranges){
   const result = [];
 
-  (ranges || []).forEach(item => {
-    const value = String(item).trim();
-
-    if(!value) return;
-
+  splitRangeItems(ranges).forEach(value => {
     if(value.includes("-")){
       const [startRaw, endRaw] = value.split("-");
       const start = Number(startRaw);
@@ -1304,25 +1234,18 @@ function getMemberCards(member){
   return [...unique.values()];
 }
 
-async function resolveBoosterEntry(entry){
+async function resolvePackEntry(entry){
   const allCards = await getAllImages();
 
-  if(entry.all_cards && !entry.member){
-    return allCards;
-  }
-
-  if(entry.member && entry.all_cards){
-    return getMemberCards(entry.member);
-  }
+  if(entry.all_cards && !entry.member) return allCards;
+  if(entry.member && entry.all_cards) return getMemberCards(entry.member);
 
   if(entry.all_members && entry.album){
     const members = Object.keys(CARD_CONFIG.albums || {}).filter(member => member !== "group");
     return members.flatMap(member => getAlbumCards(member, entry.album));
   }
 
-  if(entry.member && entry.album){
-    return getAlbumCards(entry.member, entry.album);
-  }
+  if(entry.member && entry.album) return getAlbumCards(entry.member, entry.album);
 
   if(entry.member && entry.cards){
     return expandRanges(entry.cards).map(number => makeCard(entry.member, number, "other"));
@@ -1331,13 +1254,13 @@ async function resolveBoosterEntry(entry){
   return [];
 }
 
-async function getBoosterImages(){
+async function getPackImages(packKey){
   const config = await loadConfig();
-  const booster = config.boosters?.[currentBooster];
+  const pack = config.boosters?.[packKey];
 
-  if(!booster) return [];
+  if(!pack) return [];
 
-  const chunks = await Promise.all((booster.cards || []).map(resolveBoosterEntry));
+  const chunks = await Promise.all((pack.cards || []).map(resolvePackEntry));
   const unique = new Map();
 
   chunks.flat().forEach(card => {
@@ -1345,6 +1268,11 @@ async function getBoosterImages(){
   });
 
   return [...unique.values()];
+}
+
+function getPackCost(packKey, pack){
+  if(packKey === "group") return 10;
+  return pack?.cost || 5;
 }
 
 function getCollectionKey(src){
@@ -1359,6 +1287,30 @@ function collectCard(src){
   localStorage.setItem(getCollectionKey(src), "1");
 }
 
+function imageErrorHTML(src){
+  return `<div class="image-placeholder">Не найдено<br>${src.split("/").slice(-2).join("/")}</div>`;
+}
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
+}
+
+function shuffle(array){
+  const copy = [...array];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function formatTime(value){
+  const min = String(Math.floor(value / 60)).padStart(2,"0");
+  const sec = String(value % 60).padStart(2,"0");
+  return `${min}:${sec}`;
+}
 
 function getShapeCells(shapeKey){
   const shape = SHAPES[shapeKey];
@@ -1440,12 +1392,6 @@ async function buildDeck(cols, rows){
   const activeCards = getBoardCardCount(cols, rows);
   const needed = activeCards / 2;
   const availableImages = await getAllImages();
-
-  if(availableImages.length < needed){
-    currentLevelImages = [];
-    return { error:true, available:availableImages.length, needed };
-  }
-
   const selected = shuffle(availableImages).slice(0, needed);
 
   if(selected.length < needed){
@@ -1495,7 +1441,6 @@ async function startGame(cols = currentCols, rows = currentRows){
   board.style.setProperty("--cols", visualCols);
   board.style.setProperty("--rows", visualRows);
   board.style.setProperty("--gap", visualCols >= 6 ? "7px" : "10px");
-  board.classList.toggle("shaped", !!shapeData);
 
   if(deckResult.error){
     board.innerHTML = `<div class="loading">В коллекции найдено ${deckResult.available} изображений.<br>Для режима нужно минимум ${deckResult.needed} ♡</div>`;
@@ -1504,7 +1449,6 @@ async function startGame(cols = currentCols, rows = currentRows){
   }
 
   board.innerHTML = "";
-
   const shapeCells = shapeData ? shapeData.cells : null;
 
   deckResult.deck.forEach((card, index) => {
@@ -1582,52 +1526,42 @@ function getDifficultyPoints(){
   return 1;
 }
 
-function getBoosterCost(boosterKey, booster){
-  if(boosterKey === "group") return 10;
-  return booster?.cost || 5;
-}
+function updatePointsUI(){
+  pointsEl.textContent = points;
+  shopOpen.classList.toggle("ready", points >= 5);
 
-function updateBoosterUI(){
-  boosterPointsEl.textContent = boosterPoints;
-  boosterOpen.classList.toggle("ready", boosterPoints >= 5);
-
-  if(boosterStartBtn){
-    const currentCost = getBoosterCost(currentBooster, CARD_CONFIG?.boosters?.[currentBooster]);
-    boosterStartBtn.disabled = boosterPoints < currentCost;
-  }
-
-  if(boosterPoints >= 5 && !boosterReadyNotified){
-    boosterReadyNotified = true;
+  if(points >= 5 && !packReadyNotified){
+    packReadyNotified = true;
     showToast("Можно открыть 1 пак 🎁");
   }
 
-  if(boosterPoints < 5){
-    boosterReadyNotified = false;
+  if(points < 5){
+    packReadyNotified = false;
   }
 }
 
-function addBoosterPoints(){
-  boosterPoints += getDifficultyPoints();
-  localStorage.setItem("miyeon_booster_points", String(boosterPoints));
-  updateBoosterUI();
+function addPoints(){
+  points += getDifficultyPoints();
+  localStorage.setItem("miyeon_shop_points", String(points));
+  updatePointsUI();
 }
 
-function spendBoosterPoints(cost = 5){
-  boosterPoints = Math.max(0, boosterPoints - cost);
-  localStorage.setItem("miyeon_booster_points", String(boosterPoints));
-  updateBoosterUI();
+function spendPoints(cost){
+  points = Math.max(0, points - cost);
+  localStorage.setItem("miyeon_shop_points", String(points));
+  updatePointsUI();
 }
 
 function getRewardSettings(){
   if(currentDifficulty === "medium"){
-    return { count:4, guaranteedNew:1, label:"Средний режим: минимум 1 новая карта, если она есть" };
+    return { count:4, label:"Средний режим" };
   }
 
   if(currentDifficulty === "hard"){
-    return { count:5, guaranteedNew:2, label:"Сложный режим: минимум 2 новые карты, если они есть" };
+    return { count:5, label:"Сложный режим" };
   }
 
-  return { count:3, guaranteedNew:0, label:"Лёгкий режим: 3 карты на выбор" };
+  return { count:3, label:"Лёгкий режим" };
 }
 
 function getRewardCards(){
@@ -1642,24 +1576,7 @@ function getRewardCards(){
     }
   });
 
-  const newCards = shuffle(unique.filter(image => !isCardCollected(image.src)));
-  const oldCards = shuffle(unique.filter(image => isCardCollected(image.src)));
-  const reward = [];
-  const used = new Set();
-
-  function addCard(image){
-    if(!image || used.has(image.src)) return;
-    used.add(image.src);
-    reward.push(image);
-  }
-
-  newCards.slice(0, settings.guaranteedNew).forEach(addCard);
-
-  shuffle([...newCards.slice(settings.guaranteedNew), ...oldCards]).forEach(image => {
-    if(reward.length < settings.count) addCard(image);
-  });
-
-  return reward.slice(0, settings.count);
+  return shuffle(unique).slice(0, settings.count);
 }
 
 function getCollectorRank(){
@@ -1696,13 +1613,14 @@ function renderRewardOptions(){
 
 function finishGame(){
   stopTimer();
-  addBoosterPoints();
+  addPoints();
   launchConfetti();
 
   setTimeout(() => {
     const rank = getCollectorRank();
+    const settings = getRewardSettings();
     collectorBadge.textContent = rank;
-    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${getRewardSettings().count} карты на выбор, выберите 1 карту для добавления её в коллекцию ♡`;
+    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${settings.count} карты на выбор, выберите 1 карту для добавления её в коллекцию ♡`;
     renderRewardOptions();
     win.classList.add("show");
   }, 350);
@@ -1775,171 +1693,86 @@ function closeCollection(){
   collectionModal.classList.remove("show");
 }
 
-async function renderBoosterTypes(){
+async function renderPackGrid(){
   const config = await loadConfig();
-  boosterTypes.innerHTML = "";
+  packGrid.innerHTML = "";
 
-  Object.entries(config.boosters || {}).forEach(([key, booster]) => {
+  Object.entries(config.boosters || {}).forEach(([key, pack]) => {
+    const cost = getPackCost(key, pack);
     const btn = document.createElement("button");
-    btn.className = "booster-type-card";
-    btn.dataset.booster = key;
+    btn.className = "pack-card";
     btn.innerHTML = `
-      <b>🎰 ${booster.title}</b>
-      <small>стоимость: ${getBoosterCost(key, booster)} баллов</small>
-      <span class="open-note">Открыть пак →</span>
+      <b>🎁 ${pack.title}</b>
+      <small>3 случайные карты, возможны повторки</small>
+      <strong>${cost} очков</strong>
     `;
 
-    btn.addEventListener("click", async () => {
-      currentBooster = key;
-      boosterModal.classList.remove("show");
-      await openBoosterPlay();
-    });
+    btn.addEventListener("click", () => buyPack(key));
 
-    boosterTypes.appendChild(btn);
+    packGrid.appendChild(btn);
   });
 }
 
-async function openBooster(){
-  await renderBoosterTypes();
-  boosterText.textContent = "Выбери пак с картами, чтобы пополнить коллекцию ♡";
-  boosterModal.classList.add("show");
+async function openShop(){
+  await renderPackGrid();
+  shopModal.classList.add("show");
 }
 
-function renderStaticRoulette(images){
-  rouletteLine.classList.remove("spin");
-  rouletteLine.innerHTML = "";
-  currentRouletteLine = shuffle([...images, ...images]).slice(0, 18);
+function closeShop(){
+  shopModal.classList.remove("show");
+}
 
-  currentRouletteLine.forEach(image => {
+function showPackResult(cards){
+  packResultCards.innerHTML = "";
+
+  cards.forEach(card => {
+    const already = isCardCollected(card.src);
+    collectCard(card.src);
+
     const item = document.createElement("div");
-    item.className = "roulette-card";
-    item.innerHTML = `<img src="${image.src}" alt="roulette card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">`;
-    rouletteLine.appendChild(item);
+    item.className = "simple-booster-card";
+    item.innerHTML = `
+      <span class="reward-badge ${already ? "old" : ""}">${already ? "Уже есть" : "NEW"}</span>
+      <img src="${card.src}" alt="pack card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+    `;
+    packResultCards.appendChild(item);
   });
+
+  packResult.classList.add("show");
+  setTimeout(() => packResult.classList.remove("show"), 4200);
 }
 
-async function openBoosterPlay(){
+async function buyPack(packKey){
   const config = await loadConfig();
-  const booster = config.boosters[currentBooster];
-  const images = await getBoosterImages();
+  const pack = config.boosters?.[packKey];
+  const cost = getPackCost(packKey, pack);
 
-  boosterPlayTitle.textContent = `🎰 ${booster.title}`;
-  boosterStartBtn.textContent = `🎰 Запустить за ${getBoosterCost(currentBooster, booster)} баллов`;
-  boosterPlayText.textContent = `В бустере ${images.length} карт. Рулетка уже заполнена, нажми «Запустить» ♡`;
-
-  boosterRewards.classList.remove("show");
-  boosterRewards.innerHTML = "";
-  rouletteLine.classList.remove("spin");
-  rouletteLine.innerHTML = "";
-
-  const rouletteImages = shuffle(images).slice(0, Math.min(images.length, 18));
-
-  if(rouletteImages.length >= 3){
-    renderStaticRoulette(rouletteImages);
-  }else{
-    rouletteLine.innerHTML = `<div style="padding:20px;color:#9b7a88;">В этом бустере пока мало карт ♡</div>`;
-  }
-
-  boosterPlayModal.classList.add("show");
-  updateBoosterUI();
-}
-
-function renderBoosterRewards(){
-  boosterRewards.innerHTML = "";
-  boosterRewards.classList.add("show");
-
-  const visibleCards = [...rouletteLine.querySelectorAll(".roulette-card")];
-  const wrapRect = rouletteLine.parentElement.getBoundingClientRect();
-  const pointerX = wrapRect.left + wrapRect.width / 2;
-
-  let centerIndex = 0;
-  let bestDistance = Infinity;
-
-  visibleCards.forEach((card, index) => {
-    const rect = card.getBoundingClientRect();
-    const cardCenter = rect.left + rect.width / 2;
-    const distance = Math.abs(cardCenter - pointerX);
-
-    if(distance < bestDistance){
-      bestDistance = distance;
-      centerIndex = index;
-    }
-  });
-
-  let indexes = [centerIndex - 1, centerIndex, centerIndex + 1].filter(index => index >= 0 && index < currentRouletteLine.length);
-
-  while(indexes.length < 3 && indexes[0] > 0){
-    indexes.unshift(indexes[0] - 1);
-  }
-
-  while(indexes.length < 3 && indexes[indexes.length - 1] < currentRouletteLine.length - 1){
-    indexes.push(indexes[indexes.length - 1] + 1);
-  }
-
-  const options = indexes.slice(0, 3).map(index => currentRouletteLine[index]);
-  let newCount = 0;
-
-  options.forEach(image => {
-    const already = isCardCollected(image.src);
-    if(!already) newCount++;
-    collectCard(image.src);
-  });
-
-  launchConfetti();
-
-  showToast(
-    newCount
-      ? `+${newCount} новых карт добавлено 💌`
-      : "Все карты уже были в коллекции ♡"
-  );
-
-  boosterPlayText.textContent = "Три карты из бустера добавлены в коллекцию ♡";
-
-  setTimeout(() => {
-    boosterPlayModal.classList.remove("show");
-    openCollection();
-  }, 700);
-}
-
-async function startSelectedBooster(){
-  const config = await loadConfig();
-  const booster = config.boosters[currentBooster];
-  const cost = getBoosterCost(currentBooster, booster);
-
-  if(boosterPoints < cost){
-    showToast(`Для этого бустера нужно ${cost} баллов ♡`);
+  if(points < cost){
+    showToast(`Для этого пака нужно ${cost} очков ♡`);
     return;
   }
 
-  const images = await getBoosterImages();
+  const images = await getPackImages(packKey);
 
   if(images.length < 3){
-    showToast("В этом бустере нужно минимум 3 карты ♡");
+    showToast("В этом паке пока меньше 3 карт ♡");
     return;
   }
 
-  spendBoosterPoints(cost);
-  boosterRewards.classList.remove("show");
-  boosterPlayText.textContent = `🎰 ${booster.title} крутится...`;
+  spendPoints(cost);
 
-  if(!currentRouletteLine.length){
-    renderStaticRoulette(images);
-  }
+  const cards = shuffle(images).slice(0, 3);
+  const newCount = cards.filter(card => !isCardCollected(card.src)).length;
 
-  rouletteLine.classList.remove("spin");
-  void rouletteLine.offsetWidth;
-  rouletteLine.classList.add("spin");
-
-  setTimeout(() => {
-    boosterPlayText.textContent = "Рулетка остановилась. Три карты добавляются в коллекцию ♡";
-    renderBoosterRewards();
-  }, 2900);
+  showPackResult(cards);
+  launchConfetti();
+  showToast(newCount ? `+${newCount} новых карт добавлено 💌` : "Все карты уже были в коллекции ♡");
 }
 
 function hint(){
   if(locked) return;
 
-  if(boosterPoints < 1){
+  if(points < 1){
     showToast("Для подсказки нужно 1 очко ♡");
     return;
   }
@@ -1960,7 +1793,7 @@ function hint(){
     return;
   }
 
-  spendBoosterPoints(1);
+  spendPoints(1);
   locked = true;
   pair[0].classList.add("open");
   pair[1].classList.add("open");
@@ -2018,23 +1851,14 @@ collectionModal.addEventListener("click", event => {
   if(event.target === collectionModal) closeCollection();
 });
 
-boosterOpen.addEventListener("click", openBooster);
-boosterClose.addEventListener("click", () => boosterModal.classList.remove("show"));
-boosterModal.addEventListener("click", event => {
-  if(event.target === boosterModal) boosterModal.classList.remove("show");
+shopOpen.addEventListener("click", openShop);
+shopClose.addEventListener("click", closeShop);
+shopModal.addEventListener("click", event => {
+  if(event.target === shopModal) closeShop();
 });
 
-boosterPlayClose.addEventListener("click", () => boosterPlayModal.classList.remove("show"));
-boosterPlayModal.addEventListener("click", event => {
-  if(event.target === boosterPlayModal) boosterPlayModal.classList.remove("show");
-});
+packResultClose.addEventListener("click", () => packResult.classList.remove("show"));
 
-boosterBackBtn.addEventListener("click", () => {
-  boosterPlayModal.classList.remove("show");
-  openBooster();
-});
-
-boosterStartBtn.addEventListener("click", startSelectedBooster);
 modeButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     modeButtons.forEach(item => item.classList.remove("active"));
@@ -2059,9 +1883,10 @@ shapeButtons.forEach(btn => {
 restartBtn.addEventListener("click", () => startGame());
 againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
+
 loadConfig()
   .then(() => {
-    updateBoosterUI();
+    updatePointsUI();
     updateShapePanel();
     startGame(4,3);
   })
