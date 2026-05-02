@@ -1,229 +1,84 @@
 {
   "albums": {
-    "miyeon": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
+    "miyeon": { 
+      "iam": [ "9-12"],
+      "latata": ["22-23"],
+      "imade": ["13-21"],
+      "dumdi_dumdi": ["43-51"],
+      "uh-oh": ["31-36"],
+      "hann": ["24-26"],
+      "itrust": ["7","37-42"],
+      "oh_my_god": ["8"],
+      "iburn": ["1-6","52-75"],
+      "other": ["27-30"]
     },
     "minnie": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
+      "iam": [ "9-12"],
+      "latata": ["22-23"],
+      "imade": ["13-21"],
+      "dumdi_dumdi": ["43-51"],
+      "uh-oh": ["31-36"],
+      "hann": ["24-26"],
+      "itrust": ["7","37-42"],
+      "oh_my_god": ["8"],
+      "iburn": ["1-6","52-75"],
+      "other": ["27-30"]
     },
     "soyeon": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
+      "iam": [ "9-12"],
+      "latata": ["22-23"],
+      "imade": ["13-21"],
+      "dumdi_dumdi": ["43-51"],
+      "uh-oh": ["31-36"],
+      "hann": ["24-26"],
+      "itrust": ["7","37-42"],
+      "oh_my_god": ["8"],
+      "iburn": ["1-6","52-75"],
+      "other": ["27-30"]
     },
     "yuqi": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
+      "iam": [ "9-12"],
+      "latata": ["22-23"],
+      "imade": ["13-21"],
+      "dumdi_dumdi": ["43-51"],
+      "uh-oh": ["31-36"],
+      "hann": ["24-26"],
+      "itrust": ["7","37-42"],
+      "oh_my_god": ["8"],
+      "iburn": ["1-6","52-75"],
+      "other": ["27-30"]
     },
     "shuhua": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
+      "iam": [ "9-12"],
+      "latata": ["22-23"],
+      "imade": ["13-21"],
+      "dumdi_dumdi": ["43-51"],
+      "uh-oh": ["31-36"],
+      "hann": ["24-26"],
+      "itrust": ["7","37-42"],
+      "oh_my_god": ["8"],
+      "iburn": ["1-6","52-75"],
+      "other": ["27-30"]
     },
     "soojin": {
-      "iam": [
-        "9-12"
-      ],
-      "latata": [
-        "22-23"
-      ],
-      "imade": [
-        "13-21"
-      ],
-      "dumdi_dumdi": [
-        "43-51"
-      ],
-      "uh-oh": [
-        "31-36"
-      ],
-      "hann": [
-        "24-26"
-      ],
-      "itrust": [
-        "7",
-        "37-42"
-      ],
-      "oh_my_god": [
-        "8"
-      ],
-      "iburn": [
-        "1-6",
-        "52-75"
-      ],
-      "other": [
-        "27-30"
-      ]
+      "iam": [ "9-12"],
+      "latata": ["22-23"],
+      "imade": ["13-21"],
+      "dumdi_dumdi": ["43-51"],
+      "uh-oh": ["31-36"],
+      "hann": ["24-26"],
+      "itrust": ["7","37-42"],
+      "oh_my_god": ["8"],
+      "iburn": ["1-6","52-75"],
+      "other": ["27-30"]
     },
     "group": {
-      "iam": [
-        "13-18"
-      ],
-      "latata": [
-        "11-12"
-      ],
-      "imade": [
-        "19-24"
-      ],
-      "dumdi_dumdi": [
-        "1-5"
-      ],
-      "itrust": [
-        "7-10"
-      ],
-      "oh_my_god": [
-        "6"
-      ],
-      "other": []
+      "iam": ["13-18"],
+      "latata": ["11-12"],
+      "imade": ["19-24"],
+      "dumdi_dumdi": ["1-5"],
+      "itrust": ["7-10"],
+      "oh_my_god": ["6"]
     }
   },
   "boosters": {
@@ -346,5 +201,43 @@
         }
       ]
     }
+  },  
+  "rarity": {
+    "rare": [
+      "miyeon_8", "miyeon_14", "miyeon_21", "miyeon_45-49",
+      "miyeon_56-70",
+      "minnie_8", "minnie_19-20", "minnie_45-49",
+      "minnie_56-70",
+      "yuqi_8", "yuqi_19-20", "yuqi_45-49",
+      "yuqi_56-70",
+      "soyeon_8", "soyeon_19-20", "soyeon_45-49",
+      "soyeon_56-70",
+      "shuhua_8", "shuhua_19-20", "shuhua_45-49",
+      "shuhua_56-70",
+      "soojin_8", "soojin_19-20", "soojin_45-49",
+      "soojin_56-70", 
+      "group_7-8", "group_10"
+    ],
+    "ultra": [
+      "miyeon_11-12", "miyeon_15-20", "miyeon_22-26", 
+      "miyeon_32-36", "miyeon_42", "miyeon_50-51", "miyeon_71-75",
+      
+      "minnie_11-12", "minnie_14-18", "minnie_21-26", "minnie_32-36",
+      "minnie_42", "minnie_50-51", "minnie_71-75",
+      
+      "yuqi_11-12", "yuqi_14-18", "yuqi_21-26", "yuqi_32-36",
+      "yuqi_42", "yuqi_50-51", "yuqi_71-75",
+
+      "soyeon_11-12", "soyeon_14-18", "soyeon_21-26", "soyeon_32-36",
+      "soyeon_42", "soyeon_50-51", "soyeon_71-75",
+      
+      "shuhua_11-12", "shuhua_14-18", "shuhua_21-26", "shuhua_32-36",
+      "shuhua_42", "shuhua_50-51", "shuhua_71-75",
+      
+      "soojin_11-12", "soojin_14-18", "soojin_21-26", "soojin_32-36",
+      "soojin_42", "soojin_50-51", "soojin_71-75",
+      
+      "group_3-5", "group_6", "group_9", "group_11-24" 
+    ]
   }
 }
