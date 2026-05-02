@@ -1918,6 +1918,247 @@ h1{
   .collection-window,.shop-window,.achievement-window{width:98vw!important;height:96vh!important;border-radius:24px!important;padding:14px!important;}
 }
 
+
+
+/* Achievement cards redesign: clearer completed/locked states + progress */
+.achievement-grid{
+  grid-template-columns:repeat(auto-fill,minmax(285px,1fr))!important;
+  gap:14px!important;
+  padding:4px 8px 8px 0!important;
+}
+.achievement-card{
+  min-height:154px!important;
+  padding:15px!important;
+  border-radius:24px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  transition:.22s ease!important;
+}
+.achievement-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.achievement-icon{
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 8px 18px rgba(98,72,150,.12);
+}
+.achievement-status{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.achievement-card.unlocked{
+  opacity:1!important;
+  filter:none!important;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(255,236,168,.75),transparent 34%),
+    linear-gradient(135deg,#fff9df 0%,#f1e7ff 48%,#ffe9f6 100%)!important;
+  border:1px solid rgba(174,139,255,.58)!important;
+  outline:2px solid rgba(255,214,113,.55)!important;
+  box-shadow:0 16px 38px rgba(122,91,190,.20),0 0 0 1px rgba(255,255,255,.75) inset!important;
+}
+.achievement-card.locked{
+  opacity:1!important;
+  filter:none!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(238,231,250,.58))!important;
+  border:1px solid rgba(185,171,210,.34)!important;
+  box-shadow:0 10px 26px rgba(76,58,108,.08)!important;
+}
+.achievement-card.locked .achievement-title,
+.achievement-card.locked .achievement-desc,
+.achievement-card.locked .achievement-reward{
+  color:rgba(63,51,84,.62)!important;
+}
+.achievement-card.unlocked .achievement-status{
+  color:#624200!important;
+  background:linear-gradient(135deg,#ffe28a,#fff5cd)!important;
+  border:1px solid rgba(255,209,86,.72)!important;
+}
+.achievement-card.locked .achievement-status{
+  color:#7a6b91!important;
+  background:rgba(255,255,255,.62)!important;
+  border:1px solid rgba(185,171,210,.34)!important;
+}
+.achievement-title{
+  font-size:15px!important;
+  line-height:1.2!important;
+  margin:0!important;
+}
+.achievement-desc{
+  min-height:32px!important;
+}
+.achievement-progress-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:12px;
+  font-weight:900;
+  color:#6c5a86;
+  margin-top:auto;
+}
+.achievement-progress-bar{
+  height:9px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(213,203,231,.62);
+  box-shadow:0 1px 0 rgba(255,255,255,.75) inset;
+}
+.achievement-progress-bar i{
+  display:block;
+  height:100%;
+  width:0;
+  border-radius:999px;
+  background:linear-gradient(90deg,#b99cff,#ffb4df,#ffe28a);
+  transition:width .35s ease;
+}
+.achievement-card.locked .achievement-progress-bar i{
+  background:linear-gradient(90deg,#b9a5e9,#d7c8f4);
+}
+.achievement-reward{
+  margin-top:0!important;
+  font-size:12px!important;
+}
+.achievement-card.unlocked::after{
+  content:"✓";
+  position:absolute;
+  right:14px;
+  bottom:10px;
+  font-size:42px;
+  font-weight:900;
+  color:rgba(164,123,255,.16);
+  pointer-events:none;
+}
+
+
+
+/* === Bigger reward modal fix === */
+#win.modal{
+  padding:24px!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+.win-card{
+  width:min(920px,94vw)!important;
+  max-height:min(860px,92vh)!important;
+  padding:34px 34px 28px!important;
+  border-radius:38px!important;
+  overflow:auto!important;
+}
+
+.win-emoji{
+  font-size:64px!important;
+  margin-bottom:10px!important;
+}
+
+.win h2{
+  font-size:34px!important;
+  margin-bottom:12px!important;
+}
+
+.win p{
+  max-width:760px!important;
+  margin:0 auto 20px!important;
+  font-size:15px!important;
+  line-height:1.55!important;
+}
+
+.collector-badge{
+  margin-bottom:14px!important;
+  padding:8px 15px!important;
+  font-size:13px!important;
+}
+
+.reward-options{
+  width:100%!important;
+  max-width:820px!important;
+  grid-template-columns:repeat(var(--reward-count,3),minmax(96px,1fr))!important;
+  gap:16px!important;
+  margin:22px auto 20px!important;
+  align-items:start!important;
+}
+
+.reward-card{
+  border-radius:22px!important;
+  padding:7px!important;
+  min-width:0!important;
+}
+
+.reward-card img{
+  width:100%!important;
+  aspect-ratio:3/4!important;
+  min-height:132px!important;
+  object-fit:cover!important;
+  border-radius:16px!important;
+}
+
+.reward-badge{
+  left:12px!important;
+  top:12px!important;
+  padding:6px 9px!important;
+  font-size:11px!important;
+}
+
+.reroll-btn,
+.again{
+  min-width:190px!important;
+  padding:14px 22px!important;
+  font-size:14px!important;
+}
+
+.win-card .again,
+.win-card .reroll-btn{
+  margin-top:0!important;
+}
+
+@media(max-width:820px){
+  .win-card{
+    width:min(680px,94vw)!important;
+    padding:26px 18px!important;
+  }
+  .reward-options{
+    grid-template-columns:repeat(3,minmax(88px,1fr))!important;
+    max-width:520px!important;
+    gap:12px!important;
+  }
+  .reward-card img{
+    min-height:118px!important;
+  }
+}
+
+@media(max-width:520px){
+  .win-card{
+    width:96vw!important;
+    max-height:92vh!important;
+    padding:22px 14px!important;
+    border-radius:28px!important;
+  }
+  .win h2{font-size:26px!important;}
+  .win p{font-size:13px!important;}
+  .reward-options{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .reward-card img{
+    min-height:132px!important;
+  }
+  .reroll-btn,.again{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+
 </style>
 </head>
 
@@ -2512,6 +2753,51 @@ const ACHIEVEMENT_DEFS = [
   { key:"lucky_hand", title:"Рука удачи", desc:"Выбить ultra без временных бустов", reward:15 }
 ];
 
+function getAchievementProgress(item){
+  const owned = getOwnedCards();
+  const rareCount = owned.filter(card => card.rarity === "rare").length;
+  const ultraCount = owned.filter(card => card.rarity === "ultra").length;
+  const memberKeys = ["miyeon","minnie","soyeon","yuqi","shuhua","soojin"];
+  const completedAlbums = getAlbumCompletionCount();
+  const totalAlbums = getTotalAlbumCount();
+  const miyeonCount = owned.filter(card => card.member === "miyeon").length;
+  const ot6Count = memberKeys.filter(member => owned.some(card => card.member === member)).length;
+
+  const map = {
+    first_comeback: { current:Number(gameStats.levelsCompleted || 0), target:1, unit:"ур." },
+    stage_beast: { current:Number(gameStats.hardCompleted || 0), target:10, unit:"сложн. ур." },
+    perfect_live: { current:Number(gameStats.flawlessStreak || 0), target:3, unit:"ур. подряд" },
+    idol_sync: { current:Number(gameStats.bestCombo || 0), target:3, unit:"пары" },
+    dance_machine: { current:Number(gameStats.bestCombo || 0), target:5, unit:"комбо" },
+    faster_comeback: { current:Number(gameStats.fastUnder40 || 0), target:1, unit:"раз" },
+    first_photocard: { current:openedPacksCount, target:1, unit:"пак" },
+    collector_stan: { current:openedPacksCount, target:50, unit:"паков" },
+    legendary_drop: { current:Number(gameStats.twoUltraPack || 0), target:1, unit:"дроп" },
+    idol_gift: { current:Number(gameStats.freePackClaimed || 0), target:1, unit:"пак" },
+    loyal_fan: { current:Number(gameStats.loginStreak || 0), target:3, unit:"дня" },
+    collection_start: { current:owned.length, target:10, unit:"карт" },
+    bias_room_full: { current:owned.length, target:100, unit:"карт" },
+    rare_catch: { current:rareCount, target:10, unit:"rare" },
+    ultra_hunter: { current:ultraCount, target:5, unit:"ultra" },
+    miyeon_heart: { current:miyeonCount, target:20, unit:"карт Миён" },
+    ot6_forever: { current:ot6Count, target:memberKeys.length, unit:"участниц" },
+    favorite_era: { current:isAlbumComplete("iburn") ? 1 : 0, target:1, unit:"альбом" },
+    eras_collection: { current:completedAlbums, target:3, unit:"альбома" },
+    full_discography: { current:completedAlbums, target:totalAlbums, unit:"альбомов" },
+    comeback_investor: { current:Number(gameStats.permanentUpgradesBought || 0), target:1, unit:"улучш." },
+    rng_producer: { current:Number(gameStats.focusUsed || 0), target:1, unit:"фокус" },
+    generous_fan: { current:Number(gameStats.extraRewardPick || 0), target:1, unit:"раз" },
+    cold_selection: { current:noCommonRewardStreak, target:3, unit:"игры" },
+    lucky_hand: { current:Number(gameStats.ultraWithoutBoosts || 0), target:1, unit:"ultra" }
+  };
+
+  const data = map[item.key] || { current:0, target:1, unit:"" };
+  const target = Math.max(1, Number(data.target || 1));
+  const current = Math.max(0, Number(data.current || 0));
+  const percent = Math.max(0, Math.min(100, Math.round(current / target * 100)));
+  return { ...data, current, target, percent };
+}
+
 function renderAchievements(){
   if(!achievementGrid) return;
   const unlockedCount = ACHIEVEMENT_DEFS.filter(item => achievements[item.key]).length;
@@ -2521,12 +2807,24 @@ function renderAchievements(){
 
   ACHIEVEMENT_DEFS.forEach(item => {
     const opened = !!achievements[item.key];
+    const progress = getAchievementProgress(item);
+    const shownCurrent = opened ? progress.target : Math.min(progress.current, progress.target);
+    const rewardText = item.reward > 0 ? `+${item.reward} очк.` : "без награды";
     const card = document.createElement("div");
     card.className = `achievement-card ${opened ? "unlocked" : "locked"}`;
     card.innerHTML = `
-      <b>${opened ? "🏆" : "🔒"} ${item.title}</b>
-      <small>${item.desc}</small>
-      <strong>${opened ? "Получено" : `Награда: +${item.reward} очк.`}</strong>
+      <div class="achievement-card-top">
+        <span class="achievement-icon">${opened ? "🏆" : "🔒"}</span>
+        <span class="achievement-status">${opened ? "Получено" : "В процессе"}</span>
+      </div>
+      <b class="achievement-title">${item.title}</b>
+      <small class="achievement-desc">${item.desc}</small>
+      <div class="achievement-progress-row">
+        <span>${shownCurrent}/${progress.target}${progress.unit ? ` ${progress.unit}` : ""}</span>
+        <span>${opened ? "100" : progress.percent}%</span>
+      </div>
+      <div class="achievement-progress-bar"><i style="width:${opened ? 100 : progress.percent}%"></i></div>
+      <strong class="achievement-reward">${opened ? `Награда получена · ${rewardText}` : `Награда: ${rewardText}`}</strong>
     `;
     achievementGrid.appendChild(card);
   });
