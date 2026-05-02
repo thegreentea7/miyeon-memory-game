@@ -375,7 +375,7 @@ h1{
   overflow:hidden;
 }
 
-.collection-window{grid-template-rows:auto auto auto auto 1fr auto}
+.collection-window{grid-template-rows:auto auto auto auto 1fr}
 .shop-window{grid-template-rows:auto auto 1fr}
 
 .modal-head{
@@ -480,6 +480,64 @@ h1{
   width:0;
   border-radius:999px;
   background:linear-gradient(90deg,#f7adc7,#a8d9bd);
+}
+
+.collection-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.collection-tab{
+  padding:10px 12px;
+  border-radius:18px;
+  background:rgba(255,255,255,.72);
+  color:#7b5a68;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  font-weight:900;
+  transition:.18s;
+}
+
+.collection-tab.active{
+  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
+  outline:2px solid rgba(247,182,205,.72);
+}
+
+.collection-tab:hover{
+  transform:translateY(-1px);
+  box-shadow:0 13px 28px rgba(113,74,92,.14);
+}
+
+.collection-tab-note{
+  display:block;
+  margin-top:3px;
+  color:#9b7a88;
+  font-size:11px;
+  font-weight:400;
+}
+
+.collection-body{
+  min-height:0;
+  overflow:hidden;
+}
+
+.collection-panel{
+  display:none;
+  min-height:0;
+  height:100%;
+}
+
+.collection-panel.active{display:grid}
+
+.collection-cards-panel.active{
+  grid-template-rows:1fr auto;
+  gap:10px;
+}
+
+.collection-gifts-panel.active{
+  grid-template-rows:auto 1fr;
+  gap:10px;
 }
 
 .collection-grid{
@@ -1193,6 +1251,7 @@ h1{
 .achievement-card small{display:block;color:#9b7a88;font-size:12px;line-height:1.35}
 .achievement-card strong{display:block;margin-top:8px;color:#744b5e;font-size:12px}
 .collection-gifts{
+  min-height:0;
   padding:12px;
   border-radius:20px;
   background:rgba(255,255,255,.75);
@@ -1233,7 +1292,7 @@ h1{
   font-weight:900;
 }
 .gift-card button:disabled{opacity:.5;cursor:not-allowed}
-@media(max-width:850px){.achievement-open small{display:none}.collection-gifts{max-height:170px}.gift-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
+@media(max-width:850px){.achievement-open small,.collection-tab-note{display:none}.gift-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
 
 </style>
 </head>
@@ -1386,14 +1445,25 @@ h1{
       <div class="collection-bar"><i id="collectionProgressBar"></i></div>
     </div>
 
-    <div class="collection-gifts">
-      <div class="collection-gifts-title">🎁 Подарки за прогресс коллекции</div>
-      <div class="gift-grid" id="collectionGiftGrid"></div>
+    <div class="collection-tabs">
+      <button class="collection-tab active" id="collectionCardsTab" type="button">📚 Карты<span class="collection-tab-note">сетка коллекции</span></button>
+      <button class="collection-tab" id="collectionGiftsTab" type="button">🎁 Подарки<span class="collection-tab-note">за прогресс</span></button>
     </div>
 
-    <div class="collection-grid" id="collectionGrid"></div>
-    <div class="collection-more-wrap">
-      <button class="collection-more-btn hidden" id="collectionMoreBtn">Показать ещё</button>
+    <div class="collection-body">
+      <div class="collection-panel collection-cards-panel active" id="collectionCardsPanel">
+        <div class="collection-grid" id="collectionGrid"></div>
+        <div class="collection-more-wrap">
+          <button class="collection-more-btn hidden" id="collectionMoreBtn">Показать ещё</button>
+        </div>
+      </div>
+
+      <div class="collection-panel collection-gifts-panel" id="collectionGiftsPanel">
+        <div class="collection-gifts-title">🎁 Подарки за прогресс коллекции</div>
+        <div class="collection-gifts">
+          <div class="gift-grid" id="collectionGiftGrid"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1575,6 +1645,11 @@ const rarityFilter = document.getElementById("rarityFilter");
 const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
 const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 const collectionGiftGrid = document.getElementById("collectionGiftGrid");
+const collectionCardsTab = document.getElementById("collectionCardsTab");
+const collectionGiftsTab = document.getElementById("collectionGiftsTab");
+const collectionCardsPanel = document.getElementById("collectionCardsPanel");
+const collectionGiftsPanel = document.getElementById("collectionGiftsPanel");
+let currentCollectionTab = "cards";
 const achievementsOpen = document.getElementById("achievementsOpen");
 const achievementsClose = document.getElementById("achievementsClose");
 const achievementsModal = document.getElementById("achievementsModal");
@@ -2767,6 +2842,22 @@ function applyCollectionFilters(images){
   });
 }
 
+function setCollectionTab(tab){
+  currentCollectionTab = tab === "gifts" ? "gifts" : "cards";
+  const showCards = currentCollectionTab === "cards";
+
+  collectionCardsTab.classList.toggle("active", showCards);
+  collectionGiftsTab.classList.toggle("active", !showCards);
+  collectionCardsPanel.classList.toggle("active", showCards);
+  collectionGiftsPanel.classList.toggle("active", !showCards);
+
+  if(showCards){
+    renderCollection();
+  } else {
+    renderCollectionRewards();
+  }
+}
+
 function updateCollectionControls(){
   memberFilter.value = currentMemberFilter;
   albumFilter.value = currentAlbumFilter;
@@ -2820,13 +2911,13 @@ async function renderCollection(){
     collectionMoreBtn.classList.add("hidden");
   }
 
-  renderCollectionRewards();
+  if(currentCollectionTab === "gifts") renderCollectionRewards();
 }
 
 function openCollection(){
   collectionVisibleLimit = 48;
   collectionModal.classList.add("show");
-  renderCollection();
+  setCollectionTab("cards");
 }
 
 function closeCollection(){
@@ -3465,6 +3556,8 @@ collectionMoreBtn.addEventListener("click", () => {
 
 collectionOpen.addEventListener("click", openCollection);
 collectionClose.addEventListener("click", closeCollection);
+collectionCardsTab.addEventListener("click", () => setCollectionTab("cards"));
+collectionGiftsTab.addEventListener("click", () => setCollectionTab("gifts"));
 collectionModal.addEventListener("click", event => {
   if(event.target === collectionModal) closeCollection();
 });
