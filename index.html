@@ -1294,6 +1294,387 @@ h1{
 .gift-card button:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:850px){.achievement-open small,.collection-tab-note{display:none}.gift-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))}}
 
+
+
+/* Blue spacious modal redesign */
+:root{
+  --soft-blue:#dff4ff;
+  --soft-blue-2:#eaf8ff;
+  --soft-blue-3:#c7eaff;
+  --soft-mint:#edf9f3;
+  --soft-pink:#fff0f7;
+  --ink:#4f5f72;
+  --muted:#7e91a5;
+  --line:rgba(174,214,236,.82);
+  --panel-shadow:0 30px 100px rgba(55,91,123,.24);
+}
+
+.modal{
+  padding:10px;
+  background:rgba(43,70,96,.34);
+  backdrop-filter:blur(12px);
+}
+
+.collection-window,
+.shop-window,
+.achievement-window{
+  width:min(1320px,98vw) !important;
+  height:min(880px,96vh) !important;
+  border-radius:34px;
+  padding:22px;
+  gap:14px;
+  background:
+    radial-gradient(circle at 6% 0%,rgba(204,235,255,.9),transparent 34%),
+    radial-gradient(circle at 94% 12%,rgba(235,249,255,.95),transparent 36%),
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(240,249,255,.96));
+  border:1px solid rgba(222,244,255,.98);
+  box-shadow:var(--panel-shadow);
+}
+
+.collection-window{grid-template-rows:auto auto auto auto minmax(0,1fr) auto}
+.shop-window{grid-template-rows:auto auto minmax(0,1fr)}
+.achievement-window{grid-template-rows:auto auto minmax(0,1fr)}
+
+.modal-head h2{color:var(--ink);font-size:36px}
+.modal-head p{color:var(--muted)}
+.modal-close{
+  background:linear-gradient(135deg,#ffffff,var(--soft-blue-2));
+  color:#6c7f94;
+  box-shadow:0 12px 26px rgba(73,112,145,.14);
+}
+
+.collection-controls{gap:12px}
+.collection-control label{color:#7890a6}
+.collection-select,
+.collection-owned-toggle,
+.collection-tab,
+.collection-more-btn,
+.pack-card,
+.upgrade-card,
+.permanent-card,
+.gift-card,
+.achievement-card,
+.achievement-summary,
+.collection-progress,
+.collection-gifts{
+  background:rgba(255,255,255,.82) !important;
+  border:1px solid rgba(220,242,255,.95) !important;
+  box-shadow:0 12px 28px rgba(76,113,143,.10) !important;
+  color:var(--ink) !important;
+}
+
+.collection-select{
+  min-height:46px;
+  color:var(--ink);
+}
+
+.collection-owned-toggle.active,
+.collection-tab.active,
+.permanent-card.bought,
+.upgrade-card.active,
+.shape-btn.active,
+.mode-btn.active{
+  background:linear-gradient(135deg,var(--soft-blue),var(--soft-mint)) !important;
+  outline:2px solid rgba(154,211,244,.72) !important;
+}
+
+.collection-progress-row,
+.achievement-summary{color:var(--ink)}
+.collection-bar{background:#e7f4fb}
+.collection-bar i{background:linear-gradient(90deg,#9ed8f7,#bce9d0)}
+
+.collection-grid{
+  grid-template-columns:repeat(auto-fill,112px);
+  grid-auto-rows:150px;
+  gap:16px;
+  padding:6px 10px 6px 0;
+}
+.collection-cell{
+  width:112px;
+  height:150px;
+  border-radius:20px;
+  background:linear-gradient(135deg,var(--soft-blue),var(--soft-mint));
+  box-shadow:0 14px 30px rgba(76,113,143,.14);
+}
+.collection-cell img{border-radius:15px}
+.collection-cell.locked{
+  background:linear-gradient(145deg,#dceef8,#f2fbf6);
+}
+.collection-cell.locked::before{
+  border-radius:15px;
+  background:linear-gradient(145deg,#fff,#eef9ff);
+  color:#7fa7bd;
+}
+
+.pack-grid,
+.upgrade-grid,
+.permanent-grid,
+.achievement-grid,
+.gift-grid{
+  gap:14px;
+  padding-right:8px;
+}
+.pack-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.achievement-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.gift-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+
+.pack-card:hover,
+.upgrade-card:hover,
+.permanent-card:hover,
+.gift-card.claimable:hover,
+.achievement-card.unlocked:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 34px rgba(76,113,143,.18) !important;
+}
+
+.achievement-card.unlocked,
+.gift-card.claimable{
+  background:linear-gradient(135deg,#e3f5ff,#fff6fb) !important;
+  outline:2px solid rgba(157,216,247,.55);
+}
+
+.achievement-card.locked,
+.gift-card.locked{opacity:.72;filter:saturate(.75)}
+
+.collection-tabs{
+  background:rgba(255,255,255,.54);
+  border:1px solid rgba(220,242,255,.86);
+}
+.collection-tab-note,
+.collection-control label,
+.shop-subtitle,
+.collection-gifts-title,
+.achievement-card small,
+.pack-card small,
+.upgrade-card small,
+.permanent-card small,
+.gift-card small{
+  color:var(--muted) !important;
+}
+
+.again,
+.collection-more-btn,
+.gift-card button,
+.upgrade-card button,
+.permanent-card button{
+  background:linear-gradient(135deg,#dff4ff,#f1fff7) !important;
+  color:#49657a !important;
+}
+
+@media(max-width:850px){
+  .collection-window,.shop-window,.achievement-window{
+    width:98vw !important;
+    height:96vh !important;
+    padding:14px;
+    border-radius:26px;
+  }
+  .collection-grid{grid-template-columns:repeat(auto-fill,76px);grid-auto-rows:102px;gap:10px}
+  .collection-cell{width:76px;height:102px;border-radius:14px}
+  .collection-cell img,.collection-cell.locked::before{border-radius:10px}
+}
+
+
+
+/* ===== SKY BLUE FINAL THEME ===== */
+:root{
+  --sky-bg:#eaf6ff;
+  --sky-bg-2:#f7fcff;
+  --sky-panel:rgba(255,255,255,.74);
+  --sky-panel-strong:rgba(255,255,255,.94);
+  --sky-card:#ffffff;
+  --sky-card-2:#f0f8ff;
+  --sky-accent:#a8d8ff;
+  --sky-accent-2:#cfeeff;
+  --sky-accent-3:#dff5ff;
+  --sky-strong:#69baf5;
+  --sky-text:#30435c;
+  --sky-muted:#6c819a;
+  --sky-border:rgba(157,211,255,.72);
+  --sky-border-soft:rgba(204,235,255,.9);
+  --sky-shadow:0 18px 55px rgba(74,142,199,.17);
+  --sky-shadow-soft:0 10px 26px rgba(74,142,199,.12);
+  --sky-pink:#ffd8ed;
+  --sky-gold:#ffe9a8;
+}
+
+html,body{background:var(--sky-bg)!important;}
+body{
+  color:var(--sky-text)!important;
+  background:
+    radial-gradient(circle at 9% 10%,rgba(173,220,255,.95),transparent 31%),
+    radial-gradient(circle at 88% 14%,rgba(226,246,255,.95),transparent 30%),
+    radial-gradient(circle at 75% 92%,rgba(218,243,255,.85),transparent 32%),
+    linear-gradient(135deg,#edf8ff 0%,#f9fdff 52%,#eef8ff 100%)!important;
+}
+body::before{
+  background-image:
+    linear-gradient(rgba(158,213,255,.26) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(158,213,255,.26) 1px,transparent 1px)!important;
+  background-size:32px 32px!important;
+  opacity:.85!important;
+}
+
+.game-side,.panel,.collection-window,.shop-window,.achievement-window,.win-card,.simple-booster-result{
+  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(239,248,255,.86))!important;
+  border:1px solid var(--sky-border-soft)!important;
+  box-shadow:var(--sky-shadow)!important;
+  color:var(--sky-text)!important;
+}
+
+.collection-window,.shop-window,.achievement-window{
+  width:min(1240px,97vw)!important;
+  height:min(820px,94vh)!important;
+}
+
+h1,.panel-title b,.modal-head h2,.win h2{
+  color:var(--sky-text)!important;
+}
+.tag,.panel-title span,.collection-open small,.shop-open small,.stat span,.block-title,.modal-head p,.collection-control label,.shop-subtitle,.upgrade-card small,.pack-card small,.collection-tab-note,.rarity-pity-note{
+  color:var(--sky-muted)!important;
+}
+
+.tag,.panel-title,.stat,.collection-progress,.boost-status,.achievement-summary,.collection-cards-panel,.collection-gifts-panel{
+  background:rgba(255,255,255,.68)!important;
+  border:1px solid var(--sky-border-soft)!important;
+  box-shadow:var(--sky-shadow-soft)!important;
+}
+
+.collection-open,.shop-open,.achievement-open,.mode-btn,.fun-btn,.restart,.shape-btn,.again,.reroll-btn,.collection-owned-toggle,.collection-more-btn,.collection-tab,.shop-tab,.pack-action-btn,.modal-close{
+  background:linear-gradient(135deg,#ffffff,#e7f6ff)!important;
+  color:var(--sky-text)!important;
+  border:1px solid var(--sky-border-soft)!important;
+  box-shadow:var(--sky-shadow-soft)!important;
+}
+.collection-open:hover,.shop-open:hover,.achievement-open:hover,.mode-btn:hover,.fun-btn:hover,.restart:hover,.shape-btn:hover,.again:hover,.reroll-btn:hover,.collection-owned-toggle:hover,.collection-more-btn:hover,.collection-tab:hover,.shop-tab:hover,.pack-action-btn:hover,.modal-close:hover{
+  background:linear-gradient(135deg,#f4fbff,#cfeeff)!important;
+  box-shadow:0 14px 32px rgba(74,142,199,.18)!important;
+}
+.collection-open,.shop-open,.achievement-open{
+  min-width:158px!important;
+}
+.shop-open.ready{
+  background:linear-gradient(135deg,#fff7d7,#dff5ff)!important;
+  outline:2px solid rgba(116,194,255,.75)!important;
+}
+
+.mode-btn.active,.shape-btn.active,.collection-tab.active,.shop-tab.active,.collection-owned-toggle.active{
+  background:linear-gradient(135deg,#cfeeff,#ffffff)!important;
+  outline:2px solid rgba(115,194,255,.72)!important;
+}
+
+.collection-select,select{
+  background:linear-gradient(135deg,#ffffff,#eef8ff)!important;
+  color:var(--sky-text)!important;
+  border:1px solid var(--sky-border-soft)!important;
+  box-shadow:var(--sky-shadow-soft)!important;
+}
+
+.back{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.28),transparent),
+    linear-gradient(145deg,#a8d8ff,#dff5ff 48%,#ffffff)!important;
+}
+.back-design{
+  background:rgba(255,255,255,.30)!important;
+  border:1px solid rgba(255,255,255,.75)!important;
+  text-shadow:0 3px 12px rgba(55,123,180,.25)!important;
+}
+.front{
+  background:linear-gradient(180deg,#ffffff,#edf8ff)!important;
+}
+.face{
+  border:1px solid rgba(226,245,255,.98)!important;
+  box-shadow:0 12px 26px rgba(74,142,199,.14)!important;
+}
+.card.matched .face{
+  box-shadow:0 0 0 3px rgba(144,213,255,.9),0 12px 26px rgba(74,142,199,.12)!important;
+}
+
+.collection-cell,.reward-card,.simple-booster-card,.gift-card,.upgrade-card,.pack-card{
+  background:linear-gradient(135deg,#ffffff,#e8f6ff)!important;
+  border:1px solid var(--sky-border-soft)!important;
+  box-shadow:var(--sky-shadow-soft)!important;
+  color:var(--sky-text)!important;
+}
+.collection-cell.locked{
+  background:linear-gradient(145deg,#e8f6ff,#ffffff)!important;
+}
+.collection-cell.locked::before,.image-placeholder{
+  background:linear-gradient(145deg,#ffffff,#edf8ff)!important;
+  color:#7da7c7!important;
+}
+.collection-bar{
+  background:#dff1ff!important;
+}
+.collection-bar i{
+  background:linear-gradient(90deg,#8fceff,#b7e7ff,#d8f4ff)!important;
+}
+
+.toast{
+  background:rgba(245,251,255,.96)!important;
+  color:var(--sky-text)!important;
+  box-shadow:0 16px 40px rgba(74,142,199,.22)!important;
+  border:1px solid var(--sky-border-soft)!important;
+}
+.modal{
+  background:rgba(65,95,126,.28)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+.rarity-badge.common,.reward-badge.common{
+  background:linear-gradient(135deg,#dcecff,#f7fcff)!important;
+  color:#56708a!important;
+}
+.rarity-badge.rare,.reward-badge.rare,.collection-cell.rare .rarity-badge,.reward-card.rare .rarity-badge,.simple-booster-card.rare .rarity-badge{
+  background:linear-gradient(135deg,#ffd8ed,#fff3fb)!important;
+  color:#905874!important;
+}
+.rarity-badge.ultra,.reward-badge.ultra,.collection-cell.ultra .rarity-badge,.reward-card.ultra .rarity-badge,.simple-booster-card.ultra .rarity-badge{
+  background:linear-gradient(135deg,#8fd0ff,#e2f6ff)!important;
+  color:#245a84!important;
+  box-shadow:0 0 18px rgba(126,203,255,.45)!important;
+}
+.collection-cell.rare,.reward-card.rare,.simple-booster-card.rare{
+  border-color:rgba(255,188,225,.95)!important;
+  box-shadow:0 12px 28px rgba(230,125,178,.16)!important;
+}
+.collection-cell.ultra,.reward-card.ultra,.simple-booster-card.ultra{
+  border-color:rgba(105,186,245,.95)!important;
+  box-shadow:0 0 0 2px rgba(164,222,255,.45),0 16px 34px rgba(74,142,199,.26)!important;
+}
+
+.gift-card.available{
+  background:linear-gradient(135deg,#fff9df,#e6f7ff)!important;
+  border-color:rgba(255,217,120,.9)!important;
+}
+.gift-card.claimed{
+  opacity:.78;
+  background:linear-gradient(135deg,#eef8ff,#ffffff)!important;
+}
+.gift-card.locked{
+  opacity:.72;
+}
+
+.simple-booster-card.spin{
+  background:linear-gradient(135deg,#e7f6ff,#ffffff)!important;
+}
+.pack-card-back{
+  background:
+    radial-gradient(circle at 30% 25%,rgba(255,255,255,.85),transparent 28%),
+    linear-gradient(135deg,#9fd5ff,#dff5ff)!important;
+  color:#ffffff!important;
+  text-shadow:0 3px 14px rgba(45,103,150,.28)!important;
+}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:rgba(223,243,255,.65);border-radius:999px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#a8d8ff,#7ec3ff);border-radius:999px;border:2px solid rgba(255,255,255,.75)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#8ecbff,#69baf5)}
+
+@media(max-width:850px){
+  .collection-window,.shop-window,.achievement-window{width:97vw!important;height:94vh!important;}
+}
+
 </style>
 </head>
 
