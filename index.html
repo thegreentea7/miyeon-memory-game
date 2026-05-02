@@ -399,7 +399,7 @@ h1{
 
 .collection-controls{
   display:grid;
-  grid-template-columns:1fr 1fr auto;
+  grid-template-columns:1fr 1fr 1fr auto;
   gap:10px;
   align-items:end;
 }
@@ -503,8 +503,58 @@ h1{
   overflow:hidden;
 }
 
+.collection-cell.rarity-common{
+  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
+}
+
+.collection-cell.rarity-rare{
+  background:linear-gradient(135deg,#d7efff,#cfeede);
+  box-shadow:0 0 0 2px rgba(142,202,230,.55),0 10px 22px rgba(113,74,92,.12);
+}
+
+.collection-cell.rarity-ultra{
+  background:linear-gradient(135deg,#ffe6a6,#ffd4e5 48%,#cdb4db);
+  box-shadow:0 0 0 2px rgba(255,209,102,.72),0 12px 26px rgba(113,74,92,.18);
+}
+
+.rarity-badge{
+  position:absolute;
+  right:7px;
+  bottom:7px;
+  z-index:3;
+  padding:3px 6px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.04em;
+  color:#8a5f72;
+  background:rgba(255,255,255,.88);
+  box-shadow:0 6px 14px rgba(113,74,92,.12);
+}
+
+.rarity-badge.common{display:none}
+.rarity-badge.rare{color:#356b84;background:rgba(226,246,255,.92)}
+.rarity-badge.ultra{color:#8a5f1f;background:rgba(255,239,184,.95)}
+
+.reward-card.rarity-rare,.simple-booster-card.rarity-rare{
+  box-shadow:0 0 0 2px rgba(142,202,230,.65),0 12px 24px rgba(113,74,92,.14);
+}
+
+.reward-card.rarity-ultra,.simple-booster-card.rarity-ultra{
+  background:linear-gradient(135deg,#ffe6a6,#ffd4e5 48%,#cdb4db);
+  box-shadow:0 0 0 2px rgba(255,209,102,.78),0 16px 32px rgba(113,74,92,.18);
+}
+
 .collection-cell.locked{
   background:linear-gradient(145deg,#f3dbe5,#eef7f1);
+}
+
+.collection-cell.locked.rarity-rare{
+  background:linear-gradient(145deg,#e2f6ff,#eef7f1);
+}
+
+.collection-cell.locked.rarity-ultra{
+  background:linear-gradient(145deg,#fff0bd,#fff1f7);
 }
 
 .collection-cell img{
@@ -1070,6 +1120,16 @@ h1{
         </select>
       </div>
 
+      <div class="collection-control">
+        <label for="rarityFilter">Редкость</label>
+        <select class="collection-select" id="rarityFilter">
+          <option value="all">Любая редкость</option>
+          <option value="common">Common</option>
+          <option value="rare">Rare</option>
+          <option value="ultra">Ultra</option>
+        </select>
+      </div>
+
       <button class="collection-owned-toggle" id="ownedOnlyToggle">В коллекции</button>
     </div>
 
@@ -1234,6 +1294,7 @@ const collectionProgressBar = document.getElementById("collectionProgressBar");
 const collectionProgressTitle = document.getElementById("collectionProgressTitle");
 const memberFilter = document.getElementById("memberFilter");
 const albumFilter = document.getElementById("albumFilter");
+const rarityFilter = document.getElementById("rarityFilter");
 const ownedOnlyToggle = document.getElementById("ownedOnlyToggle");
 const collectionMoreBtn = document.getElementById("collectionMoreBtn");
 
@@ -1269,6 +1330,7 @@ let started = false;
 let currentLevelImages = [];
 let currentMemberFilter = "all";
 let currentAlbumFilter = "all";
+let currentRarityFilter = "all";
 let ownedOnly = false;
 let collectionVisibleLimit = 48;
 let currentFilteredCollection = [];
@@ -1341,14 +1403,85 @@ function getCardSrc(member, number){
   return `images/${member}/${number}.jpg`;
 }
 
+function expandCardIdRanges(items){
+  const result = [];
+
+  splitRangeItems(items).forEach(value => {
+    const match = value.match(/^([a-z_]+)_(\d+)(?:-(\d+))?$/i);
+
+    if(!match) return;
+
+    const member = match[1];
+    const start = Number(match[2]);
+    const end = match[3] ? Number(match[3]) : start;
+
+    if(!Number.isInteger(start) || !Number.isInteger(end)) return;
+
+    for(let number = start; number <= end; number++){
+      result.push(`${member}_${number}`);
+    }
+  });
+
+  return [...new Set(result)];
+}
+
+function getRarityMap(){
+  const rarity = CARD_CONFIG?.rarity || {};
+  const map = new Map();
+
+  expandCardIdRanges(rarity.rare || []).forEach(id => map.set(id, "rare"));
+  expandCardIdRanges(rarity.ultra || []).forEach(id => map.set(id, "ultra"));
+
+  return map;
+}
+
+function getCardRarity(member, number){
+  return getRarityMap().get(`${member}_${number}`) || "common";
+}
+
+function getRarityTitle(rarity){
+  if(rarity === "ultra") return "ULTRA";
+  if(rarity === "rare") return "RARE";
+  return "COMMON";
+}
+
 function makeCard(member, number, album = "other"){
+  const rarity = getCardRarity(member, number);
+
   return {
     id: `${member}_${number}`,
     member,
     number,
     album,
+    rarity,
     src: getCardSrc(member, number)
   };
+}
+
+function pickWeightedCards(images, count, rates = { common:70, rare:25, ultra:5 }){
+  const selected = [];
+  const pool = shuffle(images);
+
+  while(selected.length < count && pool.length){
+    const availableRarities = ["common", "rare", "ultra"].filter(rarity => pool.some(card => card.rarity === rarity));
+    const totalWeight = availableRarities.reduce((sum, rarity) => sum + (rates[rarity] || 0), 0);
+    let roll = Math.random() * (totalWeight || availableRarities.length);
+    let pickedRarity = availableRarities[0];
+
+    for(const rarity of availableRarities){
+      roll -= totalWeight ? (rates[rarity] || 0) : 1;
+      if(roll <= 0){
+        pickedRarity = rarity;
+        break;
+      }
+    }
+
+    let index = pool.findIndex(card => card.rarity === pickedRarity);
+    if(index < 0) index = 0;
+    selected.push(pool.splice(index, 1)[0]);
+  }
+
+  return selected;
 }
 
 async function getAllImages(){
@@ -1647,7 +1780,7 @@ async function buildDeck(cols, rows){
     availableImages = availableImages.filter(card => card.album === preGameBoosts.album);
   }
 
-  const selected = shuffle(availableImages).slice(0, needed);
+  const selected = pickWeightedCards(availableImages, needed, { common:70, rare:25, ultra:5 });
 
   if(selected.length < needed){
     currentLevelImages = [];
@@ -1843,7 +1976,7 @@ function getRewardCards(){
     }
   });
 
-  return shuffle(unique).slice(0, rewardCount);
+  return pickWeightedCards(unique, rewardCount, { common:60, rare:30, ultra:10 });
 }
 
 function getCollectorRank(){
@@ -1867,9 +2000,10 @@ function renderRewardOptions(){
   currentRewardOptions.forEach(image => {
     const isNew = !isCardCollected(image.src);
     const btn = document.createElement("button");
-    btn.className = "reward-card";
+    btn.className = `reward-card rarity-${image.rarity}`;
     btn.innerHTML = `
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
+      <span class="rarity-badge ${image.rarity}">${getRarityTitle(image.rarity)}</span>
       <img src="${image.src}" alt="reward card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
     `;
 
@@ -1929,15 +2063,17 @@ function applyCollectionFilters(images){
   return images.filter(img => {
     const memberOk = currentMemberFilter === "all" || img.member === currentMemberFilter;
     const albumOk = currentAlbumFilter === "all" || img.album === currentAlbumFilter;
+    const rarityOk = currentRarityFilter === "all" || img.rarity === currentRarityFilter;
     const ownedOk = !ownedOnly || isCardCollected(img.src);
 
-    return memberOk && albumOk && ownedOk;
+    return memberOk && albumOk && rarityOk && ownedOk;
   });
 }
 
 function updateCollectionControls(){
   memberFilter.value = currentMemberFilter;
   albumFilter.value = currentAlbumFilter;
+  rarityFilter.value = currentRarityFilter;
   ownedOnlyToggle.classList.toggle("active", ownedOnly);
 }
 
@@ -1954,8 +2090,9 @@ async function renderCollection(){
 
   const memberTitle = currentMemberFilter === "all" ? "Все участницы" : MEMBERS[currentMemberFilter].title;
   const albumTitle = currentAlbumFilter === "all" ? "Все альбомы" : ALBUMS[currentAlbumFilter].title;
+  const rarityTitle = currentRarityFilter === "all" ? "Любая редкость" : getRarityTitle(currentRarityFilter);
 
-  collectionProgressTitle.textContent = `${memberTitle} · ${albumTitle}${ownedOnly ? " · В коллекции" : ""}`;
+  collectionProgressTitle.textContent = `${memberTitle} · ${albumTitle} · ${rarityTitle}${ownedOnly ? " · В коллекции" : ""}`;
   collectionProgressText.textContent = `${collectedInFilter}/${totalInFilter}`;
   collectionProgressBar.style.width = `${percent}%`;
   collectionGrid.innerHTML = "";
@@ -1964,11 +2101,16 @@ async function renderCollection(){
   visibleImages.forEach((img, index) => {
     const opened = isCardCollected(img.src);
     const cell = document.createElement("div");
-    cell.className = opened ? "collection-cell" : "collection-cell locked";
+    cell.className = opened ? `collection-cell rarity-${img.rarity}` : `collection-cell locked rarity-${img.rarity}`;
     cell.dataset.number = String(index + 1).padStart(2, "0");
 
     if(opened){
-      cell.innerHTML = `<img src="${img.src}" alt="collection card" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">`;
+      cell.innerHTML = `
+        <img src="${img.src}" alt="collection card" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+        <span class="rarity-badge ${img.rarity}">${getRarityTitle(img.rarity)}</span>
+      `;
+    } else {
+      cell.innerHTML = `<span class="rarity-badge ${img.rarity}">${getRarityTitle(img.rarity)}</span>`;
     }
 
     collectionGrid.appendChild(cell);
@@ -2167,7 +2309,7 @@ async function renderPackGrid(){
     btn.className = "pack-card";
     btn.innerHTML = `
       <b>🎁 ${pack.title}</b>
-      <small>3 случайные карты, возможны повторки</small>
+      <small>3 случайные карты: 70% Common / 25% Rare / 5% Ultra</small>
       <strong>${cost} очков</strong>
     `;
 
@@ -2196,9 +2338,10 @@ function showPackResult(cards){
     collectCard(card.src);
 
     const item = document.createElement("div");
-    item.className = "simple-booster-card";
+    item.className = `simple-booster-card rarity-${card.rarity}`;
     item.innerHTML = `
       <span class="reward-badge ${already ? "old" : ""}">${already ? "Уже есть" : "NEW"}</span>
+      <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
       <img src="${card.src}" alt="pack card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
     `;
     packResultCards.appendChild(item);
@@ -2247,7 +2390,7 @@ async function buyPack(packKey){
     showToast("🍀 Счастливый день: +1 карта в паке");
   }
 
-  const cards = shuffle(images).slice(0, packSize);
+  const cards = pickWeightedCards(images, packSize, { common:70, rare:25, ultra:5 });
   const newCount = cards.filter(card => !isCardCollected(card.src)).length;
   const repeatCount = cards.length - newCount;
 
@@ -2395,6 +2538,12 @@ albumFilter.addEventListener("change", () => {
   renderCollection();
 });
 
+rarityFilter.addEventListener("change", () => {
+  currentRarityFilter = rarityFilter.value;
+  collectionVisibleLimit = 48;
+  renderCollection();
+});
+
 ownedOnlyToggle.addEventListener("click", () => {
   ownedOnly = !ownedOnly;
   collectionVisibleLimit = 48;
@@ -2476,4 +2625,3 @@ loadConfig()
 </script>
 </body>
 </html>
- 
