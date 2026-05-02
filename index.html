@@ -630,6 +630,22 @@ h1{
   background:rgba(255,255,255,.86);
 }
 
+.upgrade-card button:disabled{
+  cursor:default;
+  opacity:.62;
+  transform:none;
+}
+
+.upgrade-section-title{
+  grid-column:1 / -1;
+  margin-top:6px;
+  color:#9b7a88;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
 .reward-actions{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -1269,6 +1285,8 @@ let preGameBoosts = {
 let comboStreak = 0;
 let currentRewardOptions = [];
 let rewardPicksLeft = 1;
+let permanentBonusPick = false;
+let permanentUpgrades = JSON.parse(localStorage.getItem("miyeon_permanent_upgrades") || "{}");
 
 async function loadConfig(){
   if(CARD_CONFIG) return CARD_CONFIG;
@@ -1445,6 +1463,62 @@ function resetPreGameBoosts(){
   preGameBoosts = { combo:false, member:null, album:null };
   comboStreak = 0;
   updateBoostStatus();
+}
+
+function savePoints(){
+  localStorage.setItem("miyeon_shop_points", String(points));
+  updatePointsUI();
+}
+
+function addShopPoints(amount){
+  points += amount;
+  savePoints();
+}
+
+function hasUpgrade(key){
+  return permanentUpgrades[key] === true;
+}
+
+function savePermanentUpgrades(){
+  localStorage.setItem("miyeon_permanent_upgrades", JSON.stringify(permanentUpgrades));
+}
+
+function buyPermanentUpgrade(key, cost){
+  if(hasUpgrade(key)){
+    showToast("Это улучшение уже куплено ⭐");
+    return;
+  }
+
+  if(points < cost){
+    showToast(`Нужно ${cost} очков ♡`);
+    return;
+  }
+
+  spendPoints(cost);
+  permanentUpgrades[key] = true;
+  savePermanentUpgrades();
+  renderUpgradeGrid();
+  showToast("Постоянное улучшение куплено ⭐");
+}
+
+function getTodayKey(){
+  const now = new Date();
+  const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return localDate.toISOString().slice(0, 10);
+}
+
+function canUseDailyUpgrade(key){
+  return localStorage.getItem(`miyeon_daily_${key}_${getTodayKey()}`) !== "1";
+}
+
+function markDailyUpgradeUsed(key){
+  localStorage.setItem(`miyeon_daily_${key}_${getTodayKey()}`, "1");
+}
+
+function getPermanentUpgradeButton(key, cost){
+  return hasUpgrade(key)
+    ? `<button disabled>Куплено ⭐</button>`
+    : `<button data-permanent-key="${key}" data-permanent-cost="${cost}">Купить за ${cost} очков</button>`;
 }
 
 function getCollectionKey(src){
@@ -1734,15 +1808,12 @@ function updatePointsUI(){
 }
 
 function addPoints(){
-  points += getDifficultyPoints();
-  localStorage.setItem("miyeon_shop_points", String(points));
-  updatePointsUI();
+  addShopPoints(getDifficultyPoints());
 }
 
 function spendPoints(cost){
   points = Math.max(0, points - cost);
-  localStorage.setItem("miyeon_shop_points", String(points));
-  updatePointsUI();
+  savePoints();
 }
 
 function getRewardSettings(){
@@ -1761,6 +1832,9 @@ function getRewardCards(){
   const settings = getRewardSettings();
   const unique = [];
   const seen = new Set();
+  let rewardCount = settings.count;
+
+  if(hasUpgrade("betterChoice")) rewardCount += 1;
 
   currentLevelImages.forEach(image => {
     if(!seen.has(image.src)){
@@ -1769,7 +1843,7 @@ function getRewardCards(){
     }
   });
 
-  return shuffle(unique).slice(0, settings.count);
+  return shuffle(unique).slice(0, rewardCount);
 }
 
 function getCollectorRank(){
@@ -1785,10 +1859,10 @@ function renderRewardOptions(){
     currentRewardOptions = getRewardCards();
   }
 
-  rewardPicksLeft = activeBoosts.extraPick ? 2 : 1;
+  rewardPicksLeft = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
   rewardOptions.style.setProperty("--reward-count", currentRewardOptions.length);
-  extraPickRewardBtn.classList.toggle("hidden", !activeBoosts.extraPick);
-  extraPickRewardBtn.textContent = activeBoosts.extraPick ? `🎁 Можно выбрать ${rewardPicksLeft} карты` : "";
+  extraPickRewardBtn.classList.toggle("hidden", rewardPicksLeft <= 1);
+  extraPickRewardBtn.textContent = rewardPicksLeft > 1 ? `🎁 Можно выбрать ${rewardPicksLeft} карты` : "";
 
   currentRewardOptions.forEach(image => {
     const isNew = !isCardCollected(image.src);
@@ -1814,6 +1888,7 @@ function renderRewardOptions(){
       }
 
       activeBoosts.extraPick = false;
+      permanentBonusPick = false;
       updateBoostStatus();
       showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
       win.classList.remove("show");
@@ -1832,9 +1907,17 @@ function finishGame(){
   setTimeout(() => {
     const rank = getCollectorRank();
     const settings = getRewardSettings();
+    permanentBonusPick = hasUpgrade("collector") && Math.random() < 0.2;
     collectorBadge.textContent = rank;
-    const extraText = activeBoosts.extraPick ? " Благодаря Щедрости можно выбрать 2 карты." : "";
-    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${settings.count} карты на выбор, выберите ${activeBoosts.extraPick ? "2 карты" : "1 карту"} для добавления в коллекцию ♡${extraText}`;
+
+    const choicesCount = settings.count + (hasUpgrade("betterChoice") ? 1 : 0);
+    const picksCount = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
+    const extraText = [
+      activeBoosts.extraPick ? "Благодаря Щедрости можно выбрать дополнительную карту." : "",
+      permanentBonusPick ? "Коллекционер сработал: +1 карта бесплатно." : ""
+    ].filter(Boolean).join(" ");
+
+    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${choicesCount} карты на выбор, выберите ${picksCount} ${picksCount === 1 ? "карту" : "карты"} для добавления в коллекцию ♡${extraText ? " " + extraText : ""}`;
     currentRewardOptions = getRewardCards();
     renderRewardOptions();
     resetPreGameBoosts();
@@ -2024,12 +2107,54 @@ function renderUpgradeGrid(){
       <small>После следующего пройденного уровня можно выбрать 2 карты вместо 1.</small>
       <button id="buyExtraPick">Активировать</button>
     </div>
+
+    <div class="upgrade-section-title">Постоянные улучшения</div>
+
+    <div class="upgrade-card">
+      <b>♻️ Переработка · 30 очков</b>
+      <small>Повторки, выпавшие из паков, автоматически дают +1 очко за каждую повторку.</small>
+      ${getPermanentUpgradeButton("recycling", 30)}
+    </div>
+
+    <div class="upgrade-card">
+      <b>👑 Коллекционер · 40 очков</b>
+      <small>После прохождения уровня с шансом 20% можно выбрать +1 дополнительную карту бесплатно.</small>
+      ${getPermanentUpgradeButton("collector", 40)}
+    </div>
+
+    <div class="upgrade-card">
+      <b>🎯 Лучший выбор · 35 очков</b>
+      <small>В награде после уровня всегда появляется на 1 вариант карты больше.</small>
+      ${getPermanentUpgradeButton("betterChoice", 35)}
+    </div>
+
+    <div class="upgrade-card">
+      <b>💸 Кэшбек · 25 очков</b>
+      <small>При покупке пака с шансом 30% возвращает 1 очко.</small>
+      ${getPermanentUpgradeButton("cashback", 25)}
+    </div>
+
+    <div class="upgrade-card">
+      <b>🍀 Счастливый день · 30 очков</b>
+      <small>Первый открытый пак за день даёт +1 дополнительную карту.</small>
+      ${getPermanentUpgradeButton("luckyDay", 30)}
+    </div>
+
+    <div class="upgrade-card">
+      <b>🎁 Подарок для Неверленда · 45 очков</b>
+      <small>Один раз в день первый открытый пак становится бесплатным.</small>
+      ${getPermanentUpgradeButton("neverlandGift", 45)}
+    </div>
   `;
 
   document.getElementById("buyComboBoost").addEventListener("click", buyComboBoost);
   document.getElementById("buyMemberFocus").addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
   document.getElementById("buyAlbumFocus").addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
   document.getElementById("buyExtraPick").addEventListener("click", buyExtraPick);
+
+  upgradeGrid.querySelectorAll("[data-permanent-key]").forEach(button => {
+    button.addEventListener("click", () => buyPermanentUpgrade(button.dataset.permanentKey, Number(button.dataset.permanentCost)));
+  });
 }
 
 async function renderPackGrid(){
@@ -2087,8 +2212,10 @@ async function buyPack(packKey){
   const config = await loadConfig();
   const pack = config.boosters?.[packKey];
   const cost = getPackCost(packKey, pack);
+  const giftAvailable = hasUpgrade("neverlandGift") && canUseDailyUpgrade("neverlandGift");
+  const isFree = giftAvailable;
 
-  if(points < cost){
+  if(!isFree && points < cost){
     showToast(`Для этого пака нужно ${cost} очков ♡`);
     return;
   }
@@ -2100,14 +2227,44 @@ async function buyPack(packKey){
     return;
   }
 
-  spendPoints(cost);
+  if(isFree){
+    markDailyUpgradeUsed("neverlandGift");
+    showToast("🎁 Подарок для Неверленда: пак бесплатный");
+  } else {
+    spendPoints(cost);
+  }
 
-  const cards = shuffle(images).slice(0, 3);
+  if(!isFree && hasUpgrade("cashback") && Math.random() < 0.3){
+    addShopPoints(1);
+    showToast("💸 Кэшбек +1 очко");
+  }
+
+  let packSize = 3;
+
+  if(hasUpgrade("luckyDay") && canUseDailyUpgrade("luckyDay")){
+    packSize += 1;
+    markDailyUpgradeUsed("luckyDay");
+    showToast("🍀 Счастливый день: +1 карта в паке");
+  }
+
+  const cards = shuffle(images).slice(0, packSize);
   const newCount = cards.filter(card => !isCardCollected(card.src)).length;
+  const repeatCount = cards.length - newCount;
 
   showPackResult(cards);
+
+  if(hasUpgrade("recycling") && repeatCount > 0){
+    addShopPoints(repeatCount);
+    showToast(`♻️ Переработка: +${repeatCount} очк.`);
+  }
+
   launchConfetti();
-  showToast(newCount ? `+${newCount} новых карт добавлено 💌` : "Все карты уже были в коллекции ♡");
+
+  if(newCount){
+    showToast(`+${newCount} новых карт добавлено 💌`);
+  } else {
+    showToast("Все карты уже были в коллекции ♡");
+  }
 }
 
 function openPairsForHint(pairCount, cost, label){
