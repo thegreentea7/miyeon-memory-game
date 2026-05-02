@@ -986,15 +986,15 @@ h1{
     <div class="block-title">Режим</div>
     <button class="mode-btn active" data-cols="4" data-rows="3" data-difficulty="easy">
       <b>Лёгкий</b>
-      <small>3 карты на выбор, +1 балл</small>
+      <small>3 карты на выбор, +2 балла</small>
     </button>
     <button class="mode-btn" data-cols="4" data-rows="4" data-difficulty="medium">
       <b>Средний</b>
-      <small>4 карты на выбор, +2 балла</small>
+      <small>4 карты на выбор, +4 балла</small>
     </button>
     <button class="mode-btn" data-cols="6" data-rows="4" data-difficulty="hard">
       <b>Сложный</b>
-      <small>5 карт на выбор, +3 балла</small>
+      <small>5 карт на выбор, +6 баллов</small>
     </button>
 
     <div class="shape-panel" id="shapePanel">
@@ -1015,11 +1015,11 @@ h1{
     </button>
     <button class="fun-btn" id="superHintBtn">
       <b>✨ Супер-подсказка</b>
-      <small>покажет две пары за 4 очка</small>
+      <small>покажет две пары за 5 очков</small>
     </button>
     <button class="fun-btn" id="rememberAllBtn">
       <b>🧠 Вспомнить всё</b>
-      <small>откроет всё поле за 7 очков</small>
+      <small>откроет всё поле за 8 очков</small>
     </button>
 
     <div class="boost-status" id="boostStatus"></div>
@@ -1123,7 +1123,7 @@ h1{
     <p id="winText">Выбери одну карту, которая попадёт в коллекцию.</p>
     <div class="reward-options" id="rewardOptions"></div>
     <div class="reward-actions">
-      <button class="reroll-btn" id="rerollBtn">🔁 Ещё разочек · 5 очков</button>
+      <button class="reroll-btn" id="rerollBtn">🔁 Ещё разочек · 7 очков</button>
       <button class="reroll-btn" id="extraPickRewardBtn">🎁 Щедрость активна</button>
     </div>
     <button class="again" id="again">Сыграть ещё раз</button>
@@ -1433,7 +1433,7 @@ async function getPackImages(packKey){
 
 function getPackCost(packKey, pack){
   if(packKey === "group") return 10;
-  return pack?.cost || 5;
+  return Math.max(Number(pack?.cost || 0), 8);
 }
 
 function getMemberTitle(member){
@@ -1788,21 +1788,21 @@ function resetTurn(){
 }
 
 function getDifficultyPoints(){
-  if(currentDifficulty === "medium") return 2;
-  if(currentDifficulty === "hard") return 3;
-  return 1;
+  if(currentDifficulty === "medium") return 4;
+  if(currentDifficulty === "hard") return 6;
+  return 2;
 }
 
 function updatePointsUI(){
   pointsEl.textContent = points;
-  shopOpen.classList.toggle("ready", points >= 5);
+  shopOpen.classList.toggle("ready", points >= 8);
 
-  if(points >= 5 && !packReadyNotified){
+  if(points >= 8 && !packReadyNotified){
     packReadyNotified = true;
     showToast("Можно открыть 1 пак 🎁");
   }
 
-  if(points < 5){
+  if(points < 8){
     packReadyNotified = false;
   }
 }
@@ -2006,12 +2006,12 @@ function buyExtraPick(){
     return;
   }
 
-  if(points < 8){
-    showToast("Для Щедрости нужно 8 очков ♡");
+  if(points < 12){
+    showToast("Для Щедрости нужно 12 очков ♡");
     return;
   }
 
-  spendPoints(8);
+  spendPoints(12);
   activeBoosts.extraPick = true;
   updateBoostStatus();
   showToast("🎁 Щедрость активирована");
@@ -2041,12 +2041,12 @@ function buyMemberFocus(member){
     return;
   }
 
-  if(points < 8){
-    showToast("Для фокуса на участницу нужно 8 очков ♡");
+  if(points < 10){
+    showToast("Для фокуса на участницу нужно 10 очков ♡");
     return;
   }
 
-  spendPoints(8);
+  spendPoints(10);
   preGameBoosts.member = member;
   updateBoostStatus();
   showToast(`🐰 Фокус: ${getMemberTitle(member)}`);
@@ -2059,12 +2059,12 @@ function buyAlbumFocus(album){
     return;
   }
 
-  if(points < 8){
-    showToast("Для фокуса на альбом нужно 8 очков ♡");
+  if(points < 10){
+    showToast("Для фокуса на альбом нужно 10 очков ♡");
     return;
   }
 
-  spendPoints(8);
+  spendPoints(10);
   preGameBoosts.album = album;
   updateBoostStatus();
   showToast(`💿 Эра: ${getAlbumTitle(album)}`);
@@ -2089,21 +2089,21 @@ function renderUpgradeGrid(){
     </div>
 
     <div class="upgrade-card">
-      <b>🐰 Фокус на участницу · 8 очков</b>
+      <b>🐰 Фокус на участницу · 10 очков</b>
       <small>На следующий уровень. Поле и награда будут собраны из карт выбранной участницы.</small>
       <select id="memberFocusSelect">${memberOptions}</select>
       <button id="buyMemberFocus">Купить фокус</button>
     </div>
 
     <div class="upgrade-card">
-      <b>💿 Фокус на альбом · 8 очков</b>
+      <b>💿 Фокус на альбом · 10 очков</b>
       <small>На следующий уровень. Поле и награда будут собраны из выбранной эры.</small>
       <select id="albumFocusSelect">${albumOptions}</select>
       <button id="buyAlbumFocus">Купить фокус</button>
     </div>
 
     <div class="upgrade-card">
-      <b>🎁 Щедрость · 8 очков</b>
+      <b>🎁 Щедрость · 12 очков</b>
       <small>После следующего пройденного уровня можно выбрать 2 карты вместо 1.</small>
       <button id="buyExtraPick">Активировать</button>
     </div>
@@ -2111,39 +2111,39 @@ function renderUpgradeGrid(){
     <div class="upgrade-section-title">Постоянные улучшения</div>
 
     <div class="upgrade-card">
-      <b>♻️ Переработка · 30 очков</b>
+      <b>♻️ Переработка · 35 очков</b>
       <small>Повторки, выпавшие из паков, автоматически дают +1 очко за каждую повторку.</small>
-      ${getPermanentUpgradeButton("recycling", 30)}
+      ${getPermanentUpgradeButton("recycling", 35)}
     </div>
 
     <div class="upgrade-card">
-      <b>👑 Коллекционер · 40 очков</b>
+      <b>👑 Коллекционер · 45 очков</b>
       <small>После прохождения уровня с шансом 20% можно выбрать +1 дополнительную карту бесплатно.</small>
-      ${getPermanentUpgradeButton("collector", 40)}
+      ${getPermanentUpgradeButton("collector", 45)}
     </div>
 
     <div class="upgrade-card">
-      <b>🎯 Лучший выбор · 35 очков</b>
+      <b>🎯 Лучший выбор · 45 очков</b>
       <small>В награде после уровня всегда появляется на 1 вариант карты больше.</small>
-      ${getPermanentUpgradeButton("betterChoice", 35)}
+      ${getPermanentUpgradeButton("betterChoice", 45)}
     </div>
 
     <div class="upgrade-card">
-      <b>💸 Кэшбек · 25 очков</b>
+      <b>💸 Кэшбек · 40 очков</b>
       <small>При покупке пака с шансом 30% возвращает 1 очко.</small>
-      ${getPermanentUpgradeButton("cashback", 25)}
+      ${getPermanentUpgradeButton("cashback", 40)}
     </div>
 
     <div class="upgrade-card">
-      <b>🍀 Счастливый день · 30 очков</b>
+      <b>🍀 Счастливый день · 50 очков</b>
       <small>Первый открытый пак за день даёт +1 дополнительную карту.</small>
-      ${getPermanentUpgradeButton("luckyDay", 30)}
+      ${getPermanentUpgradeButton("luckyDay", 50)}
     </div>
 
     <div class="upgrade-card">
-      <b>🎁 Подарок для Неверленда · 45 очков</b>
+      <b>🎁 Подарок для Неверленда · 60 очков</b>
       <small>Один раз в день первый открытый пак становится бесплатным.</small>
-      ${getPermanentUpgradeButton("neverlandGift", 45)}
+      ${getPermanentUpgradeButton("neverlandGift", 60)}
     </div>
   `;
 
@@ -2302,14 +2302,14 @@ function openPairsForHint(pairCount, cost, label){
 }
 
 function superHint(){
-  openPairsForHint(2, 4, "супер-подсказки");
+  openPairsForHint(2, 5, "супер-подсказки");
 }
 
 function rememberAll(){
   if(locked) return;
 
-  if(points < 7){
-    showToast("Для Вспомнить всё нужно 7 очков ♡");
+  if(points < 8){
+    showToast("Для Вспомнить всё нужно 8 очков ♡");
     return;
   }
 
@@ -2320,7 +2320,7 @@ function rememberAll(){
     return;
   }
 
-  spendPoints(7);
+  spendPoints(8);
   locked = true;
   cards.forEach(card => card.classList.add("open"));
 
@@ -2424,12 +2424,12 @@ packsTab.addEventListener("click", () => setShopTab("packs"));
 upgradesTab.addEventListener("click", () => setShopTab("upgrades"));
 
 rerollBtn.addEventListener("click", () => {
-  if(points < 5){
-    showToast("Для перекрута нужно 5 очков ♡");
+  if(points < 7){
+    showToast("Для перекрута нужно 7 очков ♡");
     return;
   }
 
-  spendPoints(5);
+  spendPoints(7);
   currentRewardOptions = getRewardCards();
   renderRewardOptions();
   showToast("🔁 Карты обновлены");
