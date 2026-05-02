@@ -817,6 +817,83 @@ h1{
   display:block;
 }
 
+.simple-booster-head span{
+  display:block;
+  margin-top:3px;
+  color:#9b7a88;
+  font-size:12px;
+}
+
+.simple-booster-card.roulette{
+  min-height:152px;
+}
+
+.pack-card-back{
+  width:100%;
+  aspect-ratio:3/4;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.25),transparent),
+    linear-gradient(145deg,#f7adc7,#ffdcea 48%,#dff3e6);
+  color:white;
+  font-size:32px;
+  font-weight:900;
+  text-shadow:0 3px 12px rgba(106,64,84,.22);
+  overflow:hidden;
+  position:relative;
+}
+
+.pack-card-back::after{
+  content:"MY";
+  position:absolute;
+  bottom:12%;
+  font-size:11px;
+  letter-spacing:.16em;
+}
+
+.simple-booster-card.spin{
+  animation:packCardPulse .7s ease-in-out infinite;
+}
+
+.simple-booster-card.spin .pack-card-back{
+  animation:packRoulette .45s linear infinite;
+}
+
+@keyframes packRoulette{
+  0%{transform:translateX(-5px) rotate(-1deg)}
+  50%{transform:translateX(5px) rotate(1deg)}
+  100%{transform:translateX(-5px) rotate(-1deg)}
+}
+
+@keyframes packCardPulse{
+  0%,100%{filter:brightness(1)}
+  50%{filter:brightness(1.08)}
+}
+
+.pack-result-actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+.pack-action-btn{
+  flex:1;
+  border-radius:999px;
+  padding:12px 14px;
+  color:#744b5e;
+  font-weight:900;
+  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+}
+
+.pack-action-btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  filter:grayscale(.2);
+}
+
 .win-card{
   position:relative;
   z-index:3;
@@ -1249,10 +1326,17 @@ h1{
 
 <div class="simple-booster-result" id="packResult">
   <div class="simple-booster-head">
-    <b>🎁 Пак открыт</b>
+    <div>
+      <b>🎁 Открытие пака</b>
+      <span id="packResultSubtitle">рулетка карт</span>
+    </div>
     <button id="packResultClose">×</button>
   </div>
   <div class="simple-booster-cards" id="packResultCards"></div>
+  <div class="pack-result-actions">
+    <button class="pack-action-btn" id="claimPackBtn">💌 Забрать карты</button>
+    <button class="pack-action-btn" id="openAgainBtn">🔁 Открыть ещё</button>
+  </div>
 </div>
 
 <div class="rarity-reaction" id="rarityReaction">♡</div>
@@ -1370,6 +1454,9 @@ const extraPickRewardBtn = document.getElementById("extraPickRewardBtn");
 const packResult = document.getElementById("packResult");
 const packResultCards = document.getElementById("packResultCards");
 const packResultClose = document.getElementById("packResultClose");
+const packResultSubtitle = document.getElementById("packResultSubtitle");
+const claimPackBtn = document.getElementById("claimPackBtn");
+const openAgainBtn = document.getElementById("openAgainBtn");
 
 let firstCard = null;
 let secondCard = null;
@@ -1409,6 +1496,9 @@ let permanentUpgrades = JSON.parse(localStorage.getItem("miyeon_permanent_upgrad
 let collectorIntuitionTicks = Number(localStorage.getItem("miyeon_intuition_ticks") || "0");
 let ultraPity = Number(localStorage.getItem("miyeon_ultra_pity") || "0");
 let openedPacksCount = Number(localStorage.getItem("miyeon_opened_packs_count") || "0");
+let lastOpenedPack = null;
+let currentOpenedPackContext = null;
+let packRevealInProgress = false;
 let achievements = JSON.parse(localStorage.getItem("miyeon_achievements") || "{}");
 const PACK_RATES = {
   basic: { common:70, rare:25, ultra:5 },
@@ -2576,33 +2666,104 @@ function closeShop(){
   shopModal.classList.remove("show");
 }
 
-function showPackResult(cards){
-  packResultCards.innerHTML = "";
+function updateOpenAgainButton(){
+  if(!openAgainBtn || !currentOpenedPackContext){
+    if(openAgainBtn) openAgainBtn.disabled = true;
+    return;
+  }
 
-  cards.forEach(card => {
-    const already = isCardCollected(card.src);
+  let canOpen = false;
+  let label = "🔁 Открыть ещё";
+
+  if(currentOpenedPackContext.type === "special"){
+    const cost = currentOpenedPackContext.pack.cost;
+    canOpen = points >= cost;
+    label = canOpen ? `🔁 Открыть ещё · ${cost}` : `🔁 Нужно ${cost} очк.`;
+  } else {
+    const pack = CARD_CONFIG?.boosters?.[currentOpenedPackContext.packKey];
+    const cost = getPackCost(currentOpenedPackContext.packKey, pack);
+    const free = hasUpgrade("neverlandGift") && canUseDailyUpgrade("neverlandGift");
+    canOpen = free || points >= cost;
+    label = free ? "🔁 Открыть ещё · бесплатно" : (canOpen ? `🔁 Открыть ещё · ${cost}` : `🔁 Нужно ${cost} очк.`);
+  }
+
+  openAgainBtn.textContent = label;
+  openAgainBtn.disabled = packRevealInProgress || !canOpen;
+}
+
+function claimOpenedPack({ close = true, silent = false } = {}){
+  if(!lastOpenedPack || packRevealInProgress) return false;
+
+  let newCount = 0;
+  lastOpenedPack.forEach(card => {
+    if(!isCardCollected(card.src)) newCount++;
     collectCard(card.src);
-
-    const item = document.createElement("div");
-    item.className = `simple-booster-card rarity-${card.rarity}`;
-    item.innerHTML = `
-      <span class="reward-badge ${already ? "old" : ""}">${already ? "Уже есть" : "NEW"}</span>
-      <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
-      <img src="${card.src}" alt="pack card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
-    `;
-    packResultCards.appendChild(item);
   });
 
-  if(cards.some(card => card.rarity === "ultra")){
-    launchConfetti();
-    showRarityReaction("✨ Небобо, это ultra pull! Срочно любоваться ♡");
-  } else if(cards.some(card => card.rarity === "rare")){
-    showRarityReaction("💎 В паке есть rare-карта ♡");
+  if(!silent){
+    showToast(newCount ? `+${newCount} новых карт 💌` : "Все карты уже были в коллекции ♡");
   }
 
   checkRarityAchievements();
+  lastOpenedPack = null;
+
+  if(close){
+    packResult.classList.remove("show");
+  }
+
+  updateOpenAgainButton();
+  return true;
+}
+
+function showPackResult(cards, context = null){
+  packResultCards.innerHTML = "";
+  lastOpenedPack = cards;
+  currentOpenedPackContext = context || currentOpenedPackContext;
+  packRevealInProgress = true;
+
+  packResultSubtitle.textContent = `Карт в паке: ${cards.length}`;
+  packResultCards.style.gridTemplateColumns = `repeat(${Math.min(cards.length, 4)},1fr)`;
+
+  cards.forEach(() => {
+    const item = document.createElement("div");
+    item.className = "simple-booster-card roulette spin";
+    item.innerHTML = `<div class="pack-card-back">🐰</div>`;
+    packResultCards.appendChild(item);
+  });
+
+  claimPackBtn.disabled = true;
+  updateOpenAgainButton();
   packResult.classList.add("show");
-  setTimeout(() => packResult.classList.remove("show"), 5200);
+
+  setTimeout(() => {
+    const items = [...packResultCards.querySelectorAll(".simple-booster-card")];
+
+    items.forEach((item, index) => {
+      setTimeout(() => {
+        const card = cards[index];
+        const already = isCardCollected(card.src);
+        item.className = `simple-booster-card rarity-${card.rarity}`;
+        item.innerHTML = `
+          <span class="reward-badge ${already ? "old" : ""}">${already ? "Уже есть" : "NEW"}</span>
+          <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
+          <img src="${card.src}" alt="pack card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+        `;
+
+        if(card.rarity === "ultra"){
+          launchConfetti();
+          showRarityReaction("✨ Небобо, это ultra pull! Срочно любоваться ♡");
+        } else if(card.rarity === "rare"){
+          showRarityReaction("💎 Rare-карта в паке ♡");
+        }
+
+        if(index === cards.length - 1){
+          packRevealInProgress = false;
+          claimPackBtn.disabled = false;
+          updateOpenAgainButton();
+        }
+      }, index * 520);
+    });
+  }, 850);
 }
 
 function applyUltraPity(cards, sourceImages){
@@ -2639,7 +2800,7 @@ async function buySpecialPack(pack){
   const newCount = cards.filter(card => !isCardCollected(card.src)).length;
   const repeatCards = cards.filter(card => isCardCollected(card.src));
 
-  showPackResult(cards);
+  showPackResult(cards, { type:"special", pack });
   openedPacksCount++;
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
   updateUltraPity(cards, images);
@@ -2702,7 +2863,7 @@ async function buyPack(packKey, rateKey = "basic"){
   const newCount = cards.length - repeatCards.length;
   const repeatCount = repeatCards.length;
 
-  showPackResult(cards);
+  showPackResult(cards, { type:"normal", packKey, rateKey });
 
   openedPacksCount++;
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
@@ -2883,7 +3044,27 @@ shopModal.addEventListener("click", event => {
   if(event.target === shopModal) closeShop();
 });
 
-packResultClose.addEventListener("click", () => packResult.classList.remove("show"));
+packResultClose.addEventListener("click", () => {
+  if(packRevealInProgress) return;
+  claimOpenedPack({ close:true, silent:false });
+});
+
+claimPackBtn.addEventListener("click", () => {
+  claimOpenedPack({ close:true, silent:false });
+});
+
+openAgainBtn.addEventListener("click", async () => {
+  if(packRevealInProgress || !currentOpenedPackContext) return;
+
+  const context = currentOpenedPackContext;
+  claimOpenedPack({ close:false, silent:true });
+
+  if(context.type === "special"){
+    await buySpecialPack(context.pack);
+  } else {
+    await buyPack(context.packKey, context.rateKey || "basic");
+  }
+});
 
 packsTab.addEventListener("click", () => setShopTab("packs"));
 upgradesTab.addEventListener("click", () => setShopTab("upgrades"));
