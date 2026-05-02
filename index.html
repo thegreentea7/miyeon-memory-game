@@ -546,6 +546,104 @@ h1{
 
 .collection-more-btn.hidden{display:none}
 
+.boost-status{
+  display:none;
+  grid-column:1 / -1;
+  padding:9px 11px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#fff0b8,#ffe1eb);
+  color:#744b5e;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  font-size:12px;
+  font-weight:900;
+  line-height:1.35;
+}
+
+.boost-status.show{display:block}
+
+.shop-section{
+  display:grid;
+  gap:10px;
+  min-height:0;
+  overflow:auto;
+  padding-right:4px;
+}
+
+.shop-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.shop-tab{
+  padding:10px;
+  border-radius:18px;
+  background:rgba(255,255,255,.72);
+  color:#6c4c5b;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  font-weight:900;
+  transition:.18s;
+}
+
+.shop-tab.active{
+  background:linear-gradient(135deg,#ffdbea,#ecf9ef);
+  outline:2px solid rgba(247,182,205,.72);
+}
+
+.upgrade-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:10px;
+  align-content:start;
+}
+
+.upgrade-card{
+  padding:13px;
+  border-radius:20px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  color:#6c4c5b;
+  text-align:left;
+  display:grid;
+  gap:8px;
+}
+
+.upgrade-card b{font-size:15px}
+.upgrade-card small{color:#9b7a88;font-size:12px;line-height:1.35}
+
+.upgrade-card button,.upgrade-card select,.reroll-btn{
+  width:100%;
+  padding:10px 12px;
+  border-radius:16px;
+  color:#744b5e;
+  background:linear-gradient(135deg,#ffd8e7,#e9f8ee);
+  box-shadow:0 9px 20px rgba(113,74,92,.08);
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.9);
+  outline:none;
+}
+
+.upgrade-card select{
+  background:rgba(255,255,255,.86);
+}
+
+.reward-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:-6px;
+  margin-bottom:14px;
+}
+
+.reroll-btn{
+  padding:12px 16px;
+}
+
+.reroll-btn.hidden{display:none}
+
 .shop-subtitle{
   text-align:left;
   color:#9b7a88;
@@ -897,8 +995,18 @@ h1{
     <div class="block-title">Приколы</div>
     <button class="fun-btn" id="hintBtn">
       <b>💡 Подсказка</b>
-      <small>покажет одну пару за 1 очко</small>
+      <small>покажет одну пару за 2 очка</small>
     </button>
+    <button class="fun-btn" id="superHintBtn">
+      <b>✨ Супер-подсказка</b>
+      <small>покажет две пары за 4 очка</small>
+    </button>
+    <button class="fun-btn" id="rememberAllBtn">
+      <b>🧠 Вспомнить всё</b>
+      <small>откроет всё поле за 7 очков</small>
+    </button>
+
+    <div class="boost-status" id="boostStatus"></div>
 
     <button class="restart" id="restart">Новая игра</button>
   </aside>
@@ -974,8 +1082,20 @@ h1{
       <button class="modal-close" id="shopClose">×</button>
     </div>
 
-    <div class="shop-subtitle">Паки</div>
-    <div class="pack-grid" id="packGrid"></div>
+    <div class="shop-tabs">
+      <button class="shop-tab active" id="packsTab">Паки</button>
+      <button class="shop-tab" id="upgradesTab">Улучшения</button>
+    </div>
+
+    <div class="shop-section" id="packsSection">
+      <div class="shop-subtitle">Паки</div>
+      <div class="pack-grid" id="packGrid"></div>
+    </div>
+
+    <div class="shop-section" id="upgradesSection" style="display:none">
+      <div class="shop-subtitle">Улучшения на следующий уровень</div>
+      <div class="upgrade-grid" id="upgradeGrid"></div>
+    </div>
   </div>
 </section>
 
@@ -986,6 +1106,10 @@ h1{
     <div class="collector-badge" id="collectorBadge">💿 Режим коллекционера</div>
     <p id="winText">Выбери одну карту, которая попадёт в коллекцию.</p>
     <div class="reward-options" id="rewardOptions"></div>
+    <div class="reward-actions">
+      <button class="reroll-btn" id="rerollBtn">🔁 Ещё разочек · 5 очков</button>
+      <button class="reroll-btn" id="extraPickRewardBtn">🎁 Щедрость активна</button>
+    </div>
     <button class="again" id="again">Сыграть ещё раз</button>
   </div>
 </section>
@@ -1101,6 +1225,14 @@ const shopOpen = document.getElementById("shopOpen");
 const shopClose = document.getElementById("shopClose");
 const shopModal = document.getElementById("shopModal");
 const packGrid = document.getElementById("packGrid");
+const packsTab = document.getElementById("packsTab");
+const upgradesTab = document.getElementById("upgradesTab");
+const packsSection = document.getElementById("packsSection");
+const upgradesSection = document.getElementById("upgradesSection");
+const upgradeGrid = document.getElementById("upgradeGrid");
+const boostStatus = document.getElementById("boostStatus");
+const rerollBtn = document.getElementById("rerollBtn");
+const extraPickRewardBtn = document.getElementById("extraPickRewardBtn");
 const packResult = document.getElementById("packResult");
 const packResultCards = document.getElementById("packResultCards");
 const packResultClose = document.getElementById("packResultClose");
@@ -1126,6 +1258,17 @@ let collectionVisibleLimit = 48;
 let currentFilteredCollection = [];
 let points = Number(localStorage.getItem("miyeon_shop_points") || "0");
 let packReadyNotified = points >= 5;
+let activeBoosts = {
+  extraPick: false
+};
+let preGameBoosts = {
+  combo: false,
+  member: null,
+  album: null
+};
+let comboStreak = 0;
+let currentRewardOptions = [];
+let rewardPicksLeft = 1;
 
 async function loadConfig(){
   if(CARD_CONFIG) return CARD_CONFIG;
@@ -1275,6 +1418,35 @@ function getPackCost(packKey, pack){
   return pack?.cost || 5;
 }
 
+function getMemberTitle(member){
+  return MEMBERS[member]?.title || member;
+}
+
+function getAlbumTitle(album){
+  return ALBUMS[album]?.title || album;
+}
+
+function getActiveBoostLabels(){
+  const labels = [];
+  if(preGameBoosts.combo) labels.push("🔥 Серия");
+  if(preGameBoosts.member) labels.push(`🐰 ${getMemberTitle(preGameBoosts.member)}`);
+  if(preGameBoosts.album) labels.push(`💿 ${getAlbumTitle(preGameBoosts.album)}`);
+  if(activeBoosts.extraPick) labels.push("🎁 Щедрость");
+  return labels;
+}
+
+function updateBoostStatus(){
+  const labels = getActiveBoostLabels();
+  boostStatus.classList.toggle("show", labels.length > 0);
+  boostStatus.innerHTML = labels.length ? `Активно: ${labels.join(" · ")}` : "";
+}
+
+function resetPreGameBoosts(){
+  preGameBoosts = { combo:false, member:null, album:null };
+  comboStreak = 0;
+  updateBoostStatus();
+}
+
 function getCollectionKey(src){
   return "miyeon_collection_" + src;
 }
@@ -1391,7 +1563,16 @@ function stopTimer(){
 async function buildDeck(cols, rows){
   const activeCards = getBoardCardCount(cols, rows);
   const needed = activeCards / 2;
-  const availableImages = await getAllImages();
+  let availableImages = await getAllImages();
+
+  if(preGameBoosts.member){
+    availableImages = availableImages.filter(card => card.member === preGameBoosts.member);
+  }
+
+  if(preGameBoosts.album){
+    availableImages = availableImages.filter(card => card.album === preGameBoosts.album);
+  }
+
   const selected = shuffle(availableImages).slice(0, needed);
 
   if(selected.length < needed){
@@ -1423,12 +1604,14 @@ async function startGame(cols = currentCols, rows = currentRows){
   firstCard = null;
   secondCard = null;
   locked = false;
+  comboStreak = 0;
 
   movesEl.textContent = "0";
   pairsEl.textContent = "0";
   totalPairsEl.textContent = totalPairs;
   timeEl.textContent = "00:00";
   win.classList.remove("show");
+  currentRewardOptions = [];
 
   board.innerHTML = `<div class="loading">Подгружаю карты ♡</div>`;
 
@@ -1443,7 +1626,7 @@ async function startGame(cols = currentCols, rows = currentRows){
   board.style.setProperty("--gap", visualCols >= 6 ? "7px" : "10px");
 
   if(deckResult.error){
-    board.innerHTML = `<div class="loading">В коллекции найдено ${deckResult.available} изображений.<br>Для режима нужно минимум ${deckResult.needed} ♡</div>`;
+    board.innerHTML = `<div class="loading">По выбранным улучшениям найдено ${deckResult.available} изображений.<br>Для режима нужно минимум ${deckResult.needed} ♡</div>`;
     requestAnimationFrame(fitBoard);
     return;
   }
@@ -1499,6 +1682,15 @@ function flipCard(el){
     setTimeout(() => {
       firstCard.classList.add("matched");
       secondCard.classList.add("matched");
+      comboStreak++;
+
+      if(preGameBoosts.combo && comboStreak % 2 === 0){
+        points += 1;
+        localStorage.setItem("miyeon_shop_points", String(points));
+        updatePointsUI();
+        showToast("🔥 Серия +1 очко");
+      }
+
       matched++;
       pairsEl.textContent = matched;
       resetTurn();
@@ -1506,6 +1698,7 @@ function flipCard(el){
       if(matched === totalPairs) finishGame();
     }, 250);
   }else{
+    comboStreak = 0;
     setTimeout(() => {
       firstCard.classList.remove("open");
       secondCard.classList.remove("open");
@@ -1587,11 +1780,17 @@ function getCollectorRank(){
 
 function renderRewardOptions(){
   rewardOptions.innerHTML = "";
-  const options = getRewardCards();
 
-  rewardOptions.style.setProperty("--reward-count", options.length);
+  if(!currentRewardOptions.length){
+    currentRewardOptions = getRewardCards();
+  }
 
-  options.forEach(image => {
+  rewardPicksLeft = activeBoosts.extraPick ? 2 : 1;
+  rewardOptions.style.setProperty("--reward-count", currentRewardOptions.length);
+  extraPickRewardBtn.classList.toggle("hidden", !activeBoosts.extraPick);
+  extraPickRewardBtn.textContent = activeBoosts.extraPick ? `🎁 Можно выбрать ${rewardPicksLeft} карты` : "";
+
+  currentRewardOptions.forEach(image => {
     const isNew = !isCardCollected(image.src);
     const btn = document.createElement("button");
     btn.className = "reward-card";
@@ -1603,8 +1802,22 @@ function renderRewardOptions(){
     btn.addEventListener("click", () => {
       const already = isCardCollected(image.src);
       collectCard(image.src);
+      btn.disabled = true;
+      btn.style.opacity = ".55";
+      rewardPicksLeft--;
+
+      if(activeBoosts.extraPick && rewardPicksLeft > 0){
+        extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
+        showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
+        renderCollection();
+        return;
+      }
+
+      activeBoosts.extraPick = false;
+      updateBoostStatus();
       showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
       win.classList.remove("show");
+      renderCollection();
     });
 
     rewardOptions.appendChild(btn);
@@ -1620,8 +1833,11 @@ function finishGame(){
     const rank = getCollectorRank();
     const settings = getRewardSettings();
     collectorBadge.textContent = rank;
-    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${settings.count} карты на выбор, выберите 1 карту для добавления её в коллекцию ♡`;
+    const extraText = activeBoosts.extraPick ? " Благодаря Щедрости можно выбрать 2 карты." : "";
+    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${settings.count} карты на выбор, выберите ${activeBoosts.extraPick ? "2 карты" : "1 карту"} для добавления в коллекцию ♡${extraText}`;
+    currentRewardOptions = getRewardCards();
     renderRewardOptions();
+    resetPreGameBoosts();
     win.classList.add("show");
   }, 350);
 }
@@ -1693,6 +1909,129 @@ function closeCollection(){
   collectionModal.classList.remove("show");
 }
 
+function setShopTab(tab){
+  const isPacks = tab === "packs";
+  packsTab.classList.toggle("active", isPacks);
+  upgradesTab.classList.toggle("active", !isPacks);
+  packsSection.style.display = isPacks ? "grid" : "none";
+  upgradesSection.style.display = isPacks ? "none" : "grid";
+}
+
+function buyExtraPick(){
+  if(activeBoosts.extraPick){
+    showToast("Щедрость уже активна ♡");
+    return;
+  }
+
+  if(points < 8){
+    showToast("Для Щедрости нужно 8 очков ♡");
+    return;
+  }
+
+  spendPoints(8);
+  activeBoosts.extraPick = true;
+  updateBoostStatus();
+  showToast("🎁 Щедрость активирована");
+}
+
+function buyComboBoost(){
+  if(preGameBoosts.combo){
+    showToast("Серия уже активна на следующий уровень ♡");
+    return;
+  }
+
+  if(points < 6){
+    showToast("Для Серии нужно 6 очков ♡");
+    return;
+  }
+
+  spendPoints(6);
+  preGameBoosts.combo = true;
+  updateBoostStatus();
+  showToast("🔥 Серия активирована");
+}
+
+function buyMemberFocus(member){
+  if(!member) return;
+  if(preGameBoosts.member === member){
+    showToast("Этот фокус уже выбран ♡");
+    return;
+  }
+
+  if(points < 8){
+    showToast("Для фокуса на участницу нужно 8 очков ♡");
+    return;
+  }
+
+  spendPoints(8);
+  preGameBoosts.member = member;
+  updateBoostStatus();
+  showToast(`🐰 Фокус: ${getMemberTitle(member)}`);
+}
+
+function buyAlbumFocus(album){
+  if(!album) return;
+  if(preGameBoosts.album === album){
+    showToast("Этот альбом уже выбран ♡");
+    return;
+  }
+
+  if(points < 8){
+    showToast("Для фокуса на альбом нужно 8 очков ♡");
+    return;
+  }
+
+  spendPoints(8);
+  preGameBoosts.album = album;
+  updateBoostStatus();
+  showToast(`💿 Эра: ${getAlbumTitle(album)}`);
+}
+
+function renderUpgradeGrid(){
+  const memberOptions = Object.entries(MEMBERS)
+    .filter(([key]) => key !== "all" && key !== "group")
+    .map(([key, item]) => `<option value="${key}">${item.title}</option>`)
+    .join("");
+
+  const albumOptions = Object.entries(ALBUMS)
+    .filter(([key]) => key !== "all")
+    .map(([key, item]) => `<option value="${key}">${item.title}</option>`)
+    .join("");
+
+  upgradeGrid.innerHTML = `
+    <div class="upgrade-card">
+      <b>🔥 Серия · 6 очков</b>
+      <small>На следующий уровень. За каждые 2 пары подряд без ошибки даёт +1 очко.</small>
+      <button id="buyComboBoost">Активировать</button>
+    </div>
+
+    <div class="upgrade-card">
+      <b>🐰 Фокус на участницу · 8 очков</b>
+      <small>На следующий уровень. Поле и награда будут собраны из карт выбранной участницы.</small>
+      <select id="memberFocusSelect">${memberOptions}</select>
+      <button id="buyMemberFocus">Купить фокус</button>
+    </div>
+
+    <div class="upgrade-card">
+      <b>💿 Фокус на альбом · 8 очков</b>
+      <small>На следующий уровень. Поле и награда будут собраны из выбранной эры.</small>
+      <select id="albumFocusSelect">${albumOptions}</select>
+      <button id="buyAlbumFocus">Купить фокус</button>
+    </div>
+
+    <div class="upgrade-card">
+      <b>🎁 Щедрость · 8 очков</b>
+      <small>После следующего пройденного уровня можно выбрать 2 карты вместо 1.</small>
+      <button id="buyExtraPick">Активировать</button>
+    </div>
+  `;
+
+  document.getElementById("buyComboBoost").addEventListener("click", buyComboBoost);
+  document.getElementById("buyMemberFocus").addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
+  document.getElementById("buyAlbumFocus").addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
+  document.getElementById("buyExtraPick").addEventListener("click", buyExtraPick);
+}
+
 async function renderPackGrid(){
   const config = await loadConfig();
   packGrid.innerHTML = "";
@@ -1715,6 +2054,8 @@ async function renderPackGrid(){
 
 async function openShop(){
   await renderPackGrid();
+  renderUpgradeGrid();
+  setShopTab("packs");
   shopModal.classList.add("show");
 }
 
@@ -1769,11 +2110,74 @@ async function buyPack(packKey){
   showToast(newCount ? `+${newCount} новых карт добавлено 💌` : "Все карты уже были в коллекции ♡");
 }
 
+function openPairsForHint(pairCount, cost, label){
+  if(locked) return;
+
+  if(points < cost){
+    showToast(`Для ${label} нужно ${cost} очков ♡`);
+    return;
+  }
+
+  const closed = [...document.querySelectorAll(".card:not(.open):not(.matched)")];
+  const groups = {};
+
+  closed.forEach(card => {
+    const id = card.dataset.id;
+    if(!groups[id]) groups[id] = [];
+    groups[id].push(card);
+  });
+
+  const pairs = Object.values(groups).filter(group => group.length >= 2).slice(0, pairCount);
+
+  if(!pairs.length){
+    showToast("Подсказок больше нет ♡");
+    return;
+  }
+
+  spendPoints(cost);
+  locked = true;
+  pairs.flat().forEach(card => card.classList.add("open"));
+
+  setTimeout(() => {
+    pairs.flat().forEach(card => card.classList.remove("open"));
+    locked = false;
+  }, pairCount > 1 ? 1200 : 900);
+}
+
+function superHint(){
+  openPairsForHint(2, 4, "супер-подсказки");
+}
+
+function rememberAll(){
+  if(locked) return;
+
+  if(points < 7){
+    showToast("Для Вспомнить всё нужно 7 очков ♡");
+    return;
+  }
+
+  const cards = [...document.querySelectorAll(".card:not(.matched)")];
+
+  if(!cards.length){
+    showToast("Открывать уже нечего ♡");
+    return;
+  }
+
+  spendPoints(7);
+  locked = true;
+  cards.forEach(card => card.classList.add("open"));
+
+  setTimeout(() => {
+    cards.forEach(card => card.classList.remove("open"));
+    locked = false;
+  }, 2200);
+}
+
 function hint(){
   if(locked) return;
 
-  if(points < 1){
-    showToast("Для подсказки нужно 1 очко ♡");
+  if(points < 2){
+    showToast("Для подсказки нужно 2 очка ♡");
     return;
   }
 
@@ -1793,7 +2197,7 @@ function hint(){
     return;
   }
 
-  spendPoints(1);
+  spendPoints(2);
   locked = true;
   pair[0].classList.add("open");
   pair[1].classList.add("open");
@@ -1859,6 +2263,21 @@ shopModal.addEventListener("click", event => {
 
 packResultClose.addEventListener("click", () => packResult.classList.remove("show"));
 
+packsTab.addEventListener("click", () => setShopTab("packs"));
+upgradesTab.addEventListener("click", () => setShopTab("upgrades"));
+
+rerollBtn.addEventListener("click", () => {
+  if(points < 5){
+    showToast("Для перекрута нужно 5 очков ♡");
+    return;
+  }
+
+  spendPoints(5);
+  currentRewardOptions = getRewardCards();
+  renderRewardOptions();
+  showToast("🔁 Карты обновлены");
+});
+
 modeButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     modeButtons.forEach(item => item.classList.remove("active"));
@@ -1883,10 +2302,13 @@ shapeButtons.forEach(btn => {
 restartBtn.addEventListener("click", () => startGame());
 againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
+document.getElementById("superHintBtn").addEventListener("click", superHint);
+document.getElementById("rememberAllBtn").addEventListener("click", rememberAll);
 
 loadConfig()
   .then(() => {
     updatePointsUI();
+    updateBoostStatus();
     updateShapePanel();
     startGame(4,3);
   })
