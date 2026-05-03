@@ -3219,6 +3219,64 @@ h1{
 }
 @media(max-width:820px){#win .reward-actions{grid-template-columns:1fr!important;width:min(360px,100%)!important}}
 
+
+
+/* === Level reward reveal cards === */
+.level-reward-preview{
+  margin:14px auto 4px;
+  padding:14px;
+  border-radius:24px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(231,214,255,.9);
+  box-shadow:0 12px 30px rgba(84,56,140,.10);
+  max-width:720px;
+}
+.level-reward-preview-title{
+  color:#5a3f82;
+  font-weight:1000;
+  margin-bottom:10px;
+}
+.level-reward-card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(92px,118px));
+  justify-content:center;
+  gap:12px;
+}
+.level-reward-card{
+  position:relative;
+  border-radius:20px;
+  padding:5px;
+  background:linear-gradient(135deg,#eadfff,#fff5fb);
+  box-shadow:0 14px 30px rgba(112,78,170,.14);
+}
+.level-reward-card.rarity-rare{
+  background:var(--rare-grad);
+  box-shadow:0 0 0 2px rgba(255,185,223,.6),0 16px 32px rgba(216,115,180,.15);
+}
+.level-reward-card.rarity-ultra{
+  background:var(--ultra-grad);
+  box-shadow:0 0 0 2px rgba(169,139,255,.7),var(--ann-glow),0 18px 40px rgba(112,78,170,.22);
+}
+.level-reward-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  object-position:center;
+  border-radius:15px;
+  display:block;
+}
+.level-reward-card small{
+  display:block;
+  margin-top:6px;
+  color:#806fa6;
+  font-size:10px;
+  font-weight:900;
+  line-height:1.25;
+}
+@media(max-width:560px){
+  .level-reward-card-grid{grid-template-columns:repeat(2,minmax(92px,1fr));}
+}
+
 </style>
 </head>
 
@@ -4156,19 +4214,19 @@ function renderProfileMemberStats(){
 
 const LEVEL_REWARD_PLAN = {
   2:{type:"points", icon:"💎", title:"+8 очков", desc:"валюта магазина"},
-  3:{type:"pack", icon:"🎁", title:"Basic Pack", desc:"бонусный пак"},
-  4:{type:"card", icon:"🃏", title:"Random Card", desc:"случайная карта"},
-  5:{type:"pack", icon:"💜", title:"Miyeon Pack", desc:"пак bias-вибра"},
-  6:{type:"frame", icon:"🖼", title:"Lilac Frame", desc:"рамка профиля"},
+  3:{type:"pack", icon:"🎁", title:"Basic Pack", desc:"3 случайные карты"},
+  4:{type:"card", icon:"🃏", title:"Random Card", desc:"1 случайная карта"},
+  5:{type:"pack", icon:"💜", title:"Bias Pack", desc:"3 карты любимой участницы"},
+  6:{type:"card", icon:"💌", title:"New Card", desc:"1 карта, которой нет в коллекции"},
   7:{type:"points", icon:"💎", title:"+15 очков", desc:"валюта магазина"},
-  8:{type:"card", icon:"💖", title:"Rare Card", desc:"случайная rare"},
-  9:{type:"avatar", icon:"🐰", title:"Bunny Avatar", desc:"аватар профиля"},
-  10:{type:"pack", icon:"👑", title:"Premium Pack", desc:"большой milestone"},
+  8:{type:"card", icon:"💖", title:"Rare Card", desc:"1 rare или ultra карта"},
+  9:{type:"pack", icon:"💖", title:"Rare Pack", desc:"4 карты с повышенным шансом rare"},
+  10:{type:"pack", icon:"👑", title:"Premium Pack", desc:"5 карт с высоким шансом rare и ultra"},
   12:{type:"points", icon:"💎", title:"+25 очков", desc:"валюта магазина"},
-  15:{type:"card", icon:"✨", title:"Ultra Chance Card", desc:"шанс ultra"},
-  20:{type:"frame", icon:"🌙", title:"Stage Frame", desc:"эксклюзивная рамка"},
-  25:{type:"pack", icon:"👑", title:"Premium Pack ×2", desc:"двойной подарок"},
-  30:{type:"avatar", icon:"💿", title:"Archivist Avatar", desc:"редкий аватар"}
+  15:{type:"card", icon:"✨", title:"Ultra Chance Card", desc:"1 карта с шансом ultra"},
+  20:{type:"pack", icon:"🌙", title:"Stage Pack", desc:"5 карт с редким шансом"},
+  25:{type:"pack", icon:"👑", title:"Premium Pack ×2", desc:"8 карт с высоким шансом rare и ultra"},
+  30:{type:"card", icon:"✨", title:"Guaranteed Ultra", desc:"1 гарантированная ultra карта"}
 };
 
 function getPrettyLevelReward(level){
@@ -4243,12 +4301,94 @@ function getUnlocksForLevel(level){
   return LEVEL_UNLOCKS.filter(unlock => unlock.level === level);
 }
 
+function getLevelRewardPool(reward, level){
+  const all = allImageCache || [];
+  if(!all.length) return [];
+
+  if(reward.title === "Bias Pack"){
+    const biasCards = all.filter(card => card.member === playerProfile.bias);
+    return biasCards.length ? biasCards : all;
+  }
+
+  if(reward.title === "New Card"){
+    const missing = all.filter(card => !isCardCollected(card.src));
+    return missing.length ? missing : all;
+  }
+
+  if(reward.title === "Rare Card"){
+    const rarePlus = all.filter(card => card.rarity === "rare" || card.rarity === "ultra");
+    return rarePlus.length ? rarePlus : all;
+  }
+
+  if(reward.title === "Guaranteed Ultra"){
+    const ultra = all.filter(card => card.rarity === "ultra");
+    return ultra.length ? ultra : all;
+  }
+
+  return all;
+}
+
+function getLevelRewardRates(reward, level){
+  if(reward.title === "Rare Pack") return { common:45, rare:45, ultra:10 };
+  if(reward.title === "Premium Pack" || reward.title === "Premium Pack ×2") return { common:28, rare:52, ultra:20 };
+  if(reward.title === "Stage Pack") return { common:35, rare:48, ultra:17 };
+  if(reward.title === "Rare Card") return { common:0, rare:82, ultra:18 };
+  if(reward.title === "Ultra Chance Card") return { common:0, rare:65, ultra:35 };
+  if(reward.title === "Guaranteed Ultra") return { common:0, rare:0, ultra:100 };
+  if(reward.title === "New Card") return { common:62, rare:30, ultra:8 };
+  return { common:70, rare:25, ultra:5 };
+}
+
+function getLevelRewardCardCount(reward, level){
+  if(reward.title === "Premium Pack ×2") return 8;
+  if(reward.title === "Premium Pack" || reward.title === "Stage Pack") return 5;
+  if(reward.title === "Rare Pack") return 4;
+  if(reward.type === "pack") return 3;
+  if(reward.type === "card") return 1;
+  return 0;
+}
+
+function grantLevelRewardCards(cards){
+  let newCount = 0;
+  const duplicates = [];
+  cards.forEach(card => {
+    if(isCardCollected(card.src)) duplicates.push(card);
+    else newCount++;
+    collectCard(card.src);
+  });
+  const shards = awardDuplicateShards(duplicates);
+  if(newCount || shards){
+    showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shards ? ` · +${shards} оск.` : ""} 🎁`);
+  }
+  return { newCount, shards };
+}
+
 function getLevelReward(level){
   const reward = getPrettyLevelReward(level);
   const rewards = [];
   if(reward.type === "points"){
     const amount = Number((reward.title.match(/\d+/) || [5])[0]);
     rewards.push({ type:"points", text:reward.title, amount });
+  } else if(reward.type === "card" || reward.type === "pack"){
+    const count = getLevelRewardCardCount(reward, level);
+    const pool = getLevelRewardPool(reward, level);
+    const rates = getLevelRewardRates(reward, level);
+    const cards = pickWeightedCards(pool, Math.min(count, pool.length), rates);
+    if(cards.length){
+      const result = grantLevelRewardCards(cards);
+      rewards.push({
+        type:reward.type,
+        text:`${reward.icon} ${reward.title}`,
+        cards,
+        newCount:result.newCount,
+        shards:result.shards
+      });
+      if(cards.some(card => card.rarity === "ultra")) launchConfetti();
+      checkRarityAchievements?.();
+      renderCollectionRewards?.();
+    } else {
+      rewards.push({ type:"note", text:`${reward.icon} ${reward.title}` });
+    }
   } else {
     rewards.push({ type:"note", text:`${reward.icon} ${reward.title}` });
   }
@@ -4265,12 +4405,29 @@ function updatePlayerUI(){
   updateProfileUI();
 }
 
+function renderLevelRewardCards(reward){
+  if(!reward.cards || !reward.cards.length) return "";
+  const cards = reward.cards.map(card => `
+    <div class="level-reward-card rarity-${card.rarity}">
+      <span class="reward-badge ${reward.shards ? "old" : ""}">${isCardCollected(card.src) ? (reward.shards ? `+${getDuplicateShardValue(card)} оск.` : "Получено") : "NEW"}</span>
+      <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
+      <img src="${card.src}" alt="level reward card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      <small>${getMemberTitle(card.member)} · ${getAlbumTitle(card.album)}<br>№${card.number}</small>
+    </div>`).join("");
+  return `<div class="level-reward-preview">
+    <div class="level-reward-preview-title">${reward.text}</div>
+    <div class="level-reward-card-grid">${cards}</div>
+  </div>`;
+}
+
 function showLevelUp(level, rewards, unlocks){
   if(!levelUpModal) return;
   levelUpText.textContent = `Ты достиг(ла) ${level} уровня · ${getPlayerTitle(level)} ♡`;
-  levelUpRewards.innerHTML = rewards.length
+  const rewardPills = rewards.length
     ? rewards.map(reward => `<span class="level-reward-pill">${reward.text}</span>`).join("")
     : `<span class="level-reward-pill">💜 Новый уровень коллекционера</span>`;
+  const rewardCards = rewards.map(renderLevelRewardCards).join("");
+  levelUpRewards.innerHTML = rewardPills + rewardCards;
   levelUpUnlocks.innerHTML = unlocks.length
     ? unlocks.map(item => `<div class="level-unlock-item">🔓 ${item.title}<br><small>${item.desc}</small></div>`).join("")
     : `<div class="level-unlock-item">✨ Прогресс сохранён</div>`;
@@ -6138,7 +6295,7 @@ function updateOpenAgainButton(){
   let canOpen = false;
   let label = "🔁 Открыть ещё";
 
-  if(currentOpenedPackContext.type === "collectionReward"){
+  if(currentOpenedPackContext.type === "collectionReward" || currentOpenedPackContext.type === "levelReward"){
     openAgainBtn.textContent = "🔁 Открыть ещё";
     openAgainBtn.disabled = true;
     return;
