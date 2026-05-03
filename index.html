@@ -2323,6 +2323,99 @@ h1{
 @media(max-width:900px){.profile-body{grid-template-columns:1fr}.profile-window{height:94vh}.profile-reward-pass{grid-template-columns:repeat(3,minmax(110px,1fr))}}
 @media(max-width:560px){.profile-body{padding:14px}.profile-hero{padding:18px}.profile-level-row{grid-template-columns:1fr}.profile-level-number{width:72px;height:72px}.profile-reward-pass{grid-template-columns:repeat(2,minmax(120px,1fr))}.profile-open{min-width:100%}}
 
+
+
+/* === Super Profile Design v2 === */
+.profile-window{
+  width:min(1320px,98vw)!important;
+  height:min(900px,94vh)!important;
+  border-radius:46px!important;
+  background:
+    radial-gradient(circle at 8% 2%,rgba(255,226,247,.95),transparent 28%),
+    radial-gradient(circle at 84% 0%,rgba(197,170,255,.96),transparent 32%),
+    radial-gradient(circle at 55% 100%,rgba(255,255,255,.95),transparent 42%),
+    linear-gradient(180deg,#fbf7ff 0%,#f2eaff 100%)!important;
+  box-shadow:0 40px 130px rgba(51,27,91,.38), inset 0 1px 0 rgba(255,255,255,.85)!important;
+}
+.profile-hero{
+  padding:26px 30px 20px!important;
+  background:
+    linear-gradient(120deg,rgba(255,255,255,.84),rgba(235,224,255,.58)),
+    radial-gradient(circle at 18% 0%,rgba(255,210,237,.7),transparent 32%)!important;
+}
+.profile-kicker{background:linear-gradient(135deg,#ffffff,#f1e8ff)!important;box-shadow:0 10px 22px rgba(91,54,143,.09)}
+.profile-body{grid-template-columns:380px minmax(0,1fr)!important;gap:20px!important;padding:22px 28px 28px!important}
+.profile-card-main,.profile-pass-card,.profile-unlocks-card,.profile-showcase-card,.profile-stat-card{
+  border-radius:34px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(249,245,255,.74))!important;
+  border:1px solid rgba(231,218,255,.95)!important;
+  box-shadow:0 18px 52px rgba(75,40,130,.13), inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.profile-card-main{padding:20px!important}
+.profile-big-avatar{
+  width:122px!important;height:122px!important;border-radius:42px!important;
+  background:linear-gradient(135deg,#ffffff 0%,#f1e8ff 45%,#ffcfe8 100%)!important;
+  box-shadow:0 22px 48px rgba(107,70,170,.21), inset 0 0 0 1px rgba(178,146,255,.75)!important;
+}
+.profile-title-badge{background:linear-gradient(135deg,#efe5ff,#ffdced)!important;border-color:rgba(184,151,255,.6)!important;box-shadow:0 12px 28px rgba(92,55,146,.1)}
+.profile-mini-stat{background:rgba(255,255,255,.86)!important}
+.profile-showcase-card{margin-top:14px;padding:14px;position:relative;z-index:1}
+.profile-showcase-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.profile-showcase-head b{color:#533774;font-size:14px}
+.profile-showcase-head small{color:#8b75ad;font-size:10px;font-weight:900;text-align:right}
+.profile-showcase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.profile-showcase-slot{
+  min-height:118px;border-radius:21px;padding:4px;position:relative;overflow:hidden;
+  display:grid;place-items:center;background:linear-gradient(145deg,#f7efff,#fff7fb);
+  border:1px dashed rgba(177,145,255,.75);color:#9277b6;font-size:11px;text-align:center;font-weight:900;
+}
+.profile-showcase-slot img{width:100%;height:100%;object-fit:cover;border-radius:17px;display:block}
+.profile-showcase-slot .rarity-badge{transform:scale(.82);transform-origin:left top}
+.profile-showcase-remove{position:absolute;right:6px;bottom:6px;border-radius:999px;padding:5px 7px;background:rgba(255,255,255,.88);color:#75559e;font-size:11px;font-weight:1000;box-shadow:0 8px 18px rgba(75,40,130,.18)}
+.favorite-toggle{
+  position:absolute;right:7px;bottom:7px;z-index:3;width:28px;height:28px;border-radius:999px;
+  display:grid;place-items:center;background:rgba(255,255,255,.88);color:#8d72b4;border:1px solid rgba(226,213,255,.9);
+  box-shadow:0 8px 18px rgba(75,40,130,.16);font-size:13px;transition:.16s ease
+}
+.favorite-toggle:hover{transform:scale(1.08)}
+.favorite-toggle.active{background:linear-gradient(135deg,#ffe0f0,#d8c6ff);color:#6b3e8f}
+.profile-main-column{grid-template-rows:auto auto 1fr!important}
+.profile-pass-card{padding:22px!important}
+.profile-level-number{
+  width:96px!important;height:96px!important;border-radius:34px!important;font-size:29px!important;
+  background:linear-gradient(145deg,#8f6dff,#c7aaff 52%,#ffb9d9)!important;
+  box-shadow:0 24px 56px rgba(129,91,218,.33)!important;
+}
+.profile-progress-track{height:18px!important;background:rgba(218,202,255,.55)!important;border:1px solid rgba(255,255,255,.7)}
+.profile-progress-fill{background:linear-gradient(90deg,#8f6dff,#c5a7ff,#ffc1df)!important;box-shadow:0 0 22px rgba(164,126,255,.55)!important}
+.profile-reward-track{
+  padding:18px!important;border-radius:30px!important;
+  background:linear-gradient(135deg,rgba(245,238,255,.94),rgba(255,244,250,.9))!important;
+}
+.profile-reward-pass{grid-template-columns:repeat(6,minmax(126px,1fr))!important;gap:12px!important;padding:4px 2px 6px!important}
+.reward-node{
+  min-height:132px!important;border-radius:26px!important;padding:13px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(248,243,255,.82))!important;
+  border:1px solid rgba(224,207,255,.95)!important;
+  box-shadow:0 14px 32px rgba(73,40,129,.11)!important;
+}
+.reward-node.current{outline:3px solid rgba(167,132,255,.65)!important;background:linear-gradient(180deg,#fff,#f0e7ff)!important;box-shadow:0 18px 42px rgba(123,83,202,.18)!important}
+.reward-node.claimed{background:linear-gradient(180deg,#f1fff6,#ffffff)!important;border-color:rgba(145,214,174,.9)!important}
+.reward-node.locked{opacity:.72;filter:saturate(.85)}
+.reward-node-icon{font-size:32px!important;margin:10px 0 7px!important}
+.reward-node-title{font-size:13px!important}
+.reward-node-type{position:absolute;right:10px;top:10px;border-radius:999px;padding:4px 7px;background:rgba(255,255,255,.78);color:#795aa1;font-size:9px;font-weight:1000;text-transform:uppercase;letter-spacing:.08em}
+.profile-stat-card{padding:18px;overflow:hidden}
+.member-stat-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.member-stat-row{padding:11px;border-radius:21px;background:rgba(255,255,255,.76);border:1px solid rgba(226,213,255,.84);box-shadow:0 10px 24px rgba(73,40,129,.07)}
+.member-stat-top{display:flex;justify-content:space-between;gap:8px;color:#523774;font-size:12px;font-weight:1000;margin-bottom:7px}
+.member-stat-bar{height:9px;border-radius:999px;overflow:hidden;background:rgba(222,205,255,.55)}
+.member-stat-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#9a75ff,#ffc1df)}
+.member-stat-meta{display:flex;justify-content:space-between;margin-top:6px;color:#8c78ab;font-size:10px;font-weight:900}
+.profile-unlock-card{position:relative;overflow:hidden;min-height:100px}.profile-unlock-card:not(.done)::after{content:attr(data-lock-text);position:absolute;inset:auto 10px 10px 10px;padding:7px;border-radius:999px;background:rgba(255,255,255,.8);text-align:center;color:#7d659e;font-size:10px;font-weight:1000}.profile-unlock-card.done{box-shadow:0 14px 30px rgba(111,74,180,.13)}
+@media(max-width:980px){.profile-body{grid-template-columns:1fr!important}.member-stat-list{grid-template-columns:1fr}.profile-reward-pass{grid-template-columns:repeat(3,minmax(130px,1fr))!important}}
+@media(max-width:560px){.profile-reward-pass{grid-template-columns:repeat(2,minmax(130px,1fr))!important}.profile-showcase-slot{min-height:100px}}
+
 </style>
 </head>
 
@@ -2575,6 +2668,14 @@ h1{
           <div class="profile-mini-stat"><span>XP</span><b id="profileMiniXp">0</b></div>
           <div class="profile-mini-stat"><span>До уровня</span><b id="profileMiniNeed">125</b></div>
         </div>
+
+        <div class="profile-showcase-card">
+          <div class="profile-showcase-head">
+            <b>💖 Любимые карты</b>
+            <small>выбери до 3 карт<br>из коллекции</small>
+          </div>
+          <div class="profile-showcase-grid" id="profileShowcaseGrid"></div>
+        </div>
       </aside>
 
       <section class="profile-main-column">
@@ -2604,6 +2705,14 @@ h1{
             </div>
             <div class="profile-reward-pass" id="profileRewardPass"></div>
           </div>
+        </div>
+
+        <div class="profile-stat-card">
+          <div class="profile-section-title">
+            <b>📊 Статистика коллекции</b>
+            <span>по участницам</span>
+          </div>
+          <div class="member-stat-list" id="profileMemberStats"></div>
         </div>
 
         <div class="profile-unlocks-card">
@@ -2810,6 +2919,8 @@ const profileRewardFill = document.getElementById("profileRewardFill");
 const profileNextRewardText = document.getElementById("profileNextRewardText");
 const profileRewardPass = document.getElementById("profileRewardPass");
 const profileUnlockGrid = document.getElementById("profileUnlockGrid");
+const profileShowcaseGrid = document.getElementById("profileShowcaseGrid");
+const profileMemberStats = document.getElementById("profileMemberStats");
 const achievementsClose = document.getElementById("achievementsClose");
 const achievementsModal = document.getElementById("achievementsModal");
 const achievementGrid = document.getElementById("achievementGrid");
@@ -2890,7 +3001,7 @@ let achievements = JSON.parse(localStorage.getItem("miyeon_achievements") || "{}
 let collectionRewards = JSON.parse(localStorage.getItem("miyeon_collection_rewards") || "{}");
 let gameStats = JSON.parse(localStorage.getItem("miyeon_game_stats") || "{}");
 let playerProgress = JSON.parse(localStorage.getItem("miyeon_player_progress") || '{"level":1,"xp":0}');
-let playerProfile = JSON.parse(localStorage.getItem("miyeon_player_profile") || '{"name":"Неверленд","bias":"miyeon"}');
+let playerProfile = JSON.parse(localStorage.getItem("miyeon_player_profile") || '{"name":"Неверленд","bias":"miyeon","favorites":[],"cosmetics":[]}');
 let currentGameMistakes = 0;
 let maxComboThisGame = 0;
 let currentNoCommonGame = false;
@@ -2924,6 +3035,8 @@ const BIAS_META = {
 function savePlayerProfile(){
   if(!playerProfile.name || !String(playerProfile.name).trim()) playerProfile.name = "Неверленд";
   if(!BIAS_META[playerProfile.bias]) playerProfile.bias = "miyeon";
+  if(!Array.isArray(playerProfile.favorites)) playerProfile.favorites = [];
+  if(!Array.isArray(playerProfile.cosmetics)) playerProfile.cosmetics = [];
   localStorage.setItem("miyeon_player_profile", JSON.stringify(playerProfile));
 }
 
@@ -2945,14 +3058,8 @@ function getNextRewardLevel(fromLevel = playerProgress.level){
 }
 
 function getRewardNode(level){
-  const rewards = getLevelReward(level);
-  const unlocks = getUnlocksForLevel(level);
-  const pointsReward = rewards.find(r => r.type === "points");
-  if(unlocks.length) return { icon:"🔓", title:unlocks[0].title, desc:`Откроется на Lv.${level}` };
-  if(level % 10 === 0) return { icon:"👑", title:"Большая награда", desc:pointsReward?.text || "milestone" };
-  if(level % 5 === 0) return { icon:"🎁", title:"Бонусный пак", desc:pointsReward?.text || "паковый бонус" };
-  if(pointsReward) return { icon:"💎", title:pointsReward.text, desc:"валюта магазина" };
-  return { icon:"✨", title:"Новый уровень", desc:"прогресс профиля" };
+  const reward = getPrettyLevelReward(level);
+  return { icon:reward.icon, title:reward.title, desc:reward.desc, type:reward.type };
 }
 
 function renderProfileRewardPass(){
@@ -2963,6 +3070,7 @@ function renderProfileRewardPass(){
     const node = getRewardNode(level);
     const classes = ["reward-node", level === current + 1 ? "current" : "locked"].join(" ");
     return `<div class="${classes}">
+      <span class="reward-node-type">${node.type}</span>
       <div class="reward-node-level">Lv. ${level}</div>
       <div class="reward-node-icon">${node.icon}</div>
       <div class="reward-node-title">${node.title}</div>
@@ -2975,12 +3083,116 @@ function renderProfileUnlocks(){
   if(!profileUnlockGrid) return;
   profileUnlockGrid.innerHTML = LEVEL_UNLOCKS.map(item => {
     const done = playerProgress.level >= item.level;
-    return `<div class="profile-unlock-card ${done ? "done" : ""}">
+    return `<div class="profile-unlock-card ${done ? "done" : ""}" data-lock-text="Нужно Lv. ${item.level}">
       <b>${done ? "🔓" : "🔒"} Lv. ${item.level} · ${item.title}</b>
       <small>${item.desc}</small>
       <span class="profile-unlock-state">${done ? "Открыто" : `Нужно Lv. ${item.level}`}</span>
     </div>`;
   }).join("");
+}
+
+
+function getCollectedCards(){
+  if(!allImageCache) return [];
+  return allImageCache.filter(card => isCardCollected(card.src));
+}
+
+function getCardById(cardId){
+  const all = allImageCache || [];
+  return all.find(card => card.id === cardId || card.src === cardId);
+}
+
+function isFavoriteCard(cardId){
+  if(!Array.isArray(playerProfile.favorites)) playerProfile.favorites = [];
+  return playerProfile.favorites.includes(cardId);
+}
+
+function toggleFavoriteCard(card){
+  if(!card || !isCardCollected(card.src)) return;
+  if(!Array.isArray(playerProfile.favorites)) playerProfile.favorites = [];
+  if(isFavoriteCard(card.id)){
+    playerProfile.favorites = playerProfile.favorites.filter(id => id !== card.id);
+    showToast("Карта убрана из витрины ♡");
+  } else {
+    if(playerProfile.favorites.length >= 3){
+      playerProfile.favorites.shift();
+    }
+    playerProfile.favorites.push(card.id);
+    showToast("Карта добавлена в любимые 💖");
+  }
+  savePlayerProfile();
+  renderProfileShowcase();
+  renderCollection?.();
+}
+
+function renderProfileShowcase(){
+  if(!profileShowcaseGrid) return;
+  if(!Array.isArray(playerProfile.favorites)) playerProfile.favorites = [];
+  const favorites = playerProfile.favorites.map(getCardById).filter(Boolean).slice(0,3);
+  const slots = [];
+  for(let i=0;i<3;i++){
+    const card = favorites[i];
+    if(card){
+      slots.push(`<div class="profile-showcase-slot rarity-${card.rarity}">
+        <img src="${card.src}" alt="favorite card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+        <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
+        <button class="profile-showcase-remove" data-remove-fav="${card.id}">×</button>
+      </div>`);
+    } else {
+      slots.push(`<div class="profile-showcase-slot">Пустой слот<br>⭐</div>`);
+    }
+  }
+  profileShowcaseGrid.innerHTML = slots.join("");
+  profileShowcaseGrid.querySelectorAll("[data-remove-fav]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      playerProfile.favorites = playerProfile.favorites.filter(id => id !== btn.dataset.removeFav);
+      savePlayerProfile();
+      renderProfileShowcase();
+      renderCollection?.();
+    });
+  });
+}
+
+function renderProfileMemberStats(){
+  if(!profileMemberStats) return;
+  const all = allImageCache || [];
+  const collected = getCollectedCards();
+  const members = ["miyeon","minnie","soyeon","yuqi","shuhua","soojin"];
+  profileMemberStats.innerHTML = members.map(member => {
+    const total = all.filter(card => card.member === member).length;
+    const owned = collected.filter(card => card.member === member).length;
+    const rare = collected.filter(card => card.member === member && card.rarity === "rare").length;
+    const ultra = collected.filter(card => card.member === member && card.rarity === "ultra").length;
+    const pct = total ? Math.round(owned / total * 100) : 0;
+    return `<div class="member-stat-row">
+      <div class="member-stat-top"><span>${getBiasIcon(member)} ${getMemberTitle(member)}</span><span>${owned}/${total}</span></div>
+      <div class="member-stat-bar"><i style="width:${pct}%"></i></div>
+      <div class="member-stat-meta"><span>Rare: ${rare}</span><span>Ultra: ${ultra}</span></div>
+    </div>`;
+  }).join("");
+}
+
+const LEVEL_REWARD_PLAN = {
+  2:{type:"points", icon:"💎", title:"+8 очков", desc:"валюта магазина"},
+  3:{type:"pack", icon:"🎁", title:"Basic Pack", desc:"бонусный пак"},
+  4:{type:"card", icon:"🃏", title:"Random Card", desc:"случайная карта"},
+  5:{type:"pack", icon:"💜", title:"Miyeon Pack", desc:"пак bias-вибра"},
+  6:{type:"frame", icon:"🖼", title:"Lilac Frame", desc:"рамка профиля"},
+  7:{type:"points", icon:"💎", title:"+15 очков", desc:"валюта магазина"},
+  8:{type:"card", icon:"💖", title:"Rare Card", desc:"случайная rare"},
+  9:{type:"avatar", icon:"🐰", title:"Bunny Avatar", desc:"аватар профиля"},
+  10:{type:"pack", icon:"👑", title:"Premium Pack", desc:"большой milestone"},
+  12:{type:"points", icon:"💎", title:"+25 очков", desc:"валюта магазина"},
+  15:{type:"card", icon:"✨", title:"Ultra Chance Card", desc:"шанс ultra"},
+  20:{type:"frame", icon:"🌙", title:"Stage Frame", desc:"эксклюзивная рамка"},
+  25:{type:"pack", icon:"👑", title:"Premium Pack ×2", desc:"двойной подарок"},
+  30:{type:"avatar", icon:"💿", title:"Archivist Avatar", desc:"редкий аватар"}
+};
+
+function getPrettyLevelReward(level){
+  return LEVEL_REWARD_PLAN[level] || (level % 5 === 0
+    ? {type:"pack", icon:"🎁", title:"Bonus Pack", desc:"пак за milestone"}
+    : {type:"points", icon:"💎", title:`+${level % 2 === 0 ? 8 : 5} очков`, desc:"валюта магазина"});
 }
 
 function updateProfileUI(){
@@ -3018,6 +3230,8 @@ function updateProfileUI(){
   if(profileNextRewardText) profileNextRewardText.textContent = `Lv. ${nextRewardLevel}: ${rewardNode.title}`;
 
   document.querySelectorAll(".bias-chip").forEach(btn => btn.classList.toggle("active", btn.dataset.bias === playerProfile.bias));
+  renderProfileShowcase();
+  renderProfileMemberStats();
   renderProfileRewardPass();
   renderProfileUnlocks();
 }
@@ -3048,14 +3262,14 @@ function getUnlocksForLevel(level){
 }
 
 function getLevelReward(level){
+  const reward = getPrettyLevelReward(level);
   const rewards = [];
-  let pointsReward = 0;
-  if(level % 2 === 0) pointsReward += 5;
-  if(level % 5 === 0) pointsReward += 12;
-  if(level % 10 === 0) pointsReward += 25;
-  if(pointsReward) rewards.push({ type:"points", text:`+${pointsReward} очков`, amount:pointsReward });
-  if(level % 5 === 0) rewards.push({ type:"note", text:"🎁 Бонусный прогресс для паков" });
-  if(level % 10 === 0) rewards.push({ type:"note", text:"👑 Большая milestone-награда" });
+  if(reward.type === "points"){
+    const amount = Number((reward.title.match(/\d+/) || [5])[0]);
+    rewards.push({ type:"points", text:reward.title, amount });
+  } else {
+    rewards.push({ type:"note", text:`${reward.icon} ${reward.title}` });
+  }
   return rewards;
 }
 
@@ -4363,7 +4577,12 @@ async function renderCollection(){
       cell.innerHTML = `
         <img src="${img.src}" alt="collection card" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
         <span class="rarity-badge ${img.rarity}">${getRarityTitle(img.rarity)}</span>
+        <button class="favorite-toggle ${isFavoriteCard(img.id) ? "active" : ""}" title="Добавить в любимые">${isFavoriteCard(img.id) ? "★" : "☆"}</button>
       `;
+      cell.querySelector(".favorite-toggle").addEventListener("click", event => {
+        event.stopPropagation();
+        toggleFavoriteCard(img);
+      });
     } else {
       cell.innerHTML = `<span class="rarity-badge ${img.rarity}">${getRarityTitle(img.rarity)}</span>`;
     }
