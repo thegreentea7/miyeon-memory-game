@@ -3085,6 +3085,140 @@ h1{
   .shard-shop-image-wrap{height:166px}
 }
 
+
+
+/* === Risk reward choice: 1 open + hidden cards + peek === */
+#win .reward-options{
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;
+  max-width:min(940px,100%)!important;
+  align-items:stretch!important;
+}
+#win .reward-card{
+  min-height:255px!important;
+  display:grid!important;
+  grid-template-rows:1fr!important;
+  place-items:stretch!important;
+  position:relative!important;
+  isolation:isolate!important;
+  transform-style:preserve-3d!important;
+}
+#win .reward-card img.reward-real-img{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:18px!important;
+  transition:.34s ease!important;
+}
+#win .reward-choice-label{
+  position:absolute;
+  left:12px;
+  top:12px;
+  z-index:6;
+  padding:6px 10px;
+  border-radius:999px;
+  color:#5a3d7d;
+  font-size:11px;
+  font-weight:1000;
+  background:rgba(255,255,255,.9);
+  box-shadow:0 10px 22px rgba(73,40,129,.15);
+}
+#win .safe-choice .reward-choice-label{background:linear-gradient(135deg,#fff,#e9dcff)}
+#win .risk-choice .reward-choice-label{background:linear-gradient(135deg,#fff0fb,#eadfff)}
+#win .reward-card-backface{
+  position:absolute;
+  inset:7px;
+  z-index:5;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:9px;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.72),transparent 34%),
+    linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
+  color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 18px 42px rgba(86,47,145,.18);
+  transition:.38s cubic-bezier(.2,.8,.2,1);
+  backface-visibility:hidden;
+}
+#win .reward-back-icon{
+  width:58px;
+  height:58px;
+  border-radius:22px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.55);
+  font-size:34px;
+  font-weight:1000;
+  text-shadow:0 4px 14px rgba(55,30,100,.25);
+}
+#win .reward-back-text{
+  font-size:12px;
+  font-weight:1000;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  opacity:.92;
+}
+#win .reward-card.hidden-choice .reward-badge,
+#win .reward-card.hidden-choice .rarity-badge,
+#win .reward-card.hidden-choice img.reward-real-img{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+#win .reward-card.revealed-choice .reward-card-backface{
+  transform:rotateY(90deg) scale(.92);
+  opacity:0;
+  pointer-events:none;
+}
+#win .reward-card.hidden-choice:hover .reward-card-backface{
+  transform:translateY(-5px) scale(1.02);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 24px 55px rgba(105,65,170,.28);
+}
+#win .reward-card.revealed-choice:hover img.reward-real-img{
+  transform:scale(1.035);
+}
+#win .reward-card.chosen-choice{
+  outline:3px solid rgba(255,193,223,.9)!important;
+  filter:none!important;
+}
+#win .reward-card.chosen-choice::after{
+  content:"выбрано";
+  position:absolute;
+  inset:auto 12px 12px 12px;
+  z-index:8;
+  padding:8px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  color:#5b3d7d;
+  font-size:12px;
+  font-weight:1000;
+  box-shadow:0 10px 24px rgba(73,40,129,.16);
+}
+#peekRewardBtn:disabled{
+  opacity:.55!important;
+  cursor:not-allowed!important;
+}
+#peekRewardBtn.hidden{display:none!important}
+@media(max-width:820px){
+  #win .reward-options{grid-template-columns:repeat(2,minmax(130px,1fr))!important;max-width:560px!important}
+  #win .reward-card{min-height:220px!important}
+}
+@media(max-width:520px){
+  #win .reward-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #win .reward-card{min-height:205px!important}
+}
+
+
+#win .reward-actions{
+  width:min(780px,100%)!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+@media(max-width:820px){#win .reward-actions{grid-template-columns:1fr!important;width:min(360px,100%)!important}}
+
 </style>
 </head>
 
@@ -3471,6 +3605,7 @@ h1{
     <p id="winText">Выбери одну карту, которая попадёт в коллекцию.</p>
     <div class="reward-options" id="rewardOptions"></div>
     <div class="reward-actions">
+      <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
       <button class="reroll-btn" id="rerollBtn">🔁 Ещё разочек · 7 очков</button>
       <button class="reroll-btn" id="extraPickRewardBtn">🎁 Щедрость активна</button>
     </div>
@@ -3679,6 +3814,7 @@ const packsSection = document.getElementById("packsSection");
 const upgradesSection = document.getElementById("upgradesSection");
 const upgradeGrid = document.getElementById("upgradeGrid");
 const boostStatus = document.getElementById("boostStatus");
+const peekRewardBtn = document.getElementById("peekRewardBtn");
 const rerollBtn = document.getElementById("rerollBtn");
 const extraPickRewardBtn = document.getElementById("extraPickRewardBtn");
 const packResult = document.getElementById("packResult");
@@ -3721,6 +3857,7 @@ let preGameBoosts = {
 };
 let comboStreak = 0;
 let currentRewardOptions = [];
+let rewardRevealedIndexes = new Set([0]);
 let rewardPicksLeft = 1;
 let permanentBonusPick = false;
 let permanentUpgrades = JSON.parse(localStorage.getItem("miyeon_permanent_upgrades") || "{}");
@@ -5474,11 +5611,76 @@ function getCollectorRank(){
   return "💌 Cozy Collector";
 }
 
+function updatePeekRewardButton(){
+  if(!peekRewardBtn) return;
+  const hiddenLeft = currentRewardOptions.some((_, index) => !rewardRevealedIndexes.has(index));
+  peekRewardBtn.disabled = !hiddenLeft || points < 3 || rewardPicksLeft <= 0;
+  peekRewardBtn.classList.toggle("hidden", !hiddenLeft || rewardPicksLeft <= 0);
+  peekRewardBtn.textContent = hiddenLeft ? "👀 Подсмотреть · 3 очка" : "👀 Все карты открыты";
+}
+
+function revealRewardCard(index){
+  rewardRevealedIndexes.add(index);
+  const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
+  if(btn){
+    btn.classList.remove("hidden-choice");
+    btn.classList.add("revealed-choice");
+    const img = btn.querySelector(".reward-real-img");
+    if(img) img.removeAttribute("aria-hidden");
+  }
+  updatePeekRewardButton();
+}
+
+function finishRewardPick(btn, image){
+  const picksBeforeClick = rewardPicksLeft;
+  const already = isCardCollected(image.src);
+  const duplicateBonus = already ? awardDuplicateShards(image) : 0;
+  collectCard(image.src);
+  recordRewardPick(image, picksBeforeClick);
+
+  if(hasUpgrade("collectorIntuition") && image.rarity === "common"){
+    collectorIntuitionTicks = Math.min(5, collectorIntuitionTicks + 1);
+    localStorage.setItem("miyeon_intuition_ticks", String(collectorIntuitionTicks));
+    showRarityReaction(`🧠 Интуиция коллекционера: ${collectorIntuitionTicks}/5 тиков`);
+  }
+
+  if(image.rarity === "ultra"){
+    launchConfetti();
+    showRarityReaction("✨ Небобо… это ultra-карта! Вот это pull ♡");
+  } else if(image.rarity === "rare"){
+    showRarityReaction("💎 Rare-карта добавлена в коллекцию ♡");
+  }
+
+  checkRarityAchievements();
+  btn.disabled = true;
+  btn.classList.add("chosen-choice");
+  rewardPicksLeft--;
+
+  if(rewardPicksLeft > 0){
+    extraPickRewardBtn.classList.remove("hidden");
+    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
+    showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
+    renderCollection();
+    renderCollectionRewards();
+    updatePeekRewardButton();
+    return;
+  }
+
+  activeBoosts.extraPick = false;
+  permanentBonusPick = false;
+  updateBoostStatus();
+  showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
+  setTimeout(() => win.classList.remove("show"), 420);
+  renderCollection();
+  renderCollectionRewards();
+}
+
 function renderRewardOptions(){
   rewardOptions.innerHTML = "";
 
   if(!currentRewardOptions.length){
     currentRewardOptions = getRewardCards();
+    rewardRevealedIndexes = new Set([0]);
   }
 
   rewardPicksLeft = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
@@ -5486,60 +5688,39 @@ function renderRewardOptions(){
   extraPickRewardBtn.classList.toggle("hidden", rewardPicksLeft <= 1);
   extraPickRewardBtn.textContent = rewardPicksLeft > 1 ? `🎁 Можно выбрать ${rewardPicksLeft} карты` : "";
 
-  currentRewardOptions.forEach(image => {
+  currentRewardOptions.forEach((image, index) => {
     const isNew = !isCardCollected(image.src);
+    const revealed = rewardRevealedIndexes.has(index);
     const btn = document.createElement("button");
-    btn.className = `reward-card rarity-${image.rarity}`;
+    btn.className = `reward-card rarity-${image.rarity} ${revealed ? "revealed-choice" : "hidden-choice"} ${index === 0 ? "safe-choice" : "risk-choice"}`;
+    btn.type = "button";
+    btn.dataset.rewardIndex = String(index);
     btn.innerHTML = `
+      <span class="reward-choice-label">${index === 0 ? "Гарант" : "Риск"}</span>
+      <div class="reward-card-backface">
+        <span class="reward-back-icon">?</span>
+        <span class="reward-back-text">закрытая карта</span>
+      </div>
       <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : `+${getDuplicateShardValue(image)} оск.`}</span>
       <span class="rarity-badge ${image.rarity}">${getRarityTitle(image.rarity)}</span>
-      <img src="${image.src}" alt="reward card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      <img class="reward-real-img" src="${image.src}" alt="reward card" decoding="async" ${revealed ? "" : "aria-hidden=\"true\""} onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
     `;
 
     btn.addEventListener("click", () => {
-      const picksBeforeClick = rewardPicksLeft;
-      const already = isCardCollected(image.src);
-      const duplicateBonus = already ? awardDuplicateShards(image) : 0;
-      collectCard(image.src);
-      recordRewardPick(image, picksBeforeClick);
-
-      if(hasUpgrade("collectorIntuition") && image.rarity === "common"){
-        collectorIntuitionTicks = Math.min(5, collectorIntuitionTicks + 1);
-        localStorage.setItem("miyeon_intuition_ticks", String(collectorIntuitionTicks));
-        showRarityReaction(`🧠 Интуиция коллекционера: ${collectorIntuitionTicks}/5 тиков`);
-      }
-
-      if(image.rarity === "ultra"){
-        launchConfetti();
-        showRarityReaction("✨ Небобо… это ultra-карта! Вот это pull ♡");
-      } else if(image.rarity === "rare"){
-        showRarityReaction("💎 Rare-карта добавлена в коллекцию ♡");
-      }
-
-      checkRarityAchievements();
-      btn.disabled = true;
-      btn.style.opacity = ".55";
-      rewardPicksLeft--;
-
-      if(activeBoosts.extraPick && rewardPicksLeft > 0){
-        extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
-        showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
-        renderCollection();
-        renderCollectionRewards();
+      if(btn.disabled || rewardPicksLeft <= 0) return;
+      if(!rewardRevealedIndexes.has(index)){
+        revealRewardCard(index);
+        btn.classList.add("picked-from-hidden");
+        setTimeout(() => finishRewardPick(btn, image), 360);
         return;
       }
-
-      activeBoosts.extraPick = false;
-      permanentBonusPick = false;
-      updateBoostStatus();
-      showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
-      win.classList.remove("show");
-      renderCollection();
-      renderCollectionRewards();
+      finishRewardPick(btn, image);
     });
 
     rewardOptions.appendChild(btn);
   });
+
+  updatePeekRewardButton();
 }
 
 function finishGame(){
@@ -5562,8 +5743,9 @@ function finishGame(){
       permanentBonusPick ? "Коллекционер сработал: +1 карта бесплатно." : ""
     ].filter(Boolean).join(" ");
 
-    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${choicesCount} карты на выбор, выберите ${picksCount} ${picksCount === 1 ? "карту" : "карты"} для добавления в коллекцию ♡${extraText ? " " + extraText : ""}`;
+    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${choicesCount} карт: первая открыта как гарантия, остальные закрыты для риск-выбора. Выберите ${picksCount} ${picksCount === 1 ? "карту" : "карты"} для добавления в коллекцию ♡${extraText ? " " + extraText : ""}`;
     currentRewardOptions = getRewardCards();
+    rewardRevealedIndexes = new Set([0]);
     renderRewardOptions();
     resetPreGameBoosts();
     win.classList.add("show");
@@ -6382,6 +6564,27 @@ openAgainBtn.addEventListener("click", async () => {
 packsTab.addEventListener("click", () => setShopTab("packs"));
 upgradesTab.addEventListener("click", () => setShopTab("upgrades"));
 
+peekRewardBtn.addEventListener("click", () => {
+  const hiddenIndexes = currentRewardOptions
+    .map((_, index) => index)
+    .filter(index => !rewardRevealedIndexes.has(index));
+
+  if(!hiddenIndexes.length){
+    showToast("Все закрытые карты уже открыты ♡");
+    return;
+  }
+
+  if(points < 3){
+    showToast("Для подсмотра нужно 3 очка ♡");
+    return;
+  }
+
+  spendPoints(3);
+  const index = hiddenIndexes[Math.floor(Math.random() * hiddenIndexes.length)];
+  revealRewardCard(index);
+  showToast("👀 Одна закрытая карта открыта");
+});
+
 rerollBtn.addEventListener("click", () => {
   if(points < 7){
     showToast("Для перекрута нужно 7 очков ♡");
@@ -6390,6 +6593,7 @@ rerollBtn.addEventListener("click", () => {
 
   spendPoints(7);
   currentRewardOptions = getRewardCards();
+  rewardRevealedIndexes = new Set([0]);
   renderRewardOptions();
   showToast("🔁 Карты обновлены");
 });
