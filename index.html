@@ -2190,6 +2190,139 @@ h1{
 .level-help{margin-top:8px;padding:10px;border-radius:18px;background:rgba(255,255,255,.58);color:#806fa6;font-size:12px;line-height:1.35}
 @media(max-width:650px){.level-card{min-width:100%;}.level-window h2{font-size:30px}}
 
+
+/* === Hyper Profile / Battle Pass === */
+.profile-open{
+  min-width:230px;
+  padding:10px 12px;
+  border-radius:22px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  grid-template-rows:auto 8px;
+  column-gap:10px;
+  row-gap:7px;
+  text-align:left;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(255,255,255,.9),transparent 42%),
+    linear-gradient(135deg,rgba(245,238,255,.96),rgba(224,208,255,.96));
+  color:#47315f;
+  border:1px solid rgba(238,224,255,.95);
+  box-shadow:0 12px 34px rgba(81,49,139,.16), inset 0 1px 0 rgba(255,255,255,.85);
+  transition:.2s ease;
+}
+.profile-open:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(81,49,139,.22), inset 0 1px 0 rgba(255,255,255,.9)}
+.profile-open-avatar{
+  grid-row:1 / 3;
+  width:42px;
+  height:42px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#ffffff,#eadfff);
+  box-shadow:inset 0 0 0 1px rgba(190,166,255,.55),0 8px 18px rgba(81,49,139,.14);
+  font-size:21px;
+}
+.profile-open-main{min-width:0;display:block}
+.profile-open-main b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#4b3568}
+.profile-open-main small{display:block;margin-top:2px;font-size:11px;color:#836ca8;font-weight:900}
+.profile-open-xp{grid-column:2;display:block;height:8px;border-radius:999px;overflow:hidden;background:rgba(201,183,255,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.65)}
+.profile-open-xp i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#a98bff,#ffc0df);transition:width .35s ease}
+
+.profile-window{
+  width:min(1180px,96vw);
+  height:min(820px,92vh);
+  padding:0;
+  overflow:hidden;
+  border-radius:42px;
+  color:#42305c;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,229,247,.88),transparent 30%),
+    radial-gradient(circle at 88% 8%,rgba(210,190,255,.9),transparent 32%),
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
+  border:1px solid rgba(242,232,255,.94);
+  box-shadow:0 34px 110px rgba(52,30,91,.33);
+  display:grid;
+  grid-template-rows:auto 1fr;
+}
+.profile-hero{
+  padding:24px 26px 18px;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.78),rgba(232,219,255,.48)),
+    radial-gradient(circle at 30% 0%,rgba(255,255,255,.95),transparent 40%);
+  border-bottom:1px solid rgba(228,213,255,.8);
+  position:relative;
+}
+.profile-hero::after{
+  content:"✦ ✧ ✦ ✧ ✦";
+  position:absolute;
+  right:86px;
+  top:24px;
+  color:rgba(146,111,209,.32);
+  letter-spacing:.35em;
+  font-weight:900;
+}
+.profile-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.profile-kicker{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(230,216,255,.88);color:#856da8;font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.profile-head h2{font-size:clamp(34px,5vw,58px);line-height:.88;margin-top:10px;color:#513772;letter-spacing:-.06em}
+.profile-head p{margin-top:8px;color:#7f6aa1;font-size:14px;max-width:620px;line-height:1.45}
+.profile-close{width:48px;height:48px;border-radius:999px;background:rgba(255,255,255,.82);color:#6e5293;font-size:24px;font-weight:900;border:1px solid rgba(230,216,255,.88);box-shadow:0 12px 28px rgba(81,49,139,.14)}
+.profile-body{min-height:0;overflow:auto;padding:20px 24px 24px;display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px}
+.profile-card-main,.profile-pass-card,.profile-unlocks-card{
+  border-radius:30px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(232,219,255,.9);
+  box-shadow:0 16px 42px rgba(81,49,139,.12), inset 0 1px 0 rgba(255,255,255,.8);
+}
+.profile-card-main{padding:18px;position:relative;overflow:hidden}
+.profile-card-main::before{content:"";position:absolute;inset:-70px -80px auto auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(190,166,255,.45),transparent 68%)}
+.profile-big-avatar{width:112px;height:112px;margin:0 auto 12px;border-radius:36px;display:grid;place-items:center;background:linear-gradient(135deg,#ffffff,#eadfff 55%,#ffdff0);box-shadow:inset 0 0 0 1px rgba(190,166,255,.65),0 18px 38px rgba(81,49,139,.18);font-size:58px;position:relative;z-index:1}
+.profile-field{margin-top:12px;position:relative;z-index:1}
+.profile-field label{display:block;margin-bottom:6px;color:#826ca5;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.profile-input,.profile-select{width:100%;height:44px;border-radius:17px;border:1px solid rgba(219,202,255,.95);background:rgba(255,255,255,.86);color:#4b3568;font-weight:900;padding:0 13px;outline:none;box-shadow:0 8px 20px rgba(81,49,139,.06)}
+.profile-bias-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.bias-chip{height:42px;border-radius:16px;background:rgba(255,255,255,.74);border:1px solid rgba(223,207,255,.9);color:#6d5590;font-size:12px;font-weight:900;box-shadow:0 8px 18px rgba(81,49,139,.08)}
+.bias-chip.active{background:linear-gradient(135deg,#eadfff,#ffddec);outline:2px solid rgba(181,151,255,.55);color:#513772}
+.profile-title-badge{margin-top:16px;padding:12px;border-radius:22px;background:linear-gradient(135deg,rgba(234,223,255,.82),rgba(255,226,241,.78));border:1px solid rgba(230,216,255,.85);text-align:center;font-weight:900;color:#5c4380}
+.profile-mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.profile-mini-stat{padding:10px;border-radius:18px;background:rgba(255,255,255,.7);border:1px solid rgba(232,219,255,.8)}
+.profile-mini-stat span{display:block;color:#8b78aa;font-size:11px;font-weight:900}
+.profile-mini-stat b{display:block;margin-top:2px;color:#4b3568;font-size:18px}
+.profile-main-column{min-width:0;display:grid;grid-template-rows:auto 1fr;gap:18px}
+.profile-pass-card{padding:20px;overflow:hidden}
+.profile-level-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px}
+.profile-level-number{width:84px;height:84px;border-radius:28px;display:grid;place-items:center;background:linear-gradient(135deg,#a98bff,#ffc0df);color:#fff;font-size:26px;font-weight:1000;box-shadow:0 18px 38px rgba(151,113,224,.28)}
+.profile-level-meta b{display:block;color:#4e376d;font-size:23px}
+.profile-level-meta span{display:block;margin-top:3px;color:#856da8;font-size:13px;font-weight:900}
+.profile-xp-pill{padding:10px 13px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(230,216,255,.8);color:#6c5290;font-size:12px;font-weight:900;white-space:nowrap}
+.profile-progress-block{margin-top:18px}
+.profile-progress-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px;color:#725897;font-size:12px;font-weight:900}
+.profile-progress-track{height:16px;border-radius:999px;overflow:hidden;background:rgba(219,204,255,.48);box-shadow:inset 0 1px 5px rgba(81,49,139,.12)}
+.profile-progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#9f7fff,#ffc1df);box-shadow:0 0 18px rgba(169,139,255,.45);transition:width .35s ease}
+.profile-reward-track{margin-top:18px;padding:16px;border-radius:26px;background:linear-gradient(135deg,rgba(247,242,255,.82),rgba(255,245,250,.82));border:1px solid rgba(230,216,255,.8)}
+.profile-reward-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.profile-reward-head b{color:#50386f;font-size:16px}
+.profile-reward-head span{color:#856da8;font-size:12px;font-weight:900;text-align:right}
+.profile-reward-pass{display:grid;grid-template-columns:repeat(6,minmax(92px,1fr));gap:10px;overflow:auto;padding-bottom:2px}
+.reward-node{min-height:104px;border-radius:20px;padding:11px;background:rgba(255,255,255,.76);border:1px solid rgba(224,208,255,.85);box-shadow:0 10px 24px rgba(81,49,139,.08);position:relative;color:#624984}
+.reward-node.current{outline:2px solid rgba(169,139,255,.65);background:linear-gradient(180deg,#fff,#f4edff)}
+.reward-node.locked{opacity:.62}
+.reward-node-level{font-size:12px;font-weight:1000;color:#9a82bd;text-transform:uppercase;letter-spacing:.06em}
+.reward-node-icon{font-size:24px;margin:7px 0 5px}
+.reward-node-title{font-size:12px;font-weight:900;line-height:1.22}
+.reward-node small{display:block;margin-top:5px;color:#8b78aa;font-size:10px;font-weight:900;line-height:1.2}
+.profile-unlocks-card{padding:18px;min-height:0;overflow:hidden}
+.profile-section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.profile-section-title b{font-size:18px;color:#513772}
+.profile-section-title span{font-size:12px;color:#856da8;font-weight:900}
+.profile-unlock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;max-height:292px;overflow:auto;padding-right:4px}
+.profile-unlock-card{padding:12px;border-radius:20px;background:rgba(255,255,255,.72);border:1px solid rgba(224,208,255,.85);color:#604783;box-shadow:0 10px 22px rgba(81,49,139,.08)}
+.profile-unlock-card.done{background:linear-gradient(135deg,rgba(234,223,255,.88),rgba(255,226,241,.72));border-color:rgba(181,151,255,.45)}
+.profile-unlock-card b{display:block;font-size:13px}
+.profile-unlock-card small{display:block;margin-top:5px;color:#856da8;font-size:11px;line-height:1.35;font-weight:800}
+.profile-unlock-state{display:inline-flex;margin-top:8px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.75);color:#6d5590;font-size:10px;font-weight:1000}
+@media(max-width:900px){.profile-body{grid-template-columns:1fr}.profile-window{height:94vh}.profile-reward-pass{grid-template-columns:repeat(3,minmax(110px,1fr))}}
+@media(max-width:560px){.profile-body{padding:14px}.profile-hero{padding:18px}.profile-level-row{grid-template-columns:1fr}.profile-level-number{width:72px;height:72px}.profile-reward-pass{grid-template-columns:repeat(2,minmax(120px,1fr))}.profile-open{min-width:100%}}
+
 </style>
 </head>
 
@@ -2212,13 +2345,14 @@ h1{
           <b>🏆 Достижения</b>
           <small>ачивки и награды</small>
         </button>
-
-        <div class="level-card" id="playerLevelCard">
-          <div class="level-card-top"><span id="playerLevelText">Lv. 1</span><span id="playerLevelIcon">💜</span></div>
-          <div class="level-title" id="playerTitleText">New Fan</div>
-          <div class="level-bar"><i id="playerXpBar"></i></div>
-          <div class="level-xp" id="playerXpText">0 / 125 XP</div>
-        </div>
+        <button class="profile-open" id="profileOpen">
+          <span class="profile-open-avatar" id="profileOpenAvatar">💜</span>
+          <span class="profile-open-main">
+            <b id="profileOpenName">Неверленд</b>
+            <small><span id="playerLevelText">Lv. 1</span> · <span id="playerTitleText">New Fan</span></small>
+          </span>
+          <span class="profile-open-xp"><i id="playerXpBar"></i></span>
+        </button>
       </div>
     </div>
 
@@ -2399,6 +2533,91 @@ h1{
 </section>
 
 
+<section class="modal" id="profileModal">
+  <div class="profile-window">
+    <div class="profile-hero">
+      <div class="profile-head">
+        <div>
+          <div class="profile-kicker">✦ Idol Anniversary Profile</div>
+          <h2>Профиль игрока</h2>
+          <p>Твой личный кабинет коллекционера: имя, bias, уровень, титул и дорожка наград как в мини battle pass ♡</p>
+        </div>
+        <button class="profile-close" id="profileClose">×</button>
+      </div>
+    </div>
+
+    <div class="profile-body">
+      <aside class="profile-card-main">
+        <div class="profile-big-avatar" id="profileBigAvatar">💜</div>
+
+        <div class="profile-field">
+          <label for="playerNameInput">Имя</label>
+          <input class="profile-input" id="playerNameInput" maxlength="22" placeholder="Неверленд" />
+        </div>
+
+        <div class="profile-field">
+          <label>Bias</label>
+          <div class="profile-bias-grid" id="profileBiasGrid">
+            <button class="bias-chip" data-bias="miyeon">🐰 Миён</button>
+            <button class="bias-chip" data-bias="minnie">🦋 Минни</button>
+            <button class="bias-chip" data-bias="soyeon">🦁 Соён</button>
+            <button class="bias-chip" data-bias="yuqi">🦒 Юци</button>
+            <button class="bias-chip" data-bias="shuhua">🐺 Шухуа</button>
+            <button class="bias-chip" data-bias="soojin">🌹 Суджин</button>
+          </div>
+        </div>
+
+        <div class="profile-title-badge">👑 <span id="profileTitleBadge">New Fan</span></div>
+
+        <div class="profile-mini-stats">
+          <div class="profile-mini-stat"><span>Уровень</span><b id="profileMiniLevel">1</b></div>
+          <div class="profile-mini-stat"><span>Очки</span><b id="profileMiniPoints">0</b></div>
+          <div class="profile-mini-stat"><span>XP</span><b id="profileMiniXp">0</b></div>
+          <div class="profile-mini-stat"><span>До уровня</span><b id="profileMiniNeed">125</b></div>
+        </div>
+      </aside>
+
+      <section class="profile-main-column">
+        <div class="profile-pass-card">
+          <div class="profile-level-row">
+            <div class="profile-level-number" id="profileLevelBig">Lv.1</div>
+            <div class="profile-level-meta">
+              <b id="profilePlayerLine">Неверленд · New Fan</b>
+              <span id="profileBiasLine">Bias: Миён</span>
+            </div>
+            <div class="profile-xp-pill" id="profileXpPill">0 / 125 XP</div>
+          </div>
+
+          <div class="profile-progress-block">
+            <div class="profile-progress-top"><span>Прогресс уровня</span><span id="profileXpPercent">0%</span></div>
+            <div class="profile-progress-track"><div class="profile-progress-fill" id="profileXpFill"></div></div>
+          </div>
+
+          <div class="profile-reward-track">
+            <div class="profile-reward-head">
+              <b>🎁 Дорожка наград</b>
+              <span id="profileNextRewardText">Следующая награда</span>
+            </div>
+            <div class="profile-progress-block" style="margin-top:0;margin-bottom:14px">
+              <div class="profile-progress-top"><span>До следующей награды</span><span id="profileRewardPercent">0%</span></div>
+              <div class="profile-progress-track"><div class="profile-progress-fill" id="profileRewardFill"></div></div>
+            </div>
+            <div class="profile-reward-pass" id="profileRewardPass"></div>
+          </div>
+        </div>
+
+        <div class="profile-unlocks-card">
+          <div class="profile-section-title">
+            <b>🔓 Открытие контента</b>
+            <span>новые возможности по уровню</span>
+          </div>
+          <div class="profile-unlock-grid" id="profileUnlockGrid"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
 <section class="modal" id="achievementsModal">
   <div class="achievement-window">
     <div class="modal-head">
@@ -2567,6 +2786,30 @@ const collectionCardsPanel = document.getElementById("collectionCardsPanel");
 const collectionGiftsPanel = document.getElementById("collectionGiftsPanel");
 let currentCollectionTab = "cards";
 const achievementsOpen = document.getElementById("achievementsOpen");
+const profileOpen = document.getElementById("profileOpen");
+const profileClose = document.getElementById("profileClose");
+const profileModal = document.getElementById("profileModal");
+const playerNameInput = document.getElementById("playerNameInput");
+const profileBiasGrid = document.getElementById("profileBiasGrid");
+const profileOpenName = document.getElementById("profileOpenName");
+const profileOpenAvatar = document.getElementById("profileOpenAvatar");
+const profileBigAvatar = document.getElementById("profileBigAvatar");
+const profileTitleBadge = document.getElementById("profileTitleBadge");
+const profileMiniLevel = document.getElementById("profileMiniLevel");
+const profileMiniPoints = document.getElementById("profileMiniPoints");
+const profileMiniXp = document.getElementById("profileMiniXp");
+const profileMiniNeed = document.getElementById("profileMiniNeed");
+const profileLevelBig = document.getElementById("profileLevelBig");
+const profilePlayerLine = document.getElementById("profilePlayerLine");
+const profileBiasLine = document.getElementById("profileBiasLine");
+const profileXpPill = document.getElementById("profileXpPill");
+const profileXpPercent = document.getElementById("profileXpPercent");
+const profileXpFill = document.getElementById("profileXpFill");
+const profileRewardPercent = document.getElementById("profileRewardPercent");
+const profileRewardFill = document.getElementById("profileRewardFill");
+const profileNextRewardText = document.getElementById("profileNextRewardText");
+const profileRewardPass = document.getElementById("profileRewardPass");
+const profileUnlockGrid = document.getElementById("profileUnlockGrid");
 const achievementsClose = document.getElementById("achievementsClose");
 const achievementsModal = document.getElementById("achievementsModal");
 const achievementGrid = document.getElementById("achievementGrid");
@@ -2647,6 +2890,7 @@ let achievements = JSON.parse(localStorage.getItem("miyeon_achievements") || "{}
 let collectionRewards = JSON.parse(localStorage.getItem("miyeon_collection_rewards") || "{}");
 let gameStats = JSON.parse(localStorage.getItem("miyeon_game_stats") || "{}");
 let playerProgress = JSON.parse(localStorage.getItem("miyeon_player_progress") || '{"level":1,"xp":0}');
+let playerProfile = JSON.parse(localStorage.getItem("miyeon_player_profile") || '{"name":"Неверленд","bias":"miyeon"}');
 let currentGameMistakes = 0;
 let maxComboThisGame = 0;
 let currentNoCommonGame = false;
@@ -2667,6 +2911,116 @@ const LEVEL_UNLOCKS = [
   { level:15, key:"collection_master", title:"Мастер коллекции", desc:"Постоянные улучшения получают особый статус эндгейм-прогрессии" },
   { level:20, key:"idol_archivist", title:"Idol Archivist", desc:"Ты открыла высокий коллекционный ранг" }
 ];
+
+const BIAS_META = {
+  miyeon:{ title:"Миён", icon:"🐰" },
+  minnie:{ title:"Минни", icon:"🦋" },
+  soyeon:{ title:"Соён", icon:"🦁" },
+  yuqi:{ title:"Юци", icon:"🦒" },
+  shuhua:{ title:"Шухуа", icon:"🐺" },
+  soojin:{ title:"Суджин", icon:"🌹" }
+};
+
+function savePlayerProfile(){
+  if(!playerProfile.name || !String(playerProfile.name).trim()) playerProfile.name = "Неверленд";
+  if(!BIAS_META[playerProfile.bias]) playerProfile.bias = "miyeon";
+  localStorage.setItem("miyeon_player_profile", JSON.stringify(playerProfile));
+}
+
+function getBiasTitle(key = playerProfile.bias){
+  return BIAS_META[key]?.title || "Миён";
+}
+
+function getBiasIcon(key = playerProfile.bias){
+  return BIAS_META[key]?.icon || "💜";
+}
+
+function getNextRewardLevel(fromLevel = playerProgress.level){
+  for(let level = fromLevel + 1; level <= fromLevel + 20; level++){
+    const reward = getLevelReward(level);
+    const unlocks = getUnlocksForLevel(level);
+    if(reward.length || unlocks.length) return level;
+  }
+  return fromLevel + 1;
+}
+
+function getRewardNode(level){
+  const rewards = getLevelReward(level);
+  const unlocks = getUnlocksForLevel(level);
+  const pointsReward = rewards.find(r => r.type === "points");
+  if(unlocks.length) return { icon:"🔓", title:unlocks[0].title, desc:`Откроется на Lv.${level}` };
+  if(level % 10 === 0) return { icon:"👑", title:"Большая награда", desc:pointsReward?.text || "milestone" };
+  if(level % 5 === 0) return { icon:"🎁", title:"Бонусный пак", desc:pointsReward?.text || "паковый бонус" };
+  if(pointsReward) return { icon:"💎", title:pointsReward.text, desc:"валюта магазина" };
+  return { icon:"✨", title:"Новый уровень", desc:"прогресс профиля" };
+}
+
+function renderProfileRewardPass(){
+  if(!profileRewardPass) return;
+  const current = Math.max(1, Number(playerProgress.level || 1));
+  const levels = Array.from({length:6}, (_,i) => current + i + 1);
+  profileRewardPass.innerHTML = levels.map(level => {
+    const node = getRewardNode(level);
+    const classes = ["reward-node", level === current + 1 ? "current" : "locked"].join(" ");
+    return `<div class="${classes}">
+      <div class="reward-node-level">Lv. ${level}</div>
+      <div class="reward-node-icon">${node.icon}</div>
+      <div class="reward-node-title">${node.title}</div>
+      <small>${node.desc}</small>
+    </div>`;
+  }).join("");
+}
+
+function renderProfileUnlocks(){
+  if(!profileUnlockGrid) return;
+  profileUnlockGrid.innerHTML = LEVEL_UNLOCKS.map(item => {
+    const done = playerProgress.level >= item.level;
+    return `<div class="profile-unlock-card ${done ? "done" : ""}">
+      <b>${done ? "🔓" : "🔒"} Lv. ${item.level} · ${item.title}</b>
+      <small>${item.desc}</small>
+      <span class="profile-unlock-state">${done ? "Открыто" : `Нужно Lv. ${item.level}`}</span>
+    </div>`;
+  }).join("");
+}
+
+function updateProfileUI(){
+  const level = Math.max(1, Number(playerProgress.level || 1));
+  const xp = Math.max(0, Number(playerProgress.xp || 0));
+  const need = getXpForNextLevel(level);
+  const pct = need ? Math.min(100, Math.round(xp / need * 100)) : 0;
+  const name = (playerProfile.name || "Неверленд").trim() || "Неверленд";
+  const title = getPlayerTitle(level);
+  const biasTitle = getBiasTitle();
+  const biasIcon = getBiasIcon();
+
+  if(playerNameInput && document.activeElement !== playerNameInput) playerNameInput.value = name;
+  if(profileOpenName) profileOpenName.textContent = name;
+  if(profileOpenAvatar) profileOpenAvatar.textContent = biasIcon;
+  if(profileBigAvatar) profileBigAvatar.textContent = biasIcon;
+  if(profileTitleBadge) profileTitleBadge.textContent = title;
+  if(profileMiniLevel) profileMiniLevel.textContent = level;
+  if(profileMiniPoints) profileMiniPoints.textContent = points;
+  if(profileMiniXp) profileMiniXp.textContent = xp;
+  if(profileMiniNeed) profileMiniNeed.textContent = need - xp;
+  if(profileLevelBig) profileLevelBig.textContent = `Lv.${level}`;
+  if(profilePlayerLine) profilePlayerLine.textContent = `${name} · ${title}`;
+  if(profileBiasLine) profileBiasLine.textContent = `Bias: ${biasTitle}`;
+  if(profileXpPill) profileXpPill.textContent = `${xp} / ${need} XP`;
+  if(profileXpPercent) profileXpPercent.textContent = `${pct}%`;
+  if(profileXpFill) profileXpFill.style.width = `${pct}%`;
+
+  const nextRewardLevel = getNextRewardLevel(level);
+  const levelsToReward = Math.max(1, nextRewardLevel - level);
+  const rewardPct = levelsToReward === 1 ? pct : Math.min(100, Math.round((1 / levelsToReward) * pct));
+  const rewardNode = getRewardNode(nextRewardLevel);
+  if(profileRewardFill) profileRewardFill.style.width = `${rewardPct}%`;
+  if(profileRewardPercent) profileRewardPercent.textContent = `${rewardPct}%`;
+  if(profileNextRewardText) profileNextRewardText.textContent = `Lv. ${nextRewardLevel}: ${rewardNode.title}`;
+
+  document.querySelectorAll(".bias-chip").forEach(btn => btn.classList.toggle("active", btn.dataset.bias === playerProfile.bias));
+  renderProfileRewardPass();
+  renderProfileUnlocks();
+}
 
 function savePlayerProgress(){
   localStorage.setItem("miyeon_player_progress", JSON.stringify(playerProgress));
@@ -2711,8 +3065,8 @@ function updatePlayerUI(){
   const need = getXpForNextLevel(level);
   if(playerLevelText) playerLevelText.textContent = `Lv. ${level}`;
   if(playerTitleText) playerTitleText.textContent = getPlayerTitle(level);
-  if(playerXpText) playerXpText.textContent = `${xp} / ${need} XP`;
   if(playerXpBar) playerXpBar.style.width = `${Math.min(100, Math.round(xp / need * 100))}%`;
+  updateProfileUI();
 }
 
 function showLevelUp(level, rewards, unlocks){
@@ -3739,6 +4093,7 @@ function getDifficultyPoints(){
 
 function updatePointsUI(){
   pointsEl.textContent = points;
+  if(profileMiniPoints) profileMiniPoints.textContent = points;
   shopOpen.classList.toggle("ready", points >= 8);
 
   if(points >= 8 && !packReadyNotified){
@@ -4757,6 +5112,26 @@ againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
 document.getElementById("superHintBtn").addEventListener("click", superHint);
 document.getElementById("rememberAllBtn").addEventListener("click", rememberAll);
+profileOpen?.addEventListener("click", () => {
+  updateProfileUI();
+  profileModal?.classList.add("show");
+});
+profileClose?.addEventListener("click", () => profileModal?.classList.remove("show"));
+profileModal?.addEventListener("click", event => { if(event.target === profileModal) profileModal.classList.remove("show"); });
+playerNameInput?.addEventListener("input", () => {
+  playerProfile.name = playerNameInput.value.trim() || "Неверленд";
+  savePlayerProfile();
+  updateProfileUI();
+});
+profileBiasGrid?.addEventListener("click", event => {
+  const btn = event.target.closest(".bias-chip");
+  if(!btn) return;
+  playerProfile.bias = btn.dataset.bias || "miyeon";
+  savePlayerProfile();
+  updateProfileUI();
+  showToast(`Bias выбран: ${getBiasTitle()} ♡`);
+});
+
 levelUpClose?.addEventListener("click", () => levelUpModal.classList.remove("show"));
 levelUpModal?.addEventListener("click", event => { if(event.target === levelUpModal) levelUpModal.classList.remove("show"); });
 
