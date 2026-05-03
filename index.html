@@ -2416,6 +2416,127 @@ h1{
 @media(max-width:980px){.profile-body{grid-template-columns:1fr!important}.member-stat-list{grid-template-columns:1fr}.profile-reward-pass{grid-template-columns:repeat(3,minmax(130px,1fr))!important}}
 @media(max-width:560px){.profile-reward-pass{grid-template-columns:repeat(2,minmax(130px,1fr))!important}.profile-showcase-slot{min-height:100px}}
 
+
+
+/* === Pack covers + favorite picker polish === */
+.pack-grid{
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important;
+  gap:18px!important;
+  padding:4px 8px 10px!important;
+}
+.pack-card{
+  min-height:330px!important;
+  padding:0!important;
+  border-radius:30px!important;
+  overflow:hidden!important;
+  position:relative!important;
+  text-align:left!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(247,241,255,.78))!important;
+  border:1px solid rgba(231,218,255,.95)!important;
+  box-shadow:0 20px 52px rgba(72,39,128,.14), inset 0 1px 0 rgba(255,255,255,.9)!important;
+  display:grid!important;
+  grid-template-rows:190px 1fr!important;
+}
+.pack-card:hover{transform:translateY(-6px) scale(1.015)!important;box-shadow:0 28px 70px rgba(72,39,128,.22)!important}
+.pack-cover{
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  isolation:isolate;
+  background:linear-gradient(135deg,#efe6ff,#ffdff0);
+}
+.pack-cover::before{
+  content:"";
+  position:absolute;
+  inset:-35%;
+  background:
+    radial-gradient(circle at 30% 30%,rgba(255,255,255,.95),transparent 18%),
+    radial-gradient(circle at 65% 35%,rgba(255,255,255,.55),transparent 16%),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 9px,transparent 9px 18px);
+  transform:rotate(-8deg);
+  z-index:-1;
+}
+.pack-cover::after{
+  content:"MY";
+  position:absolute;
+  right:14px;
+  bottom:10px;
+  font-size:12px;
+  font-weight:1000;
+  letter-spacing:.18em;
+  color:rgba(255,255,255,.78);
+}
+.pack-cover-icon{
+  width:96px;
+  height:126px;
+  border-radius:26px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.28);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 20px 44px rgba(72,39,128,.18);
+  color:#fff;
+  font-size:46px;
+  text-shadow:0 4px 16px rgba(72,39,128,.25);
+  backdrop-filter:blur(7px);
+}
+.pack-cover-title{
+  position:absolute;
+  left:16px;
+  top:14px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  color:#5c3f7c;
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.pack-cover.all{background:linear-gradient(135deg,#d8c7ff,#ffd6ea)}
+.pack-cover.member{background:linear-gradient(135deg,#c7b0ff,#ffaed5)}
+.pack-cover.album{background:linear-gradient(135deg,#bba4ff,#f5e9ff)}
+.pack-cover.group{background:linear-gradient(135deg,#8f6dff,#ffbedc)}
+.pack-cover.rare{background:linear-gradient(135deg,#ffc7ec,#d7c3ff)}
+.pack-cover.premium{background:radial-gradient(circle at 50% 18%,#fff 0 6%,transparent 7%),linear-gradient(135deg,#7151d9,#b999ff 48%,#ffd1e8)}
+.pack-info{padding:15px 16px 16px;display:flex;flex-direction:column;gap:8px;min-height:0}
+.pack-title{font-size:17px;font-weight:1000;color:#4f3670;line-height:1.1}
+.pack-sub{color:#856da8;font-size:12px;font-weight:800;line-height:1.35;min-height:34px}
+.pack-price{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pack-price strong{font-size:14px!important;color:#5f4382!important;margin:0!important}
+.pack-open-pill{padding:8px 12px;border-radius:999px;background:linear-gradient(135deg,#eadfff,#ffddec);color:#5b3d7d;font-size:12px;font-weight:1000;box-shadow:0 10px 22px rgba(94,55,150,.12)}
+.pack-rates{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.pack-rate{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid rgba(230,216,255,.8);color:#7a61a1;font-size:10px;font-weight:1000}
+.shop-empty-note{grid-column:1/-1;padding:22px;border-radius:28px;background:rgba(255,255,255,.74);border:1px solid rgba(230,216,255,.9);color:#735795;text-align:center;font-weight:900}
+.profile-showcase-pick{width:100%;margin:0 0 10px;padding:10px 12px;border-radius:18px;background:linear-gradient(135deg,#ede3ff,#ffddec);color:#5b3d7d;font-size:12px;font-weight:1000;box-shadow:0 10px 22px rgba(94,55,150,.1)}
+.favorite-picker-window{
+  width:min(1180px,96vw);
+  height:min(820px,92vh);
+  border-radius:42px;
+  background:
+    radial-gradient(circle at 9% 0%,rgba(255,226,247,.9),transparent 30%),
+    radial-gradient(circle at 90% 0%,rgba(202,178,255,.9),transparent 32%),
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
+  border:1px solid rgba(237,226,255,.95);
+  box-shadow:0 36px 120px rgba(51,27,91,.35);
+  display:grid;
+  grid-template-rows:auto auto 1fr;
+  gap:12px;
+  padding:22px;
+  overflow:hidden;
+}
+.favorite-picker-summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border-radius:22px;background:rgba(255,255,255,.7);border:1px solid rgba(230,216,255,.9);color:#765a99;font-weight:900;font-size:13px}
+.favorite-picker-grid{min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px;padding:4px 6px 6px 0;align-content:start}
+.favorite-pick-card{position:relative;border-radius:22px;padding:5px;background:linear-gradient(135deg,#eadfff,#fff5fb);border:1px solid rgba(230,216,255,.9);box-shadow:0 14px 32px rgba(72,39,128,.12);transition:.16s ease;min-height:164px}
+.favorite-pick-card:hover{transform:translateY(-4px)}
+.favorite-pick-card.selected{outline:3px solid rgba(169,139,255,.75);box-shadow:0 18px 42px rgba(116,78,194,.22)}
+.favorite-pick-card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:17px;display:block}
+.favorite-pick-check{position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.88);color:#7c5aa6;font-weight:1000;box-shadow:0 8px 18px rgba(72,39,128,.16)}
+.favorite-pick-card.selected .favorite-pick-check{background:linear-gradient(135deg,#ffdfef,#d8c6ff);color:#5b3d7d}
+.favorite-picker-empty{grid-column:1/-1;display:grid;place-items:center;min-height:280px;text-align:center;color:#8064a7;font-weight:900;line-height:1.5}
+@media(max-width:650px){.pack-grid{grid-template-columns:1fr!important}.favorite-picker-grid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}.pack-card{grid-template-rows:160px 1fr!important}}
+
 </style>
 </head>
 
@@ -2672,8 +2793,9 @@ h1{
         <div class="profile-showcase-card">
           <div class="profile-showcase-head">
             <b>💖 Любимые карты</b>
-            <small>выбери до 3 карт<br>из коллекции</small>
+            <small>до 3 карт<br>из коллекции</small>
           </div>
+          <button class="profile-showcase-pick" id="profileShowcasePick">⭐ Выбрать карты</button>
           <div class="profile-showcase-grid" id="profileShowcaseGrid"></div>
         </div>
       </aside>
@@ -2724,6 +2846,23 @@ h1{
         </div>
       </section>
     </div>
+  </div>
+</section>
+
+<section class="modal" id="favoritePickerModal">
+  <div class="favorite-picker-window">
+    <div class="modal-head favorite-picker-head">
+      <div>
+        <h2>Любимые карты</h2>
+        <p>Выбери до 3 карт из уже собранной коллекции для витрины профиля ♡</p>
+      </div>
+      <button class="modal-close" id="favoritePickerClose">×</button>
+    </div>
+    <div class="favorite-picker-summary">
+      <span id="favoritePickerCount">0/3 выбрано</span>
+      <span>клик по карте добавляет или убирает её из витрины</span>
+    </div>
+    <div class="favorite-picker-grid" id="favoritePickerGrid"></div>
   </div>
 </section>
 
@@ -2920,6 +3059,11 @@ const profileNextRewardText = document.getElementById("profileNextRewardText");
 const profileRewardPass = document.getElementById("profileRewardPass");
 const profileUnlockGrid = document.getElementById("profileUnlockGrid");
 const profileShowcaseGrid = document.getElementById("profileShowcaseGrid");
+const profileShowcasePick = document.getElementById("profileShowcasePick");
+const favoritePickerModal = document.getElementById("favoritePickerModal");
+const favoritePickerClose = document.getElementById("favoritePickerClose");
+const favoritePickerGrid = document.getElementById("favoritePickerGrid");
+const favoritePickerCount = document.getElementById("favoritePickerCount");
 const profileMemberStats = document.getElementById("profileMemberStats");
 const achievementsClose = document.getElementById("achievementsClose");
 const achievementsModal = document.getElementById("achievementsModal");
@@ -3048,6 +3192,68 @@ function getBiasIcon(key = playerProfile.bias){
   return BIAS_META[key]?.icon || "💜";
 }
 
+function getPackUnlockLevel(key, rateKey = "basic"){
+  if(rateKey === "premium" || key === "premium_all") return 10;
+  if(rateKey === "rare" || key === "rare_all") return 3;
+  if(key === "all") return 1;
+  if(["iam","imade","itrust","iburn"].includes(key)) return 3;
+  if(["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)) return 5;
+  if(key === "group") return 8;
+  return 1;
+}
+
+function isPackVisible(key, rateKey = "basic"){
+  return playerProgress.level >= getPackUnlockLevel(key, rateKey);
+}
+
+function getPackKind(key, rateKey = "basic"){
+  if(rateKey === "premium") return "premium";
+  if(rateKey === "rare") return "rare";
+  if(key === "all") return "all";
+  if(key === "group") return "group";
+  if(["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)) return "member";
+  return "album";
+}
+
+function getPackIcon(key, rateKey = "basic"){
+  if(rateKey === "premium") return "👑";
+  if(rateKey === "rare") return "💖";
+  if(key === "miyeon") return "🐰";
+  if(key === "minnie") return "🦋";
+  if(key === "soyeon") return "🦁";
+  if(key === "yuqi") return "🦒";
+  if(key === "shuhua") return "🐺";
+  if(key === "soojin") return "🌹";
+  if(key === "group") return "💿";
+  if(["iam","imade","itrust","iburn"].includes(key)) return "💿";
+  return "🎁";
+}
+
+function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
+  const kind = getPackKind(key, rateKey);
+  const icon = getPackIcon(key, rateKey);
+  const rateParts = text.split("/").map(item => item.trim()).filter(Boolean);
+  return `
+    <div class="pack-cover ${kind}">
+      <span class="pack-cover-title">${kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic"}</span>
+      <div class="pack-cover-icon">${icon}</div>
+    </div>
+    <div class="pack-info">
+      <div class="pack-title">${title}</div>
+      <div class="pack-sub">${subtitle}</div>
+      <div class="pack-rates">${rateParts.map(part => `<span class="pack-rate">${part}</span>`).join("")}</div>
+      <div class="pack-price"><strong>${cost} очков</strong><span class="pack-open-pill">Открыть</span></div>
+    </div>`;
+}
+
+function isUpgradeGroupVisible(group){
+  const level = playerProgress.level;
+  if(group === "next") return level >= 5;
+  if(group === "permanent") return level >= 6;
+  if(group === "rarity") return level >= 7;
+  return true;
+}
+
 function getNextRewardLevel(fromLevel = playerProgress.level){
   for(let level = fromLevel + 1; level <= fromLevel + 20; level++){
     const reward = getLevelReward(level);
@@ -3149,6 +3355,45 @@ function renderProfileShowcase(){
       savePlayerProfile();
       renderProfileShowcase();
       renderCollection?.();
+    });
+  });
+}
+
+async function openFavoritePicker(){
+  await getAllImages();
+  renderFavoritePicker();
+  favoritePickerModal?.classList.add("show");
+}
+
+function closeFavoritePicker(){
+  favoritePickerModal?.classList.remove("show");
+}
+
+function renderFavoritePicker(){
+  if(!favoritePickerGrid) return;
+  const collected = getCollectedCards();
+  const favs = Array.isArray(playerProfile.favorites) ? playerProfile.favorites : [];
+  if(favoritePickerCount) favoritePickerCount.textContent = `${favs.length}/3 выбрано`;
+
+  if(!collected.length){
+    favoritePickerGrid.innerHTML = `<div class="favorite-picker-empty">Пока нет собранных карт ♡<br>Сначала пройди уровень или открой пак.</div>`;
+    return;
+  }
+
+  favoritePickerGrid.innerHTML = collected.map(card => {
+    const selected = favs.includes(card.id);
+    return `<button class="favorite-pick-card rarity-${card.rarity} ${selected ? "selected" : ""}" data-fav-card="${card.id}">
+      <img src="${card.src}" alt="favorite option" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
+      <span class="favorite-pick-check">${selected ? "★" : "☆"}</span>
+    </button>`;
+  }).join("");
+
+  favoritePickerGrid.querySelectorAll("[data-fav-card]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = getCardById(btn.dataset.favCard);
+      toggleFavoriteCard(card);
+      renderFavoritePicker();
     });
   });
 }
@@ -4701,163 +4946,177 @@ function renderUpgradeGrid(){
     .map(([key, item]) => `<option value="${key}">${item.title}</option>`)
     .join("");
 
-  upgradeGrid.innerHTML = `
-    <div class="upgrade-card">
-      <b>🔥 Серия · 6 очков</b>
-      <small>На следующий уровень. За каждые 2 пары подряд без ошибки даёт +1 очко.</small>
-      <button id="buyComboBoost">Активировать</button>
-    </div>
+  const blocks = [];
 
-    <div class="upgrade-card">
-      <b>🐰 Фокус на участницу · 10 очков</b>
-      <small>На следующий уровень. Поле и награда будут собраны из карт выбранной участницы.</small>
-      <select id="memberFocusSelect">${memberOptions}</select>
-      <button id="buyMemberFocus">Купить фокус</button>
-    </div>
+  if(isUpgradeGroupVisible("next")){
+    blocks.push(`
+      <div class="upgrade-card">
+        <b>🔥 Серия · 6 очков</b>
+        <small>На следующий уровень. За каждые 2 пары подряд без ошибки даёт +1 очко.</small>
+        <button id="buyComboBoost">Активировать</button>
+      </div>
 
-    <div class="upgrade-card">
-      <b>💿 Фокус на альбом · 10 очков</b>
-      <small>На следующий уровень. Поле и награда будут собраны из выбранной эры.</small>
-      <select id="albumFocusSelect">${albumOptions}</select>
-      <button id="buyAlbumFocus">Купить фокус</button>
-    </div>
+      <div class="upgrade-card">
+        <b>🐰 Фокус на участницу · 10 очков</b>
+        <small>На следующий уровень. Поле и награда будут собраны из карт выбранной участницы.</small>
+        <select id="memberFocusSelect">${memberOptions}</select>
+        <button id="buyMemberFocus">Купить фокус</button>
+      </div>
 
-    <div class="upgrade-card">
-      <b>🎁 Щедрость · 12 очков</b>
-      <small>После следующего пройденного уровня можно выбрать 2 карты вместо 1.</small>
-      <button id="buyExtraPick">Активировать</button>
-    </div>
+      <div class="upgrade-card">
+        <b>💿 Фокус на альбом · 10 очков</b>
+        <small>На следующий уровень. Поле и награда будут собраны из выбранной эры.</small>
+        <select id="albumFocusSelect">${albumOptions}</select>
+        <button id="buyAlbumFocus">Купить фокус</button>
+      </div>
 
-    <div class="upgrade-section-title">Постоянные улучшения</div>
+      <div class="upgrade-card">
+        <b>🎁 Щедрость · 12 очков</b>
+        <small>После следующего пройденного уровня можно выбрать 2 карты вместо 1.</small>
+        <button id="buyExtraPick">Активировать</button>
+      </div>
+    `);
+  }
 
-    <div class="upgrade-card">
-      <b>♻️ Переработка · 35 очков</b>
-      <small>Повторки, выпавшие из паков, автоматически дают +1 очко за каждую повторку.</small>
-      ${getPermanentUpgradeButton("recycling", 35)}
-    </div>
+  if(isUpgradeGroupVisible("permanent")){
+    blocks.push(`
+      <div class="upgrade-section-title">Постоянные улучшения</div>
 
-    <div class="upgrade-card">
-      <b>👑 Коллекционер · 45 очков</b>
-      <small>После прохождения уровня с шансом 20% можно выбрать +1 дополнительную карту бесплатно.</small>
-      ${getPermanentUpgradeButton("collector", 45)}
-    </div>
+      <div class="upgrade-card">
+        <b>♻️ Переработка · 35 очков</b>
+        <small>Повторки, выпавшие из паков, автоматически дают +1 очко за каждую повторку.</small>
+        ${getPermanentUpgradeButton("recycling", 35)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>🎯 Лучший выбор · 45 очков</b>
-      <small>В награде после уровня всегда появляется на 1 вариант карты больше.</small>
-      ${getPermanentUpgradeButton("betterChoice", 45)}
-    </div>
+      <div class="upgrade-card">
+        <b>👑 Коллекционер · 45 очков</b>
+        <small>После прохождения уровня с шансом 20% можно выбрать +1 дополнительную карту бесплатно.</small>
+        ${getPermanentUpgradeButton("collector", 45)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>💸 Кэшбек · 40 очков</b>
-      <small>При покупке пака с шансом 30% возвращает 1 очко.</small>
-      ${getPermanentUpgradeButton("cashback", 40)}
-    </div>
+      <div class="upgrade-card">
+        <b>🎯 Лучший выбор · 45 очков</b>
+        <small>В награде после уровня всегда появляется на 1 вариант карты больше.</small>
+        ${getPermanentUpgradeButton("betterChoice", 45)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>🍀 Счастливый день · 50 очков</b>
-      <small>Первый открытый пак за день даёт +1 дополнительную карту.</small>
-      ${getPermanentUpgradeButton("luckyDay", 50)}
-    </div>
+      <div class="upgrade-card">
+        <b>💸 Кэшбек · 40 очков</b>
+        <small>При покупке пака с шансом 30% возвращает 1 очко.</small>
+        ${getPermanentUpgradeButton("cashback", 40)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>🎁 Подарок для Неверленда · 60 очков</b>
-      <small>Один раз в день первый открытый пак становится бесплатным.</small>
-      ${getPermanentUpgradeButton("neverlandGift", 60)}
-    </div>
+      <div class="upgrade-card">
+        <b>🍀 Счастливый день · 50 очков</b>
+        <small>Первый открытый пак за день даёт +1 дополнительную карту.</small>
+        ${getPermanentUpgradeButton("luckyDay", 50)}
+      </div>
 
-    <div class="upgrade-section-title">Улучшения редкости</div>
+      <div class="upgrade-card">
+        <b>🎁 Подарок для Неверленда · 60 очков</b>
+        <small>Один раз в день первый открытый пак становится бесплатным.</small>
+        ${getPermanentUpgradeButton("neverlandGift", 60)}
+      </div>
+    `);
+  }
 
-    <div class="upgrade-card">
-      <b>🎯 Редкий вкус · 45 очков</b>
-      <small>Навсегда повышает шанс rare в награде после уровня. На паки не влияет.</small>
-      ${getPermanentUpgradeButton("rareTaste", 45)}
-    </div>
+  if(isUpgradeGroupVisible("rarity")){
+    blocks.push(`
+      <div class="upgrade-section-title">Улучшения редкости</div>
 
-    <div class="upgrade-card">
-      <b>✨ Охота за ультра · 60 очков</b>
-      <small>Навсегда повышает шанс ultra в награде после уровня. На паки не влияет.</small>
-      ${getPermanentUpgradeButton("ultraHunt", 60)}
-    </div>
+      <div class="upgrade-card">
+        <b>🎯 Редкий вкус · 45 очков</b>
+        <small>Навсегда повышает шанс rare в награде после уровня. На паки не влияет.</small>
+        ${getPermanentUpgradeButton("rareTaste", 45)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>🎁 Гарант редкой карты · 55 очков</b>
-      <small>В награде после уровня всегда есть минимум 1 rare или ultra.</small>
-      ${getPermanentUpgradeButton("guaranteeRare", 55)}
-    </div>
+      <div class="upgrade-card">
+        <b>✨ Охота за ультра · 60 очков</b>
+        <small>Навсегда повышает шанс ultra в награде после уровня. На паки не влияет.</small>
+        ${getPermanentUpgradeButton("ultraHunt", 60)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>👑 Шанс ультра · 45 очков</b>
-      <small>10% шанс, что среди наград после уровня появится ultra.</small>
-      ${getPermanentUpgradeButton("ultraChance", 45)}
-    </div>
+      <div class="upgrade-card">
+        <b>🎁 Гарант редкой карты · 55 очков</b>
+        <small>В награде после уровня всегда есть минимум 1 rare или ultra.</small>
+        ${getPermanentUpgradeButton("guaranteeRare", 55)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>♻️ Умная переработка · 55 очков</b>
-      <small>Повторки из паков дают очки по редкости: common +1, rare +2, ultra +5.</small>
-      ${getPermanentUpgradeButton("smartRecycling", 55)}
-    </div>
+      <div class="upgrade-card">
+        <b>👑 Шанс ультра · 45 очков</b>
+        <small>10% шанс, что среди наград после уровня появится ultra.</small>
+        ${getPermanentUpgradeButton("ultraChance", 45)}
+      </div>
 
-    <div class="upgrade-card">
-      <b>🧠 Интуиция коллекционера · 50 очков</b>
-      <small>За выбор common в награде копятся тики. 5/5 тиков делают следующую награду только rare/ultra.</small>
-      ${getPermanentUpgradeButton("collectorIntuition", 50)}
-      <div class="rarity-pity-note">Сейчас: ${collectorIntuitionTicks}/5 тиков</div>
-    </div>
-  `;
+      <div class="upgrade-card">
+        <b>♻️ Умная переработка · 55 очков</b>
+        <small>Повторки из паков дают очки по редкости: common +1, rare +2, ultra +5.</small>
+        ${getPermanentUpgradeButton("smartRecycling", 55)}
+      </div>
 
-  document.getElementById("buyComboBoost").addEventListener("click", buyComboBoost);
-  document.getElementById("buyMemberFocus").addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
-  document.getElementById("buyAlbumFocus").addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
-  document.getElementById("buyExtraPick").addEventListener("click", buyExtraPick);
+      <div class="upgrade-card">
+        <b>🧠 Интуиция коллекционера · 50 очков</b>
+        <small>За выбор common в награде копятся тики. 5/5 тиков делают следующую награду только rare/ultra.</small>
+        ${getPermanentUpgradeButton("collectorIntuition", 50)}
+        <div class="rarity-pity-note">Сейчас: ${collectorIntuitionTicks}/5 тиков</div>
+      </div>
+    `);
+  }
+
+  upgradeGrid.innerHTML = blocks.join("") || `<div class="shop-empty-note">Улучшения откроются на Lv. 5 ♡</div>`;
+
+  document.getElementById("buyComboBoost")?.addEventListener("click", buyComboBoost);
+  document.getElementById("buyMemberFocus")?.addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
+  document.getElementById("buyAlbumFocus")?.addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
+  document.getElementById("buyExtraPick")?.addEventListener("click", buyExtraPick);
 
   upgradeGrid.querySelectorAll("[data-permanent-key]").forEach(button => {
     button.addEventListener("click", () => buyPermanentUpgrade(button.dataset.permanentKey, Number(button.dataset.permanentCost)));
   });
-  applyLevelLocks();
 }
 
 async function renderPackGrid(){
   const config = await loadConfig();
   packGrid.innerHTML = "";
 
+  let rendered = 0;
+
   Object.entries(config.boosters || {}).forEach(([key, pack]) => {
+    if(!isPackVisible(key, "basic")) return;
     const cost = getPackCost(key, pack);
     const btn = document.createElement("button");
     btn.className = "pack-card";
-    btn.innerHTML = `
-      <b>🎁 ${pack.title}</b>
-      <small>3 случайные карты: 70% Common / 25% Rare / 5% Ultra</small>
-      <strong>${cost} очков</strong>
-    `;
-
+    btn.innerHTML = renderPackCardHTML({
+      key,
+      title:pack.title,
+      cost,
+      rateKey:"basic",
+      text:"70% Common / 25% Rare / 5% Ultra",
+      subtitle:key === "all" ? "Базовый пак со всеми картами" : "Тематический пак из открытой категории"
+    });
     btn.addEventListener("click", () => buyPack(key, "basic"));
-
     packGrid.appendChild(btn);
+    rendered++;
   });
 
   const specialPacks = [
-    { key:"rare_all", title:"Редкий пак", cost:16, rateKey:"rare", text:"50% Common / 40% Rare / 10% Ultra" },
-    { key:"premium_all", title:"Премиум пак", cost:24, rateKey:"premium", text:"30% Common / 50% Rare / 20% Ultra" }
+    { key:"rare_all", title:"Редкий пак", cost:16, rateKey:"rare", text:"50% Common / 40% Rare / 10% Ultra", subtitle:"Открывается на Lv. 3. Повышенный шанс rare." },
+    { key:"premium_all", title:"Премиум пак", cost:24, rateKey:"premium", text:"30% Common / 50% Rare / 20% Ultra", subtitle:"Открывается на Lv. 10. Самый красивый шанс rare и ultra." }
   ];
 
   specialPacks.forEach(pack => {
-    const requiredKey = pack.rateKey === "premium" ? "premium_pack" : "rare_pack";
-    const unlock = LEVEL_UNLOCKS.find(item => item.key === requiredKey);
-    const isUnlocked = isLevelUnlocked(requiredKey);
+    if(!isPackVisible(pack.key, pack.rateKey)) return;
     const btn = document.createElement("button");
-    btn.className = `pack-card special-pack ${isUnlocked ? "" : "level-locked"}`;
-    btn.disabled = !isUnlocked;
-    btn.dataset.lockText = isUnlocked ? "" : `Откроется на Lv. ${unlock.level}`;
-    btn.innerHTML = `
-      <b>${isUnlocked ? "✨" : "🔒"} ${pack.title}</b>
-      <small>3 случайные карты из всей коллекции: ${pack.text}</small>
-      <strong>${isUnlocked ? `${pack.cost} очков` : `Нужен Lv. ${unlock.level}`}</strong>
-      <div class="rarity-pity-note">Пити ultra: ${ultraPity}/10 открытий без ultra</div>
-    `;
-    if(isUnlocked) btn.addEventListener("click", () => buySpecialPack(pack));
+    btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"}`;
+    btn.innerHTML = renderPackCardHTML(pack) + `<div class="rarity-pity-note" style="padding:0 16px 14px">Пити ultra: ${ultraPity}/10 открытий без ultra</div>`;
+    btn.addEventListener("click", () => buySpecialPack(pack));
     packGrid.appendChild(btn);
+    rendered++;
   });
+
+  if(!rendered){
+    packGrid.innerHTML = `<div class="shop-empty-note">Паки откроются по мере повышения уровня ♡</div>`;
+  }
 }
 
 async function openShop(){
@@ -5335,6 +5594,9 @@ profileOpen?.addEventListener("click", () => {
   updateProfileUI();
   profileModal?.classList.add("show");
 });
+profileShowcasePick?.addEventListener("click", openFavoritePicker);
+favoritePickerClose?.addEventListener("click", closeFavoritePicker);
+favoritePickerModal?.addEventListener("click", event => { if(event.target === favoritePickerModal) closeFavoritePicker(); });
 profileClose?.addEventListener("click", () => profileModal?.classList.remove("show"));
 profileModal?.addEventListener("click", event => { if(event.target === profileModal) profileModal.classList.remove("show"); });
 playerNameInput?.addEventListener("input", () => {
