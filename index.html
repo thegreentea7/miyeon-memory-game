@@ -2575,6 +2575,205 @@ h1{
 .favorite-picker-empty{grid-column:1/-1;display:grid;place-items:center;min-height:280px;text-align:center;color:#8064a7;font-weight:900;line-height:1.5}
 @media(max-width:650px){.pack-grid{grid-template-columns:1fr!important}.favorite-picker-grid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}.pack-card{grid-template-rows:160px 1fr!important}}
 
+
+
+/* ======================================================
+   FINAL REWARD CHOICE MODAL: fullscreen, big cards, focus
+   ====================================================== */
+#win.modal{
+  padding:18px!important;
+  background:rgba(34,24,48,.62)!important;
+  backdrop-filter:blur(16px) saturate(1.08)!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+
+#win.modal.show{
+  display:flex!important;
+}
+
+#win .win-card{
+  width:min(1180px,96vw)!important;
+  height:min(850px,94vh)!important;
+  max-height:94vh!important;
+  padding:clamp(18px,2.6vw,34px)!important;
+  border-radius:42px!important;
+  overflow:auto!important;
+  display:grid!important;
+  grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto!important;
+  align-items:start!important;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,221,244,.9),transparent 30%),
+    radial-gradient(circle at 92% 6%,rgba(211,191,255,.9),transparent 34%),
+    linear-gradient(180deg,rgba(255,255,255,.985),rgba(248,241,255,.965))!important;
+  border:1px solid rgba(255,255,255,.94)!important;
+  box-shadow:0 38px 130px rgba(31,18,48,.46), inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+
+#win .win-emoji{
+  font-size:clamp(44px,5vw,72px)!important;
+  margin-bottom:6px!important;
+  line-height:1!important;
+}
+
+#win .win-card h2{
+  font-size:clamp(28px,4vw,48px)!important;
+  line-height:1.02!important;
+  margin-bottom:10px!important;
+}
+
+#win .collector-badge{
+  justify-self:center!important;
+  margin-bottom:10px!important;
+  padding:9px 16px!important;
+  border-radius:999px!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(238,227,255,.9))!important;
+  box-shadow:0 12px 28px rgba(91,54,143,.12)!important;
+}
+
+#win .win-card p{
+  max-width:850px!important;
+  margin:0 auto 10px!important;
+  font-size:clamp(14px,1.5vw,17px)!important;
+  line-height:1.5!important;
+}
+
+#win .reward-options{
+  --reward-min:190px;
+  width:100%!important;
+  max-width:1080px!important;
+  min-height:0!important;
+  margin:18px auto 18px!important;
+  display:grid!important;
+  grid-template-columns:repeat(var(--reward-count,3),minmax(0,1fr))!important;
+  gap:clamp(14px,2vw,24px)!important;
+  align-items:stretch!important;
+}
+
+#win .reward-card{
+  width:100%!important;
+  min-width:0!important;
+  max-width:320px!important;
+  justify-self:center!important;
+  border-radius:30px!important;
+  padding:9px!important;
+  cursor:pointer!important;
+  transform-origin:center!important;
+  transition:transform .22s ease, box-shadow .22s ease, filter .22s ease!important;
+  background:linear-gradient(135deg,#efe5ff,#fff5fb)!important;
+  border:1px solid rgba(255,255,255,.92)!important;
+  box-shadow:0 18px 42px rgba(81,49,139,.16)!important;
+}
+
+#win .reward-card:hover{
+  transform:translateY(-8px) scale(1.075)!important;
+  z-index:4!important;
+  filter:brightness(1.03)!important;
+  box-shadow:0 30px 72px rgba(81,49,139,.28),0 0 0 3px rgba(197,173,255,.38)!important;
+}
+
+#win .reward-card img{
+  width:100%!important;
+  height:auto!important;
+  aspect-ratio:3/4!important;
+  min-height:clamp(250px,42vh,500px)!important;
+  max-height:56vh!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border-radius:23px!important;
+  background:linear-gradient(180deg,#fff,#fbf7ff)!important;
+  display:block!important;
+}
+
+#win .reward-badge,
+#win .rarity-badge{
+  z-index:5!important;
+  font-size:12px!important;
+  padding:7px 10px!important;
+}
+
+#win .reward-badge{
+  left:16px!important;
+  top:16px!important;
+}
+
+#win .rarity-badge{
+  right:16px!important;
+  bottom:16px!important;
+}
+
+#win .reward-actions{
+  width:min(560px,100%)!important;
+  justify-self:center!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin:0 auto 12px!important;
+}
+
+#win .reroll-btn,
+#win .again{
+  min-width:0!important;
+  width:100%!important;
+  justify-self:center!important;
+  padding:14px 18px!important;
+  border-radius:999px!important;
+  font-size:15px!important;
+}
+
+#win .again{
+  width:min(280px,100%)!important;
+}
+
+@media(max-width:900px){
+  #win.modal{padding:10px!important;}
+  #win .win-card{
+    width:97vw!important;
+    height:95vh!important;
+    border-radius:30px!important;
+  }
+  #win .reward-options{
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important;
+    max-width:760px!important;
+  }
+  #win .reward-card img{
+    min-height:clamp(210px,36vh,390px)!important;
+    max-height:44vh!important;
+  }
+}
+
+@media(max-width:560px){
+  #win .win-card{
+    padding:18px 12px!important;
+    border-radius:26px!important;
+  }
+  #win .reward-options{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  #win .reward-card{
+    border-radius:22px!important;
+    padding:6px!important;
+  }
+  #win .reward-card:hover{
+    transform:translateY(-4px) scale(1.035)!important;
+  }
+  #win .reward-card img{
+    min-height:190px!important;
+    max-height:34vh!important;
+    border-radius:17px!important;
+  }
+  #win .reward-actions{
+    grid-template-columns:1fr!important;
+  }
+  #win .reward-badge,
+  #win .rarity-badge{
+    font-size:10px!important;
+    padding:5px 7px!important;
+  }
+}
+
 </style>
 </head>
 
