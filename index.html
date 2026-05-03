@@ -2954,6 +2954,137 @@ h1{
 .shards-empty{grid-column:1/-1;min-height:280px;display:grid;place-items:center;text-align:center;color:var(--ann-muted);font-weight:900;line-height:1.45}
 @media(max-width:650px){.shards-window{width:98vw;height:94vh;border-radius:26px;padding:14px}.shards-info-row{grid-template-columns:1fr}.shards-shop-head{display:block}.shards-shop-head span{margin-top:4px}.shards-shop-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px}}
 
+
+
+/* === Shards shop final polish v4: bigger cards, no empty-looking holes, sorted rarity === */
+.shards-window{
+  width:min(1260px,96vw)!important;
+  height:min(880px,94vh)!important;
+  border-radius:42px!important;
+  padding:24px!important;
+  grid-template-rows:auto auto auto minmax(0,1fr)!important;
+  gap:16px!important;
+}
+.shards-info-row{grid-template-columns:1fr 1fr!important;gap:14px!important}
+.shards-balance-card,.shards-timer-card,.shards-shop-head{
+  border-radius:26px!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(249,244,255,.76))!important;
+  border:1px solid rgba(230,216,255,.95)!important;
+}
+.shards-shop-head{
+  padding:16px 18px!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(239,229,255,.82))!important;
+}
+.shards-shop-head b{font-size:25px!important;display:flex!important;align-items:center!important;gap:8px!important}
+.shards-shop-head span{font-size:12px!important;max-width:420px!important;text-align:right!important;line-height:1.3!important}
+.shards-shop-grid{
+  grid-template-columns:repeat(auto-fill,minmax(168px,1fr))!important;
+  grid-auto-rows:auto!important;
+  gap:18px!important;
+  padding:4px 10px 14px 2px!important;
+  align-content:start!important;
+  grid-auto-flow:row!important;
+}
+.shard-shop-card{
+  min-height:330px!important;
+  border-radius:30px!important;
+  padding:9px!important;
+  background:
+    radial-gradient(circle at 18% 0%,rgba(255,255,255,.9),transparent 34%),
+    linear-gradient(180deg,rgba(255,255,255,.92),rgba(246,239,255,.88))!important;
+  border:1px solid rgba(230,216,255,.95)!important;
+  box-shadow:0 18px 42px rgba(72,39,128,.14), inset 0 1px 0 rgba(255,255,255,.9)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+.shard-shop-card:hover{
+  transform:translateY(-6px) scale(1.015)!important;
+  box-shadow:0 26px 64px rgba(72,39,128,.22), inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+.shard-shop-card.rarity-common{background:linear-gradient(180deg,#fff,#f7f1ff)!important}
+.shard-shop-card.rarity-rare{background:linear-gradient(180deg,#fff7fc,#fff2fb 48%,#f5edff)!important;outline:2px solid rgba(255,184,221,.38)!important}
+.shard-shop-card.rarity-ultra{background:linear-gradient(180deg,#f3ecff,#eadfff 48%,#fff3fb)!important;outline:2px solid rgba(169,139,255,.55)!important}
+.shard-shop-card .rarity-badge{
+  left:13px!important;
+  top:13px!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:5!important;
+  transform:none!important;
+}
+.shard-shop-image-wrap{
+  width:100%;
+  height:224px;
+  border-radius:23px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(255,255,255,.95),transparent 30%),
+    linear-gradient(135deg,#efe5ff,#fff6fb);
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:inset 0 0 0 1px rgba(218,201,255,.38),0 12px 28px rgba(72,39,128,.10);
+  display:block;
+  flex:0 0 auto;
+}
+.shard-shop-card img{
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:auto!important;
+  object-fit:cover!important;
+  object-position:center 38%!important;
+  border-radius:0!important;
+  background:transparent!important;
+  display:block!important;
+  transform:scale(1.12);
+  transition:.2s ease;
+}
+.shard-shop-card:hover img{transform:scale(1.18)}
+.shard-shop-card.broken-image{display:none!important}
+.shard-shop-card-info{
+  padding:10px 4px 0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  flex:1!important;
+}
+.shard-shop-card-info b{
+  font-size:13px!important;
+  line-height:1.18!important;
+  color:#513772!important;
+  min-height:31px!important;
+}
+.shard-shop-card-info small{
+  font-size:10px!important;
+  color:#856da8!important;
+  font-weight:1000!important;
+  letter-spacing:.02em!important;
+}
+.shard-buy-btn{
+  margin-top:auto!important;
+  padding:10px 12px!important;
+  border-radius:999px!important;
+  background:linear-gradient(135deg,#d9c7ff,#ffd2ec)!important;
+  color:#4f2f78!important;
+  font-size:12px!important;
+  font-weight:1000!important;
+  box-shadow:0 12px 24px rgba(94,55,150,.14)!important;
+}
+.shard-buy-btn:not(:disabled):hover{filter:brightness(1.03);transform:translateY(-1px)}
+.shard-buy-btn:disabled{opacity:.55!important;background:linear-gradient(135deg,#eee7f8,#fff1f8)!important;color:#9b86b8!important}
+@media(max-width:850px){
+  .shards-window{width:98vw!important;height:95vh!important;padding:16px!important;border-radius:28px!important}
+  .shards-info-row{grid-template-columns:1fr!important}
+  .shards-shop-head{display:block!important}.shards-shop-head span{text-align:left!important;margin-top:6px!important}
+  .shards-shop-grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr))!important;gap:12px!important}
+  .shard-shop-card{min-height:286px!important;border-radius:24px!important}
+  .shard-shop-image-wrap{height:188px;border-radius:19px}
+}
+@media(max-width:520px){
+  .shards-shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .shard-shop-card{min-height:260px!important;padding:7px!important}
+  .shard-shop-image-wrap{height:166px}
+}
+
 </style>
 </head>
 
@@ -3184,7 +3315,7 @@ h1{
       <div class="shards-timer-card">
         <span>Обновление магазина</span>
         <b id="shardsShopTimer">00:00:00</b>
-        <small>каждый день появляются 12 случайных недостающих карт</small>
+        <small>каждый день появляются 18 случайных недостающих карт</small>
       </div>
     </div>
 
@@ -4750,6 +4881,18 @@ function getShardCardCost(card){
   return 10;
 }
 
+
+function sortShardShopCards(a,b){
+  const rarityOrder = { common:0, rare:1, ultra:2 };
+  const r = (rarityOrder[a?.rarity] ?? 9) - (rarityOrder[b?.rarity] ?? 9);
+  if(r) return r;
+  const member = String(getMemberTitle(a.member)).localeCompare(String(getMemberTitle(b.member)), "ru");
+  if(member) return member;
+  const album = String(getAlbumTitle(a.album)).localeCompare(String(getAlbumTitle(b.album)), "ru");
+  if(album) return album;
+  return Number(a.number || 0) - Number(b.number || 0);
+}
+
 function getStoredShardShop(){
   try{
     return JSON.parse(localStorage.getItem("miyeon_shard_daily_shop") || "{}");
@@ -4769,8 +4912,8 @@ async function getDailyShardShopCards(){
   const today = getShardShopDateKey();
   let stored = getStoredShardShop();
 
-  if(stored.date !== today || !Array.isArray(stored.ids)){
-    stored = { date:today, ids:shuffle(unowned).slice(0,12).map(card => card.id) };
+  if(stored.date !== today || stored.version !== 4 || !Array.isArray(stored.ids)){
+    stored = { date:today, version:4, ids:shuffle(unowned).slice(0,18).map(card => card.id) };
     saveStoredShardShop(stored);
   }
 
@@ -4778,13 +4921,13 @@ async function getDailyShardShopCards(){
 
   if(cards.length < 10){
     const used = new Set(cards.map(card => card.id));
-    const fill = shuffle(unowned.filter(card => !used.has(card.id))).slice(0, 12 - cards.length);
+    const fill = shuffle(unowned.filter(card => !used.has(card.id))).slice(0, 18 - cards.length);
     cards = [...cards, ...fill];
     stored.ids = cards.map(card => card.id);
     saveStoredShardShop(stored);
   }
 
-  return cards.slice(0,12);
+  return cards.sort(sortShardShopCards).slice(0,18);
 }
 
 function updateShardsTimer(){
@@ -4808,11 +4951,11 @@ async function renderShardsShop(){
     const canBuy = duplicateShards >= cost;
     return `<div class="shard-shop-card rarity-${card.rarity}" data-shard-card-wrapper="${card.id}">
       <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
-      <img src="${card.src}" alt="card for shards" loading="lazy" decoding="async" onerror="handleShardShopImageError(this)">
+      <div class="shard-shop-image-wrap"><img src="${card.src}" alt="card for shards" loading="lazy" decoding="async" onerror="handleShardShopImageError(this)"></div>
       <div class="shard-shop-card-info">
         <b>${getMemberTitle(card.member)} · ${getAlbumTitle(card.album)}</b>
         <small>№${card.number} · ${getRarityTitle(card.rarity)}</small>
-        <button class="shard-buy-btn" data-shard-card="${card.id}" ${canBuy ? "" : "disabled"}>${cost} осколков</button>
+        <button class="shard-buy-btn" data-shard-card="${card.id}" ${canBuy ? "" : "disabled"}>${canBuy ? `Купить · ${cost}` : `${cost} осколков`}</button>
       </div>
     </div>`;
   }).join("");
