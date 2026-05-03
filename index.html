@@ -2494,6 +2494,42 @@ h1{
   letter-spacing:.07em;
   text-transform:uppercase;
 }
+
+.pack-price-badge{
+  position:absolute;
+  right:14px;
+  top:14px;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:8px 11px;
+  border-radius:999px;
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(250,240,255,.9));
+  color:#4f2f78;
+  font-size:13px;
+  font-weight:1000;
+  box-shadow:0 12px 28px rgba(66,37,112,.18), inset 0 1px 0 rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.86);
+}
+.pack-price-badge i{font-style:normal;font-size:14px;filter:drop-shadow(0 2px 6px rgba(126,82,205,.18))}
+.pack-card.can-buy .pack-price-badge{
+  background:linear-gradient(135deg,#fff,#f2e8ff 52%,#ffdcec);
+}
+.pack-card.cant-buy{
+  opacity:.78;
+}
+.pack-card.cant-buy .pack-cover{
+  filter:saturate(.78);
+}
+.pack-card.cant-buy .pack-open-pill{
+  background:linear-gradient(135deg,#eee7f8,#f7f1ff);
+  color:#9a86b8;
+}
+.pack-card.cant-buy .pack-price-badge{
+  background:linear-gradient(135deg,#f4edf8,#fff);
+  color:#8b779f;
+}
 .pack-cover.all{background:linear-gradient(135deg,#d8c7ff,#ffd6ea)}
 .pack-cover.member{background:linear-gradient(135deg,#c7b0ff,#ffaed5)}
 .pack-cover.album{background:linear-gradient(135deg,#bba4ff,#f5e9ff)}
@@ -2504,8 +2540,10 @@ h1{
 .pack-title{font-size:17px;font-weight:1000;color:#4f3670;line-height:1.1}
 .pack-sub{color:#856da8;font-size:12px;font-weight:800;line-height:1.35;min-height:34px}
 .pack-price{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.pack-price strong{font-size:14px!important;color:#5f4382!important;margin:0!important}
-.pack-open-pill{padding:8px 12px;border-radius:999px;background:linear-gradient(135deg,#eadfff,#ffddec);color:#5b3d7d;font-size:12px;font-weight:1000;box-shadow:0 10px 22px rgba(94,55,150,.12)}
+.pack-price strong{font-size:13px!important;color:#75589a!important;margin:0!important;line-height:1.2}
+.pack-open-pill{padding:9px 14px;border-radius:999px;background:linear-gradient(135deg,#eadfff,#ffddec);color:#5b3d7d;font-size:12px;font-weight:1000;box-shadow:0 10px 22px rgba(94,55,150,.12);white-space:nowrap}
+.pack-card.can-buy .pack-open-pill{background:linear-gradient(135deg,#d9c9ff,#ffc9e2);color:#4f2f78}
+.pack-price-note{font-size:11px;font-weight:900;color:#8d76aa}
 .pack-rates{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
 .pack-rate{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.68);border:1px solid rgba(230,216,255,.8);color:#7a61a1;font-size:10px;font-weight:1000}
 .shop-empty-note{grid-column:1/-1;padding:22px;border-radius:28px;background:rgba(255,255,255,.74);border:1px solid rgba(230,216,255,.9);color:#735795;text-align:center;font-weight:900}
@@ -3238,16 +3276,22 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
   const kind = getPackKind(key, rateKey);
   const icon = getPackIcon(key, rateKey);
   const rateParts = text.split("/").map(item => item.trim()).filter(Boolean);
+  const canBuy = points >= cost;
+  const packLabel = kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic";
   return `
     <div class="pack-cover ${kind}">
-      <span class="pack-cover-title">${kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic"}</span>
+      <span class="pack-cover-title">${packLabel}</span>
+      <span class="pack-price-badge"><i>💎</i>${cost}</span>
       <div class="pack-cover-icon">${icon}</div>
     </div>
     <div class="pack-info">
       <div class="pack-title">${title}</div>
       <div class="pack-sub">${subtitle}</div>
       <div class="pack-rates">${rateParts.map(part => `<span class="pack-rate">${part}</span>`).join("")}</div>
-      <div class="pack-price"><strong>${cost} очков</strong><span class="pack-open-pill">Открыть</span></div>
+      <div class="pack-price">
+        <strong>${cost} очков</strong>
+        <span class="pack-open-pill">${canBuy ? "Открыть" : "Не хватает"}</span>
+      </div>
     </div>`;
 }
 
@@ -4559,6 +4603,9 @@ function updatePointsUI(){
   pointsEl.textContent = points;
   if(profileMiniPoints) profileMiniPoints.textContent = points;
   shopOpen.classList.toggle("ready", points >= 8);
+  if(shopModal?.classList.contains("show")){
+    renderPackGrid?.();
+  }
 
   if(points >= 8 && !packReadyNotified){
     packReadyNotified = true;
@@ -5090,7 +5137,7 @@ async function renderPackGrid(){
     if(!isPackVisible(key, "basic")) return;
     const cost = getPackCost(key, pack);
     const btn = document.createElement("button");
-    btn.className = "pack-card";
+    btn.className = `pack-card ${points >= cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML({
       key,
       title:pack.title,
@@ -5116,7 +5163,7 @@ async function renderPackGrid(){
   specialPacks.forEach(pack => {
     if(!isPackVisible(pack.key, pack.rateKey)) return;
     const btn = document.createElement("button");
-    btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"}`;
+    btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"} ${points >= pack.cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML(pack) + `<div class="rarity-pity-note" style="padding:0 16px 14px">Пити ultra: ${ultraPity}/10 открытий без ultra</div>`;
     btn.addEventListener("click", () => buySpecialPack(pack));
     packGrid.appendChild(btn);
