@@ -2159,6 +2159,37 @@ h1{
   }
 }
 
+
+
+/* === Player Level System === */
+.level-card{
+  min-width:240px;
+  max-width:320px;
+  padding:10px 14px;
+  border-radius:22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(239,229,255,.9));
+  border:1px solid rgba(231,214,255,.95);
+  box-shadow:0 12px 28px rgba(84,56,140,.14);
+  color:#46345f;
+  text-align:left;
+}
+.level-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:900;font-size:14px}
+.level-title{font-size:12px;color:#806fa6;font-weight:900;margin-top:2px}
+.level-bar{height:9px;margin-top:8px;border-radius:999px;overflow:hidden;background:#e7ddff}
+.level-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#b89cff,#f4b8df);transition:width .35s ease}
+.level-xp{margin-top:5px;color:#806fa6;font-size:11px;font-weight:900}
+.level-locked{opacity:.55;filter:grayscale(.35);position:relative}
+.level-locked::after{content:attr(data-lock-text);position:absolute;inset:auto 10px 10px 10px;padding:7px 9px;border-radius:999px;background:rgba(255,255,255,.92);color:#665184;font-size:11px;font-weight:900;box-shadow:0 8px 20px rgba(84,56,140,.12)}
+.level-opened-badge{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:5px 9px;border-radius:999px;background:rgba(184,156,255,.18);color:#6c55a6;font-size:11px;font-weight:900}
+.level-window{width:min(680px,94vw);border-radius:34px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,242,255,.98));border:1px solid rgba(231,214,255,.95);box-shadow:0 28px 90px rgba(47,30,83,.25);padding:24px;text-align:center;color:#46345f}
+.level-window h2{font-size:42px;line-height:1;margin:8px 0 6px;color:#5a3f82}
+.level-window p{color:#806fa6;line-height:1.5;margin:0 auto 16px;max-width:520px}
+.level-unlocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:16px 0}
+.level-unlock-item{padding:12px;border-radius:18px;background:rgba(255,255,255,.78);border:1px solid rgba(231,214,255,.9);box-shadow:0 10px 24px rgba(84,56,140,.1);font-weight:900;color:#5a3f82}
+.level-reward-pill{display:inline-flex;margin:5px;padding:7px 11px;border-radius:999px;background:linear-gradient(135deg,#eadfff,#ffddec);color:#5a3f82;font-size:12px;font-weight:900}
+.level-help{margin-top:8px;padding:10px;border-radius:18px;background:rgba(255,255,255,.58);color:#806fa6;font-size:12px;line-height:1.35}
+@media(max-width:650px){.level-card{min-width:100%;}.level-window h2{font-size:30px}}
+
 </style>
 </head>
 
@@ -2181,6 +2212,13 @@ h1{
           <b>🏆 Достижения</b>
           <small>ачивки и награды</small>
         </button>
+
+        <div class="level-card" id="playerLevelCard">
+          <div class="level-card-top"><span id="playerLevelText">Lv. 1</span><span id="playerLevelIcon">💜</span></div>
+          <div class="level-title" id="playerTitleText">New Fan</div>
+          <div class="level-bar"><i id="playerXpBar"></i></div>
+          <div class="level-xp" id="playerXpText">0 / 125 XP</div>
+        </div>
       </div>
     </div>
 
@@ -2393,6 +2431,19 @@ h1{
   </div>
 </section>
 
+
+<section class="modal" id="levelUpModal">
+  <div class="level-window">
+    <div class="win-emoji">✨</div>
+    <h2>LEVEL UP</h2>
+    <p id="levelUpText">Ты достиг(ла) нового уровня.</p>
+    <div id="levelUpRewards"></div>
+    <div class="level-unlocks" id="levelUpUnlocks"></div>
+    <div class="level-help">Уровни открывают новые паки, бусты и усиления. Чем выше уровень, тем больше возможностей для коллекции ♡</div>
+    <button class="again" id="levelUpClose">Продолжить</button>
+  </div>
+</section>
+
 <div class="toast" id="toast">♡</div>
 
 <div class="simple-booster-result" id="packResult">
@@ -2521,6 +2572,16 @@ const achievementsModal = document.getElementById("achievementsModal");
 const achievementGrid = document.getElementById("achievementGrid");
 const achievementProgressText = document.getElementById("achievementProgressText");
 const achievementRewardText = document.getElementById("achievementRewardText");
+const playerLevelCard = document.getElementById("playerLevelCard");
+const playerLevelText = document.getElementById("playerLevelText");
+const playerTitleText = document.getElementById("playerTitleText");
+const playerXpBar = document.getElementById("playerXpBar");
+const playerXpText = document.getElementById("playerXpText");
+const levelUpModal = document.getElementById("levelUpModal");
+const levelUpText = document.getElementById("levelUpText");
+const levelUpRewards = document.getElementById("levelUpRewards");
+const levelUpUnlocks = document.getElementById("levelUpUnlocks");
+const levelUpClose = document.getElementById("levelUpClose");
 
 const shopOpen = document.getElementById("shopOpen");
 const shopClose = document.getElementById("shopClose");
@@ -2585,6 +2646,7 @@ let packRevealInProgress = false;
 let achievements = JSON.parse(localStorage.getItem("miyeon_achievements") || "{}");
 let collectionRewards = JSON.parse(localStorage.getItem("miyeon_collection_rewards") || "{}");
 let gameStats = JSON.parse(localStorage.getItem("miyeon_game_stats") || "{}");
+let playerProgress = JSON.parse(localStorage.getItem("miyeon_player_progress") || '{"level":1,"xp":0}');
 let currentGameMistakes = 0;
 let maxComboThisGame = 0;
 let currentNoCommonGame = false;
@@ -2594,6 +2656,125 @@ const PACK_RATES = {
   rare: { common:50, rare:40, ultra:10 },
   premium: { common:30, rare:50, ultra:20 }
 };
+
+
+const LEVEL_UNLOCKS = [
+  { level:2, key:"advanced_hints", title:"Расширенные подсказки", desc:"Супер-подсказка и Вспомнить всё становятся частью прогрессии" },
+  { level:3, key:"rare_pack", title:"Редкий пак", desc:"В магазине открывается пак с повышенным шансом rare" },
+  { level:5, key:"pre_game_focus", title:"Фокусы перед уровнем", desc:"Серия, фокус на участницу и фокус на альбом" },
+  { level:7, key:"rarity_upgrades", title:"Улучшения редкости", desc:"Редкий вкус, Охота за ультра и редкие гаранты" },
+  { level:10, key:"premium_pack", title:"Премиум пак", desc:"Пак с самым высоким шансом rare и ultra" },
+  { level:15, key:"collection_master", title:"Мастер коллекции", desc:"Постоянные улучшения получают особый статус эндгейм-прогрессии" },
+  { level:20, key:"idol_archivist", title:"Idol Archivist", desc:"Ты открыла высокий коллекционный ранг" }
+];
+
+function savePlayerProgress(){
+  localStorage.setItem("miyeon_player_progress", JSON.stringify(playerProgress));
+}
+
+function getXpForNextLevel(level = playerProgress.level){
+  return 100 + level * 25;
+}
+
+function getPlayerTitle(level = playerProgress.level){
+  if(level >= 30) return "Idol Archivist";
+  if(level >= 20) return "Ultra Collector";
+  if(level >= 10) return "Rare Hunter";
+  if(level >= 5) return "Photocard Collector";
+  return "New Fan";
+}
+
+function isLevelUnlocked(key){
+  const item = LEVEL_UNLOCKS.find(unlock => unlock.key === key);
+  return !item || playerProgress.level >= item.level;
+}
+
+function getUnlocksForLevel(level){
+  return LEVEL_UNLOCKS.filter(unlock => unlock.level === level);
+}
+
+function getLevelReward(level){
+  const rewards = [];
+  let pointsReward = 0;
+  if(level % 2 === 0) pointsReward += 5;
+  if(level % 5 === 0) pointsReward += 12;
+  if(level % 10 === 0) pointsReward += 25;
+  if(pointsReward) rewards.push({ type:"points", text:`+${pointsReward} очков`, amount:pointsReward });
+  if(level % 5 === 0) rewards.push({ type:"note", text:"🎁 Бонусный прогресс для паков" });
+  if(level % 10 === 0) rewards.push({ type:"note", text:"👑 Большая milestone-награда" });
+  return rewards;
+}
+
+function updatePlayerUI(){
+  const level = Math.max(1, Number(playerProgress.level || 1));
+  const xp = Math.max(0, Number(playerProgress.xp || 0));
+  const need = getXpForNextLevel(level);
+  if(playerLevelText) playerLevelText.textContent = `Lv. ${level}`;
+  if(playerTitleText) playerTitleText.textContent = getPlayerTitle(level);
+  if(playerXpText) playerXpText.textContent = `${xp} / ${need} XP`;
+  if(playerXpBar) playerXpBar.style.width = `${Math.min(100, Math.round(xp / need * 100))}%`;
+}
+
+function showLevelUp(level, rewards, unlocks){
+  if(!levelUpModal) return;
+  levelUpText.textContent = `Ты достиг(ла) ${level} уровня · ${getPlayerTitle(level)} ♡`;
+  levelUpRewards.innerHTML = rewards.length
+    ? rewards.map(reward => `<span class="level-reward-pill">${reward.text}</span>`).join("")
+    : `<span class="level-reward-pill">💜 Новый уровень коллекционера</span>`;
+  levelUpUnlocks.innerHTML = unlocks.length
+    ? unlocks.map(item => `<div class="level-unlock-item">🔓 ${item.title}<br><small>${item.desc}</small></div>`).join("")
+    : `<div class="level-unlock-item">✨ Прогресс сохранён</div>`;
+  levelUpModal.classList.add("show");
+}
+
+function addXP(amount, reason = ""){
+  amount = Math.max(0, Number(amount || 0));
+  if(!amount) return;
+  playerProgress.xp = Math.max(0, Number(playerProgress.xp || 0)) + amount;
+  const levelUps = [];
+  while(playerProgress.xp >= getXpForNextLevel(playerProgress.level)){
+    playerProgress.xp -= getXpForNextLevel(playerProgress.level);
+    playerProgress.level = Math.max(1, Number(playerProgress.level || 1)) + 1;
+    const rewards = getLevelReward(playerProgress.level);
+    rewards.forEach(reward => {
+      if(reward.type === "points") addShopPoints(reward.amount);
+    });
+    levelUps.push({ level:playerProgress.level, rewards, unlocks:getUnlocksForLevel(playerProgress.level) });
+  }
+  savePlayerProgress();
+  updatePlayerUI();
+  if(!levelUps.length && reason){
+    showToast(`+${amount} XP · ${reason}`);
+  }
+  if(levelUps.length){
+    const last = levelUps[levelUps.length - 1];
+    showLevelUp(last.level, last.rewards, last.unlocks);
+    renderPackGrid?.();
+    renderUpgradeGrid?.();
+  }
+}
+
+function getDifficultyXP(){
+  if(currentDifficulty === "medium") return 15;
+  if(currentDifficulty === "hard") return 20;
+  return 10;
+}
+
+function getPackXP(cards){
+  return 5 + cards.reduce((sum, card) => sum + (card.rarity === "ultra" ? 5 : card.rarity === "rare" ? 2 : 0), 0);
+}
+
+function applyLevelLocks(){
+  const superHint = document.getElementById("superHintBtn");
+  const rememberAllBtn = document.getElementById("rememberAllBtn");
+  [superHint, rememberAllBtn].forEach(btn => {
+    if(!btn) return;
+    const locked = !isLevelUnlocked("advanced_hints");
+    btn.disabled = locked;
+    btn.classList.toggle("level-locked", locked);
+    btn.dataset.lockText = locked ? "Откроется на Lv. 2" : "";
+  });
+}
 
 async function loadConfig(){
   if(CARD_CONFIG) return CARD_CONFIG;
@@ -2722,6 +2903,7 @@ function unlockAchievement(key, title, reward = 0){
   achievements[key] = true;
   saveMetaProgress();
   if(reward > 0) addShopPoints(reward);
+  addXP(Math.max(10, reward * 2), "достижение");
   showRarityReaction(`🏆 Достижение: ${title}${reward ? ` · +${reward} очков` : ""}`);
 }
 
@@ -3265,6 +3447,13 @@ function markDailyUpgradeUsed(key){
 }
 
 function getPermanentUpgradeButton(key, cost){
+  const rarityKeys = ["rareTaste","ultraHunt","rareGuarantee","ultraChance","smartRecycling","collectorIntuition"];
+  const endgameKeys = ["neverlandGift","luckyDay","collector","betterChoice"];
+  const lockKey = rarityKeys.includes(key) ? "rarity_upgrades" : (endgameKeys.includes(key) ? "collection_master" : null);
+  if(lockKey && !isLevelUnlocked(lockKey)){
+    const unlock = LEVEL_UNLOCKS.find(item => item.key === lockKey);
+    return `<button disabled class="level-locked" data-lock-text="Lv. ${unlock.level}">🔒 Откроется на Lv. ${unlock.level}</button>`;
+  }
   return hasUpgrade(key)
     ? `<button disabled>Куплено ⭐</button>`
     : `<button data-permanent-key="${key}" data-permanent-cost="${cost}">Купить за ${cost} очков</button>`;
@@ -3729,6 +3918,7 @@ function renderRewardOptions(){
 function finishGame(){
   stopTimer();
   addPoints();
+  addXP(getDifficultyXP(), "прохождение уровня");
   recordFinishedLevel();
   launchConfetti();
 
@@ -4050,6 +4240,7 @@ function renderUpgradeGrid(){
   upgradeGrid.querySelectorAll("[data-permanent-key]").forEach(button => {
     button.addEventListener("click", () => buyPermanentUpgrade(button.dataset.permanentKey, Number(button.dataset.permanentCost)));
   });
+  applyLevelLocks();
 }
 
 async function renderPackGrid(){
@@ -4077,15 +4268,20 @@ async function renderPackGrid(){
   ];
 
   specialPacks.forEach(pack => {
+    const requiredKey = pack.rateKey === "premium" ? "premium_pack" : "rare_pack";
+    const unlock = LEVEL_UNLOCKS.find(item => item.key === requiredKey);
+    const isUnlocked = isLevelUnlocked(requiredKey);
     const btn = document.createElement("button");
-    btn.className = "pack-card special-pack";
+    btn.className = `pack-card special-pack ${isUnlocked ? "" : "level-locked"}`;
+    btn.disabled = !isUnlocked;
+    btn.dataset.lockText = isUnlocked ? "" : `Откроется на Lv. ${unlock.level}`;
     btn.innerHTML = `
-      <b>✨ ${pack.title}</b>
+      <b>${isUnlocked ? "✨" : "🔒"} ${pack.title}</b>
       <small>3 случайные карты из всей коллекции: ${pack.text}</small>
-      <strong>${pack.cost} очков</strong>
+      <strong>${isUnlocked ? `${pack.cost} очков` : `Нужен Lv. ${unlock.level}`}</strong>
       <div class="rarity-pity-note">Пити ultra: ${ultraPity}/10 открытий без ultra</div>
     `;
-    btn.addEventListener("click", () => buySpecialPack(pack));
+    if(isUnlocked) btn.addEventListener("click", () => buySpecialPack(pack));
     packGrid.appendChild(btn);
   });
 }
@@ -4239,6 +4435,7 @@ async function buySpecialPack(pack){
   const images = await getAllImages();
   spendPoints(cost);
   const cards = applyUltraPity(pickWeightedCards(images, 3, PACK_RATES[pack.rateKey]), images);
+  addXP(getPackXP(cards), "открытие пака");
   const newCount = cards.filter(card => !isCardCollected(card.src)).length;
   const repeatCards = cards.filter(card => isCardCollected(card.src));
 
@@ -4302,6 +4499,7 @@ async function buyPack(packKey, rateKey = "basic"){
   }
 
   const cards = applyUltraPity(pickWeightedCards(images, packSize, PACK_RATES[rateKey] || PACK_RATES.basic), images);
+  addXP(getPackXP(cards), "открытие пака");
   const repeatCards = cards.filter(card => isCardCollected(card.src));
   const newCount = cards.length - repeatCards.length;
   const repeatCount = repeatCards.length;
@@ -4559,10 +4757,14 @@ againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
 document.getElementById("superHintBtn").addEventListener("click", superHint);
 document.getElementById("rememberAllBtn").addEventListener("click", rememberAll);
+levelUpClose?.addEventListener("click", () => levelUpModal.classList.remove("show"));
+levelUpModal?.addEventListener("click", event => { if(event.target === levelUpModal) levelUpModal.classList.remove("show"); });
 
 loadConfig()
   .then(() => {
     updateDailyLoginStreak();
+    updatePlayerUI();
+    applyLevelLocks();
     updatePointsUI();
     updateBoostStatus();
     updateShapePanel();
