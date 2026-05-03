@@ -2979,6 +2979,7 @@ h1{
       <div class="stat"><span>Пары</span><strong class="inline-counter"><span id="pairs">0</span>/<span id="totalPairs">6</span></strong></div>
       <div class="stat"><span>Время</span><strong id="time">00:00</strong></div>
       <div class="stat"><span>Очки</span><strong id="points">0</strong></div>
+      <div class="stat"><span>Осколки</span><strong id="shards">0</strong></div>
     </div>
 
     <div class="block-title">Режим</div>
@@ -3397,6 +3398,7 @@ const pairsEl = document.getElementById("pairs");
 const totalPairsEl = document.getElementById("totalPairs");
 const timeEl = document.getElementById("time");
 const pointsEl = document.getElementById("points");
+const shardsEl = document.getElementById("shards");
 const restartBtn = document.getElementById("restart");
 const againBtn = document.getElementById("again");
 const win = document.getElementById("win");
@@ -3514,6 +3516,7 @@ let ownedOnly = false;
 let collectionVisibleLimit = 48;
 let currentFilteredCollection = [];
 let points = Number(localStorage.getItem("miyeon_shop_points") || "0");
+let duplicateShards = Number(localStorage.getItem("miyeon_duplicate_shards") || "0");
 let packReadyNotified = points >= 5;
 let activeBoosts = {
   extraPick: false
@@ -4617,6 +4620,75 @@ function savePoints(){
   updatePointsUI();
 }
 
+function saveShards(){
+  localStorage.setItem("miyeon_duplicate_shards", String(duplicateShards));
+  updateShardsUI();
+}
+
+function updateShardsUI(){
+  if(shardsEl) shardsEl.textContent = duplicateShards;
+}
+
+function getDuplicateShardValue(card){
+  if(!card) return 0;
+  if(card.rarity === "ultra") return 8;
+  if(card.rarity === "rare") return 3;
+  return 1;
+}
+
+function addDuplicateShards(amount){
+  amount = Math.max(0, Number(amount || 0));
+  if(!amount) return;
+  duplicateShards += amount;
+  saveShards();
+}
+
+function spendDuplicateShards(cost){
+  cost = Math.max(0, Number(cost || 0));
+  if(duplicateShards < cost) return false;
+  duplicateShards -= cost;
+  saveShards();
+  return true;
+}
+
+function awardDuplicateShards(cards){
+  const list = Array.isArray(cards) ? cards : [cards];
+  const total = list.reduce((sum, card) => sum + getDuplicateShardValue(card), 0);
+  if(total > 0){
+    addDuplicateShards(total);
+  }
+  return total;
+}
+
+async function exchangeShardsForPoints(){
+  const cost = 15;
+  if(!spendDuplicateShards(cost)){
+    showToast(`Для обмена нужно ${cost} осколков ♡`);
+    return;
+  }
+  addShopPoints(5);
+  showToast("💎 Обмен: +5 очков");
+  renderUpgradeGrid?.();
+}
+
+async function exchangeShardsForRarePack(){
+  const cost = 35;
+  if(!spendDuplicateShards(cost)){
+    showToast(`Для rare-пака нужно ${cost} осколков ♡`);
+    return;
+  }
+  const images = await getAllImages();
+  const cards = applyUltraPity(pickWeightedCards(images, 3, PACK_RATES.rare), images);
+  addXP(getPackXP(cards), "обмен осколков");
+  showPackResult(cards, { type:"shardExchange", cost });
+  openedPacksCount++;
+  localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
+  recordPackAchievements(cards, false);
+  updateUltraPity(cards, images);
+  showToast("💖 Rare-пак за осколки открыт");
+  renderUpgradeGrid?.();
+}
+
 function addShopPoints(amount){
   points += amount;
   savePoints();
@@ -4956,6 +5028,7 @@ function getDifficultyPoints(){
 
 function updatePointsUI(){
   pointsEl.textContent = points;
+  updateShardsUI();
   if(profileMiniPoints) profileMiniPoints.textContent = points;
   shopOpen.classList.toggle("ready", points >= 8);
   if(shopModal?.classList.contains("show")){
@@ -5086,7 +5159,7 @@ function renderRewardOptions(){
     const btn = document.createElement("button");
     btn.className = `reward-card rarity-${image.rarity}`;
     btn.innerHTML = `
-      <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : "Уже есть"}</span>
+      <span class="reward-badge ${isNew ? "" : "old"}">${isNew ? "NEW" : `+${getDuplicateShardValue(image)} оск.`}</span>
       <span class="rarity-badge ${image.rarity}">${getRarityTitle(image.rarity)}</span>
       <img src="${image.src}" alt="reward card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
     `;
@@ -5094,6 +5167,7 @@ function renderRewardOptions(){
     btn.addEventListener("click", () => {
       const picksBeforeClick = rewardPicksLeft;
       const already = isCardCollected(image.src);
+      const duplicateBonus = already ? awardDuplicateShards(image) : 0;
       collectCard(image.src);
       recordRewardPick(image, picksBeforeClick);
 
@@ -5117,7 +5191,7 @@ function renderRewardOptions(){
 
       if(activeBoosts.extraPick && rewardPicksLeft > 0){
         extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
-        showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
+        showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
         renderCollection();
         renderCollectionRewards();
         return;
@@ -5126,7 +5200,7 @@ function renderRewardOptions(){
       activeBoosts.extraPick = false;
       permanentBonusPick = false;
       updateBoostStatus();
-      showToast(already ? "Эта карта уже была в коллекции ♡" : "Карта добавлена в коллекцию 💌");
+      showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
       win.classList.remove("show");
       renderCollection();
       renderCollectionRewards();
@@ -5355,6 +5429,28 @@ function renderUpgradeGrid(){
 
   const blocks = [];
 
+  blocks.push(`
+    <div class="upgrade-section-title">Обменник повторок</div>
+
+    <div class="upgrade-card">
+      <b>♻️ Осколки повторок</b>
+      <small>Если карта уже есть в коллекции, она превращается в осколки: common +1, rare +3, ultra +8.</small>
+      <div class="rarity-pity-note">Сейчас: ${duplicateShards} осколков</div>
+    </div>
+
+    <div class="upgrade-card">
+      <b>💎 Обмен на очки · 15 осколков</b>
+      <small>Быстрый обмен повторок на 5 очков для магазина.</small>
+      <button id="exchangeShardsForPoints" ${duplicateShards < 15 ? "disabled" : ""}>Обменять на 5 очков</button>
+    </div>
+
+    <div class="upgrade-card">
+      <b>💖 Rare-пак · 35 осколков</b>
+      <small>Пак из 3 карт с повышенным шансом rare и ultra.</small>
+      <button id="exchangeShardsForRarePack" ${duplicateShards < 35 ? "disabled" : ""}>Открыть rare-пак</button>
+    </div>
+  `);
+
   if(isUpgradeGroupVisible("next")){
     blocks.push(`
       <div class="upgrade-card">
@@ -5472,6 +5568,8 @@ function renderUpgradeGrid(){
 
   upgradeGrid.innerHTML = blocks.join("") || `<div class="shop-empty-note">Улучшения откроются на Lv. 5 ♡</div>`;
 
+  document.getElementById("exchangeShardsForPoints")?.addEventListener("click", exchangeShardsForPoints);
+  document.getElementById("exchangeShardsForRarePack")?.addEventListener("click", exchangeShardsForRarePack);
   document.getElementById("buyComboBoost")?.addEventListener("click", buyComboBoost);
   document.getElementById("buyMemberFocus")?.addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
   document.getElementById("buyAlbumFocus")?.addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
@@ -5576,13 +5674,26 @@ function claimOpenedPack({ close = true, silent = false } = {}){
   if(!lastOpenedPack || packRevealInProgress) return false;
 
   let newCount = 0;
+  let duplicateCards = [];
   lastOpenedPack.forEach(card => {
-    if(!isCardCollected(card.src)) newCount++;
+    if(isCardCollected(card.src)){
+      duplicateCards.push(card);
+    } else {
+      newCount++;
+    }
     collectCard(card.src);
   });
 
+  const shardBonus = awardDuplicateShards(duplicateCards);
+
   if(!silent){
-    showToast(newCount ? `+${newCount} новых карт 💌` : "Все карты уже были в коллекции ♡");
+    if(newCount && shardBonus){
+      showToast(`+${newCount} новых карт · +${shardBonus} оск. ♻️`);
+    } else if(newCount){
+      showToast(`+${newCount} новых карт 💌`);
+    } else {
+      showToast(`Все карты уже были · +${shardBonus} оск. ♻️`);
+    }
   }
 
   checkRarityAchievements();
@@ -5626,7 +5737,7 @@ function showPackResult(cards, context = null){
         const already = isCardCollected(card.src);
         item.className = `simple-booster-card rarity-${card.rarity}`;
         item.innerHTML = `
-          <span class="reward-badge ${already ? "old" : ""}">${already ? "Уже есть" : "NEW"}</span>
+          <span class="reward-badge ${already ? "old" : ""}">${already ? `+${getDuplicateShardValue(card)} оск.` : "NEW"}</span>
           <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
           <img src="${card.src}" alt="pack card" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
         `;
