@@ -3159,8 +3159,8 @@ const PACK_RATES = {
 
 const LEVEL_UNLOCKS = [
   { level:2, key:"advanced_hints", title:"Расширенные подсказки", desc:"Супер-подсказка и Вспомнить всё становятся частью прогрессии" },
-  { level:3, key:"rare_pack", title:"Редкий пак", desc:"В магазине открывается пак с повышенным шансом rare" },
-  { level:5, key:"pre_game_focus", title:"Фокусы перед уровнем", desc:"Серия, фокус на участницу и фокус на альбом" },
+  { level:3, key:"rare_pack", title:"Редкий пак и альбомные паки", desc:"В магазине открываются альбомные паки и пак с повышенным шансом rare" },
+  { level:5, key:"pre_game_focus", title:"Фокусы и групповой пак", desc:"Открываются серия, фокус на участницу, фокус на альбом и пак юниток/групповых" },
   { level:7, key:"rarity_upgrades", title:"Улучшения редкости", desc:"Редкий вкус, Охота за ультра и редкие гаранты" },
   { level:10, key:"premium_pack", title:"Премиум пак", desc:"Пак с самым высоким шансом rare и ultra" },
   { level:15, key:"collection_master", title:"Мастер коллекции", desc:"Постоянные улучшения получают особый статус эндгейм-прогрессии" },
@@ -3195,10 +3195,15 @@ function getBiasIcon(key = playerProfile.bias){
 function getPackUnlockLevel(key, rateKey = "basic"){
   if(rateKey === "premium" || key === "premium_all") return 10;
   if(rateKey === "rare" || key === "rare_all") return 3;
+
+  // Стартовый магазин должен сразу давать выбор, а не один базовый пак.
+  // Поэтому с Lv. 1 доступны общий пак и паки всех участниц.
   if(key === "all") return 1;
+  if(["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)) return 1;
+
+  // Альбомные и групповые паки остаются частью прогрессии.
   if(["iam","imade","itrust","iburn"].includes(key)) return 3;
-  if(["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)) return 5;
-  if(key === "group") return 8;
+  if(key === "group") return 5;
   return 1;
 }
 
@@ -5092,7 +5097,11 @@ async function renderPackGrid(){
       cost,
       rateKey:"basic",
       text:"70% Common / 25% Rare / 5% Ultra",
-      subtitle:key === "all" ? "Базовый пак со всеми картами" : "Тематический пак из открытой категории"
+      subtitle:key === "all"
+        ? "Базовый пак со всеми картами"
+        : (["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)
+          ? "Персональный пак участницы. Доступен с самого начала."
+          : "Тематический пак из открытой категории")
     });
     btn.addEventListener("click", () => buyPack(key, "basic"));
     packGrid.appendChild(btn);
