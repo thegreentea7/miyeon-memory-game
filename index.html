@@ -2930,6 +2930,29 @@ h1{
     width:min(330px,100%)!important;
   }
 }
+
+
+/* === Shards daily shop === */
+.shard-stat{text-align:left;transition:.18s ease}
+.shard-stat:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(112,78,170,.18)!important}
+.shard-stat small{display:block;margin-top:2px;color:var(--ann-muted);font-size:10px;font-weight:900}
+.shards-window{width:min(1120px,96vw);height:min(820px,92vh);border-radius:38px;padding:22px;overflow:hidden;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);gap:14px;color:var(--ann-ink);background:radial-gradient(circle at 7% 0%,rgba(255,226,247,.9),transparent 30%),radial-gradient(circle at 92% 0%,rgba(202,178,255,.9),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));border:1px solid rgba(237,226,255,.95);box-shadow:0 36px 120px rgba(51,27,91,.35)}
+.shards-info-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.shards-balance-card,.shards-timer-card,.shards-shop-head{padding:14px 16px;border-radius:24px;background:rgba(255,255,255,.74);border:1px solid rgba(230,216,255,.9);box-shadow:0 12px 28px rgba(72,39,128,.10)}
+.shards-balance-card span,.shards-timer-card span,.shards-shop-head span{display:block;color:var(--ann-muted);font-size:12px;font-weight:900}
+.shards-balance-card b,.shards-timer-card b,.shards-shop-head b{display:block;margin-top:3px;color:var(--ann-ink);font-size:22px}
+.shards-balance-card small,.shards-timer-card small{display:block;margin-top:5px;color:var(--ann-muted);font-size:12px}
+.shards-shop-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.shards-shop-grid{min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:14px;padding:4px 8px 8px 0;align-content:start}
+.shard-shop-card{position:relative;border-radius:24px;padding:6px;background:linear-gradient(135deg,#eadfff,#fff7fd);border:1px solid rgba(230,216,255,.9);box-shadow:0 14px 32px rgba(72,39,128,.12);transition:.18s ease;color:var(--ann-ink);text-align:left}
+.shard-shop-card:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(72,39,128,.18)}
+.shard-shop-card img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center;border-radius:18px;display:block;background:#fff}
+.shard-shop-card-info{padding:8px 4px 2px}.shard-shop-card-info b{display:block;font-size:12px;color:#513772;line-height:1.2}.shard-shop-card-info small{display:block;margin-top:3px;color:var(--ann-muted);font-size:10px;font-weight:900}
+.shard-buy-btn{width:100%;margin-top:8px;padding:9px 10px;border-radius:999px;background:linear-gradient(135deg,#d9c7ff,#ffd2ec);color:#4f2f78;font-weight:1000;box-shadow:0 10px 22px rgba(94,55,150,.12)}
+.shard-buy-btn:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.2)}
+.shards-empty{grid-column:1/-1;min-height:280px;display:grid;place-items:center;text-align:center;color:var(--ann-muted);font-weight:900;line-height:1.45}
+@media(max-width:650px){.shards-window{width:98vw;height:94vh;border-radius:26px;padding:14px}.shards-info-row{grid-template-columns:1fr}.shards-shop-head{display:block}.shards-shop-head span{margin-top:4px}.shards-shop-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}}
+
 </style>
 </head>
 
@@ -2976,10 +2999,11 @@ h1{
 
     <div class="stats">
       <div class="stat"><span>Ходы</span><strong id="moves">0</strong></div>
-      <div class="stat"><span>Пары</span><strong class="inline-counter"><span id="pairs">0</span>/<span id="totalPairs">6</span></strong></div>
       <div class="stat"><span>Время</span><strong id="time">00:00</strong></div>
       <div class="stat"><span>Очки</span><strong id="points">0</strong></div>
-      <div class="stat"><span>Осколки</span><strong id="shards">0</strong></div>
+      <button class="stat shard-stat" id="shardsOpen" type="button" title="Открыть обменник осколков">
+        <span>Осколки</span><strong id="shards">0</strong><small>обмен карт</small>
+      </button>
     </div>
 
     <div class="block-title">Режим</div>
@@ -3140,6 +3164,36 @@ h1{
   </div>
 </section>
 
+<section class="modal" id="shardsModal">
+  <div class="shards-window">
+    <div class="modal-head">
+      <div>
+        <h2>Осколки повторок</h2>
+        <p>Повторные карты превращаются в осколки. Их можно обменять на карты, которых ещё нет в коллекции ♡</p>
+      </div>
+      <button class="modal-close" id="shardsClose">×</button>
+    </div>
+
+    <div class="shards-info-row">
+      <div class="shards-balance-card">
+        <span>Сейчас у тебя</span>
+        <b><span id="shardsModalBalance">0</span> осколков</b>
+        <small>common +1 · rare +3 · ultra +8 за повторку</small>
+      </div>
+      <div class="shards-timer-card">
+        <span>Обновление магазина</span>
+        <b id="shardsShopTimer">00:00:00</b>
+        <small>каждый день появляются 10 случайных недостающих карт</small>
+      </div>
+    </div>
+
+    <div class="shards-shop-head">
+      <b>🛒 Карты за осколки</b>
+      <span>Выбери конкретную карту и добавь её в коллекцию</span>
+    </div>
+    <div class="shards-shop-grid" id="shardsShopGrid"></div>
+  </div>
+</section>
 
 <section class="modal" id="profileModal">
   <div class="profile-window">
@@ -3399,6 +3453,13 @@ const totalPairsEl = document.getElementById("totalPairs");
 const timeEl = document.getElementById("time");
 const pointsEl = document.getElementById("points");
 const shardsEl = document.getElementById("shards");
+const shardsOpen = document.getElementById("shardsOpen");
+const shardsModal = document.getElementById("shardsModal");
+const shardsClose = document.getElementById("shardsClose");
+const shardsModalBalance = document.getElementById("shardsModalBalance");
+const shardsShopGrid = document.getElementById("shardsShopGrid");
+const shardsShopTimer = document.getElementById("shardsShopTimer");
+let shardsTimerId = null;
 const restartBtn = document.getElementById("restart");
 const againBtn = document.getElementById("again");
 const win = document.getElementById("win");
@@ -4627,6 +4688,8 @@ function saveShards(){
 
 function updateShardsUI(){
   if(shardsEl) shardsEl.textContent = duplicateShards;
+  if(shardsModalBalance) shardsModalBalance.textContent = duplicateShards;
+  if(shardsModal?.classList.contains("show")) renderShardsShop?.();
 }
 
 function getDuplicateShardValue(card){
@@ -4660,34 +4723,152 @@ function awardDuplicateShards(cards){
   return total;
 }
 
-async function exchangeShardsForPoints(){
-  const cost = 15;
-  if(!spendDuplicateShards(cost)){
-    showToast(`Для обмена нужно ${cost} осколков ♡`);
-    return;
-  }
-  addShopPoints(5);
-  showToast("💎 Обмен: +5 очков");
-  renderUpgradeGrid?.();
+
+function getShardShopDateKey(){
+  return getTodayKey();
 }
 
-async function exchangeShardsForRarePack(){
-  const cost = 35;
-  if(!spendDuplicateShards(cost)){
-    showToast(`Для rare-пака нужно ${cost} осколков ♡`);
+function getNextLocalMidnight(){
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(24,0,0,0);
+  return next;
+}
+
+function formatCountdown(ms){
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = String(Math.floor(total / 3600)).padStart(2,"0");
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2,"0");
+  const sec = String(total % 60).padStart(2,"0");
+  return `${h}:${m}:${sec}`;
+}
+
+function getShardCardCost(card){
+  if(card?.rarity === "ultra") return 100;
+  if(card?.rarity === "rare") return 45;
+  return 18;
+}
+
+function getStoredShardShop(){
+  try{
+    return JSON.parse(localStorage.getItem("miyeon_shard_daily_shop") || "{}");
+  }catch(error){
+    return {};
+  }
+}
+
+function saveStoredShardShop(data){
+  localStorage.setItem("miyeon_shard_daily_shop", JSON.stringify(data));
+}
+
+async function getDailyShardShopCards(){
+  const all = await getAllImages();
+  const unowned = all.filter(card => !isCardCollected(card.src));
+  const byId = new Map(all.map(card => [card.id, card]));
+  const today = getShardShopDateKey();
+  let stored = getStoredShardShop();
+
+  if(stored.date !== today || !Array.isArray(stored.ids)){
+    stored = { date:today, ids:shuffle(unowned).slice(0,10).map(card => card.id) };
+    saveStoredShardShop(stored);
+  }
+
+  let cards = stored.ids.map(id => byId.get(id)).filter(card => card && !isCardCollected(card.src));
+
+  if(cards.length < 10){
+    const used = new Set(cards.map(card => card.id));
+    const fill = shuffle(unowned.filter(card => !used.has(card.id))).slice(0, 10 - cards.length);
+    cards = [...cards, ...fill];
+    stored.ids = cards.map(card => card.id);
+    saveStoredShardShop(stored);
+  }
+
+  return cards.slice(0,10);
+}
+
+function updateShardsTimer(){
+  if(!shardsShopTimer) return;
+  shardsShopTimer.textContent = formatCountdown(getNextLocalMidnight() - new Date());
+}
+
+async function renderShardsShop(){
+  if(!shardsShopGrid) return;
+  if(shardsModalBalance) shardsModalBalance.textContent = duplicateShards;
+  updateShardsTimer();
+  const cards = await getDailyShardShopCards();
+
+  if(!cards.length){
+    shardsShopGrid.innerHTML = `<div class="shards-empty">Все карты уже собраны ♡<br>Магазин осколков появится, когда в коллекции останутся недостающие карты.</div>`;
     return;
   }
-  const images = await getAllImages();
-  const cards = applyUltraPity(pickWeightedCards(images, 3, PACK_RATES.rare), images);
-  addXP(getPackXP(cards), "обмен осколков");
-  showPackResult(cards, { type:"shardExchange", cost });
-  openedPacksCount++;
-  localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
-  recordPackAchievements(cards, false);
-  updateUltraPity(cards, images);
-  showToast("💖 Rare-пак за осколки открыт");
-  renderUpgradeGrid?.();
+
+  shardsShopGrid.innerHTML = cards.map(card => {
+    const cost = getShardCardCost(card);
+    const canBuy = duplicateShards >= cost;
+    return `<div class="shard-shop-card rarity-${card.rarity}">
+      <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
+      <img src="${card.src}" alt="card for shards" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      <div class="shard-shop-card-info">
+        <b>${getMemberTitle(card.member)} · ${getAlbumTitle(card.album)}</b>
+        <small>№${card.number} · ${getRarityTitle(card.rarity)}</small>
+        <button class="shard-buy-btn" data-shard-card="${card.id}" ${canBuy ? "" : "disabled"}>${cost} осколков</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  shardsShopGrid.querySelectorAll("[data-shard-card]").forEach(btn => {
+    btn.addEventListener("click", () => buyShardShopCard(btn.dataset.shardCard));
+  });
 }
+
+async function buyShardShopCard(cardId){
+  await getAllImages();
+  const card = getCardById(cardId);
+  if(!card) return;
+  if(isCardCollected(card.src)){
+    showToast("Эта карта уже есть в коллекции ♡");
+    renderShardsShop();
+    return;
+  }
+  const cost = getShardCardCost(card);
+  if(!spendDuplicateShards(cost)){
+    showToast(`Нужно ${cost} осколков ♡`);
+    return;
+  }
+  collectCard(card.src);
+  addXP(card.rarity === "ultra" ? 15 : card.rarity === "rare" ? 9 : 5, "карта за осколки");
+  showToast("Карта куплена за осколки 💌");
+  if(card.rarity === "ultra"){
+    launchConfetti();
+    showRarityReaction("✨ Ultra-карта куплена за осколки ♡");
+  }
+  renderCollection?.();
+  renderCollectionRewards?.();
+  checkAchievements?.();
+  renderShardsShop();
+}
+
+async function openShardsModal(){
+  shardsModal?.classList.add("show");
+  await renderShardsShop();
+  clearInterval(shardsTimerId);
+  shardsTimerId = setInterval(() => {
+    updateShardsTimer();
+    const now = new Date();
+    if(now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() < 2){
+      renderShardsShop();
+    }
+  }, 1000);
+}
+
+function closeShardsModal(){
+  shardsModal?.classList.remove("show");
+  clearInterval(shardsTimerId);
+  shardsTimerId = null;
+}
+
+async function exchangeShardsForPoints(){ openShardsModal(); }
+async function exchangeShardsForRarePack(){ openShardsModal(); }
 
 function addShopPoints(amount){
   points += amount;
@@ -4912,8 +5093,8 @@ async function startGame(cols = currentCols, rows = currentRows){
   comboStreak = 0;
 
   movesEl.textContent = "0";
-  pairsEl.textContent = "0";
-  totalPairsEl.textContent = totalPairs;
+  if(pairsEl) pairsEl.textContent = "0";
+  if(totalPairsEl) totalPairsEl.textContent = totalPairs;
   timeEl.textContent = "00:00";
   win.classList.remove("show");
   currentRewardOptions = [];
@@ -4998,7 +5179,7 @@ function flipCard(el){
       }
 
       matched++;
-      pairsEl.textContent = matched;
+      if(pairsEl) pairsEl.textContent = matched;
       resetTurn();
 
       if(matched === totalPairs) finishGame();
@@ -5429,28 +5610,6 @@ function renderUpgradeGrid(){
 
   const blocks = [];
 
-  blocks.push(`
-    <div class="upgrade-section-title">Обменник повторок</div>
-
-    <div class="upgrade-card">
-      <b>♻️ Осколки повторок</b>
-      <small>Если карта уже есть в коллекции, она превращается в осколки: common +1, rare +3, ultra +8.</small>
-      <div class="rarity-pity-note">Сейчас: ${duplicateShards} осколков</div>
-    </div>
-
-    <div class="upgrade-card">
-      <b>💎 Обмен на очки · 15 осколков</b>
-      <small>Быстрый обмен повторок на 5 очков для магазина.</small>
-      <button id="exchangeShardsForPoints" ${duplicateShards < 15 ? "disabled" : ""}>Обменять на 5 очков</button>
-    </div>
-
-    <div class="upgrade-card">
-      <b>💖 Rare-пак · 35 осколков</b>
-      <small>Пак из 3 карт с повышенным шансом rare и ultra.</small>
-      <button id="exchangeShardsForRarePack" ${duplicateShards < 35 ? "disabled" : ""}>Открыть rare-пак</button>
-    </div>
-  `);
-
   if(isUpgradeGroupVisible("next")){
     blocks.push(`
       <div class="upgrade-card">
@@ -5568,8 +5727,6 @@ function renderUpgradeGrid(){
 
   upgradeGrid.innerHTML = blocks.join("") || `<div class="shop-empty-note">Улучшения откроются на Lv. 5 ♡</div>`;
 
-  document.getElementById("exchangeShardsForPoints")?.addEventListener("click", exchangeShardsForPoints);
-  document.getElementById("exchangeShardsForRarePack")?.addEventListener("click", exchangeShardsForRarePack);
   document.getElementById("buyComboBoost")?.addEventListener("click", buyComboBoost);
   document.getElementById("buyMemberFocus")?.addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
   document.getElementById("buyAlbumFocus")?.addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
@@ -6112,6 +6269,9 @@ againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
 document.getElementById("superHintBtn").addEventListener("click", superHint);
 document.getElementById("rememberAllBtn").addEventListener("click", rememberAll);
+shardsOpen?.addEventListener("click", openShardsModal);
+shardsClose?.addEventListener("click", closeShardsModal);
+shardsModal?.addEventListener("click", event => { if(event.target === shardsModal) closeShardsModal(); });
 profileOpen?.addEventListener("click", () => {
   updateProfileUI();
   profileModal?.classList.add("show");
