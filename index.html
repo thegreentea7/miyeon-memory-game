@@ -6556,39 +6556,42 @@ function collectRewardImage(image, picksBeforeClick, meta = {}){
 
 function takeRiskChain(){
   if(!riskChainState) return;
-  const held = [...(riskChainState.heldCards || [])];
-  if(!held.length){
-    resetRiskChain();
-    return;
-  }
 
+  // Риск-цепочка считается одним финальным выбором награды.
+  // После её завершения нельзя дополнительно забрать гарантированную открытую карту
+  // или использовать оставшиеся дополнительные пики от бустов.
+  const rewardCards = getRiskChainRewardCards();
   const picksBeforeClick = riskChainState.startedAtPicks || rewardPicksLeft;
-  const collected = held.map(card => collectRewardImage(card, picksBeforeClick, { fromHidden:true }));
-  riskChainState.usedIndexes.forEach(index => {
+  const usedIndexes = [...(riskChainState.usedIndexes || [])];
+  const collected = rewardCards.map(card => collectRewardImage(card, picksBeforeClick, { fromHidden:true }));
+
+  rewardOptions.querySelectorAll(".reward-card").forEach(btn => {
+    btn.disabled = true;
+  });
+
+  usedIndexes.forEach(index => {
     const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
-    btn?.classList.add("chosen-choice");
-    if(btn) btn.disabled = true;
+    if(btn && rewardCards.includes(currentRewardOptions[index])) btn.classList.add("chosen-choice");
   });
 
   const shardSum = collected.reduce((sum, item) => sum + (item.duplicateBonus || 0), 0);
   const newCount = collected.filter(item => !item.already).length;
-  rewardPicksLeft--;
-  resetRiskChain();
+  const burned = rewardCards.length === 0;
 
-  if(rewardPicksLeft > 0){
-    extraPickRewardBtn.classList.remove("hidden");
-    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
-    showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`);
-    renderCollection();
-    renderCollectionRewards();
-    updatePeekRewardButton();
-    return;
-  }
-
+  rewardPicksLeft = 0;
   activeBoosts.extraPick = false;
   permanentBonusPick = false;
   updateBoostStatus();
-  showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`);
+
+  const resultText = burned
+    ? "Риск не сработал: награда сгорела 😵"
+    : `${newCount ? `+${newCount} карт` : "Повторка"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`;
+
+  resetRiskChain();
+  updatePeekRewardButton();
+  extraPickRewardBtn.classList.add("hidden");
+  extraPickRewardBtn.textContent = "";
+  showToast(resultText);
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
