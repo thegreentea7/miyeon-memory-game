@@ -3865,6 +3865,26 @@ h1{
   .pack-preview-actions{grid-template-columns:1fr}
 }
 
+
+/* === Pack cards clean view: only cover, name and diamond price === */
+.pack-card .pack-sub,
+.pack-card .pack-rates,
+.pack-card .pack-price,
+.pack-card .rarity-pity-note{
+  display:none!important;
+}
+.pack-card .pack-info{
+  min-height:auto!important;
+  padding:15px 16px 18px!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.pack-card .pack-title{
+  text-align:center!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+}
+
 </style>
 </head>
 
@@ -4740,8 +4760,8 @@ function getPackPreviewDescription(key, title, rateKey = "basic"){
     shuhua: `Пак "${title}" включает в себя карты Шухуа из доступной коллекции.`,
     soojin: `Пак "${title}" включает в себя карты Суджин из доступной коллекции.`
   };
-  if(rateKey === "rare") return `Пак "${title}" открывается с Lv. 3 и даёт повышенный шанс на rare-карты.`;
-  if(rateKey === "premium") return `Пак "${title}" открывается с Lv. 10 и даёт повышенный шанс на rare и ultra-карты.`;
+  if(rateKey === "rare" || key === "rare_all") return `Пак "${title}" открывается с Lv. 3 и даёт повышенный шанс на rare-карты.`;
+  if(rateKey === "premium" || key === "premium_all") return `Пак "${title}" открывается с Lv. 10 и даёт повышенный шанс на rare и ultra-карты.`;
   return map[key] || `Пак "${title}" включает тематические карты из выбранной категории.`;
 }
 
@@ -4781,9 +4801,16 @@ function buyPreviewPack(count){
     updatePackPreviewButtons();
     return;
   }
+
+  const packToOpen = { ...selectedPackPreview };
   closePackPreview();
+
   for(let i = 0; i < count; i++){
-    buyPack(selectedPackPreview.key, selectedPackPreview.cost, selectedPackPreview.rateKey);
+    if(packToOpen.rateKey === "rare" || packToOpen.rateKey === "premium"){
+      buySpecialPack(packToOpen);
+    } else {
+      buyPack(packToOpen.key, "basic");
+    }
   }
 }
 
@@ -7519,7 +7546,7 @@ function renderUpgradeGrid(){
   });
 }
 
-async function renderPackGrid(){
+async async function renderPackGrid(){
   const config = await loadConfig();
   packGrid.innerHTML = "";
 
@@ -7542,7 +7569,12 @@ async function renderPackGrid(){
           ? "Персональный пак участницы. Доступен с самого начала."
           : "Тематический пак из открытой категории")
     });
-    btn.addEventListener("click", () => buyPack(key, "basic"));
+    btn.addEventListener("click", () => openPackPreview({
+      key,
+      title: pack.title,
+      cost,
+      rateKey: "basic"
+    }));
     packGrid.appendChild(btn);
     rendered++;
   });
@@ -7556,8 +7588,13 @@ async function renderPackGrid(){
     if(!isPackVisible(pack.key, pack.rateKey)) return;
     const btn = document.createElement("button");
     btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"} ${points >= pack.cost ? "can-buy" : "cant-buy"}`;
-    btn.innerHTML = renderPackCardHTML(pack) + `<div class="rarity-pity-note" style="padding:0 16px 14px">Пити ultra: ${ultraPity}/10 открытий без ultra</div>`;
-    btn.addEventListener("click", () => buySpecialPack(pack));
+    btn.innerHTML = renderPackCardHTML(pack);
+    btn.addEventListener("click", () => openPackPreview({
+      key: pack.key,
+      title: pack.title,
+      cost: pack.cost,
+      rateKey: pack.rateKey
+    }));
     packGrid.appendChild(btn);
     rendered++;
   });
