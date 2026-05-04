@@ -3203,6 +3203,25 @@ h1{
   cursor:not-allowed!important;
 }
 #peekRewardBtn.hidden{display:none!important}
+
+/* === Reward choice copy + hidden rarity leak fix === */
+#collectorBadge{display:none!important;}
+#win .reward-card.hidden-choice{
+  background:linear-gradient(135deg,#efe6ff,#fff7fd)!important;
+  box-shadow:0 14px 28px rgba(112,78,170,.14)!important;
+  border-color:rgba(255,255,255,.86)!important;
+  animation:none!important;
+  filter:none!important;
+}
+#win .reward-card.hidden-choice.rarity-rare,
+#win .reward-card.hidden-choice.rarity-ultra{
+  background:linear-gradient(135deg,#efe6ff,#fff7fd)!important;
+  box-shadow:0 14px 28px rgba(112,78,170,.14)!important;
+  border-color:rgba(255,255,255,.86)!important;
+  animation:none!important;
+  filter:none!important;
+}
+
 @media(max-width:820px){
   #win .reward-options{grid-template-columns:repeat(2,minmax(130px,1fr))!important;max-width:560px!important}
   #win .reward-card{min-height:220px!important}
@@ -3220,6 +3239,63 @@ h1{
 @media(max-width:820px){#win .reward-actions{grid-template-columns:1fr!important;width:min(360px,100%)!important}}
 
 
+
+
+/* === Reward info button === */
+.reward-title-line{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:12px!important;
+  position:relative!important;
+}
+.reward-title-line h2{margin:0!important;}
+.reward-info-btn{
+  width:34px!important;
+  height:34px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:linear-gradient(135deg,#fff,#eadfff)!important;
+  color:#5b3d7d!important;
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 10px 24px rgba(73,40,129,.14)!important;
+  font-weight:1000!important;
+  font-size:18px!important;
+  font-family:Georgia,serif!important;
+  line-height:1!important;
+}
+.reward-info-btn:hover{
+  transform:translateY(-1px) scale(1.04)!important;
+  box-shadow:0 14px 30px rgba(73,40,129,.2)!important;
+}
+.reward-info-popover{
+  display:none;
+  max-width:760px;
+  margin:10px auto 8px;
+  padding:15px 18px;
+  border-radius:24px;
+  text-align:left;
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(248,241,255,.92));
+  border:1px solid rgba(231,214,255,.95);
+  box-shadow:0 18px 42px rgba(73,40,129,.14);
+  color:#4b3568;
+}
+.reward-info-popover.show{display:block;}
+.reward-info-popover b{display:block;margin-bottom:8px;font-size:15px;color:#3f2d5a;}
+.reward-info-popover p{
+  margin:6px 0!important;
+  max-width:none!important;
+  color:#6f5b90!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+}
+.reward-info-popover strong{color:#4f3670;}
+@media(max-width:560px){
+  .reward-title-line{gap:8px!important;}
+  .reward-info-btn{width:30px!important;height:30px!important;font-size:16px!important;}
+  .reward-info-popover{padding:12px 13px;border-radius:20px;}
+}
 
 /* === Level reward reveal cards === */
 .level-reward-preview{
@@ -3658,9 +3734,19 @@ h1{
 <section class="modal" id="win">
   <div class="win-card">
     <div class="win-emoji">🎁</div>
-    <h2>Уровень пройден!</h2>
+    <div class="reward-title-line">
+      <h2>Уровень пройден!</h2>
+      <button class="reward-info-btn" id="rewardInfoBtn" type="button" aria-label="Как работает выбор карты">i</button>
+    </div>
     <div class="collector-badge" id="collectorBadge">💿 Режим коллекционера</div>
-    <p id="winText">Выбери одну карту, которая попадёт в коллекцию.</p>
+    <p id="winText">Поздравляю, выберите одну карту в коллекцию ♡</p>
+    <div class="reward-info-popover" id="rewardInfoPopover">
+      <b>Как работает выбор карты?</b>
+      <p>После прохождения уровня вы выбираете карту, которая попадёт в коллекцию.</p>
+      <p><strong>Открытая карта</strong> — безопасный вариант: вы заранее видите, что получите.</p>
+      <p><strong>Закрытые карты</strong> — риск-выбор: карта откроется только после клика, но внутри повышен шанс на rare и ultra-карты.</p>
+      <p>Кнопка <strong>«Подсмотреть»</strong> открывает одну случайную закрытую карту до выбора за 3 очка.</p>
+    </div>
     <div class="reward-options" id="rewardOptions"></div>
     <div class="reward-actions">
       <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
@@ -3789,6 +3875,8 @@ const restartBtn = document.getElementById("restart");
 const againBtn = document.getElementById("again");
 const win = document.getElementById("win");
 const winText = document.getElementById("winText");
+const rewardInfoBtn = document.getElementById("rewardInfoBtn");
+const rewardInfoPopover = document.getElementById("rewardInfoPopover");
 const collectorBadge = document.getElementById("collectorBadge");
 const rewardOptions = document.getElementById("rewardOptions");
 const toast = document.getElementById("toast");
@@ -5888,10 +5976,9 @@ function finishGame(){
   launchConfetti();
 
   setTimeout(() => {
-    const rank = getCollectorRank();
     const settings = getRewardSettings();
     permanentBonusPick = hasUpgrade("collector") && Math.random() < 0.2;
-    collectorBadge.textContent = rank;
+    collectorBadge.textContent = "";
 
     const choicesCount = settings.count + (hasUpgrade("betterChoice") ? 1 : 0);
     const picksCount = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
@@ -5900,7 +5987,9 @@ function finishGame(){
       permanentBonusPick ? "Коллекционер сработал: +1 карта бесплатно." : ""
     ].filter(Boolean).join(" ");
 
-    winText.textContent = `Ты собрал(а) ${totalPairs} пар за ${moves} ходов и ${formatTime(seconds)}. Вам предложено ${choicesCount} карт: первая открыта как гарантия, остальные закрыты для риск-выбора. Выберите ${picksCount} ${picksCount === 1 ? "карту" : "карты"} для добавления в коллекцию ♡${extraText ? " " + extraText : ""}`;
+    const pickWord = picksCount === 1 ? "карту" : "карты";
+    winText.textContent = `Поздравляю, уровень пройден! Выберите ${picksCount} ${pickWord} в коллекцию ♡${extraText ? " " + extraText : ""}`;
+    rewardInfoPopover?.classList.remove("show");
     currentRewardOptions = getRewardCards();
     rewardRevealedIndexes = new Set([0]);
     renderRewardOptions();
@@ -6720,6 +6809,12 @@ openAgainBtn.addEventListener("click", async () => {
 
 packsTab.addEventListener("click", () => setShopTab("packs"));
 upgradesTab.addEventListener("click", () => setShopTab("upgrades"));
+
+
+rewardInfoBtn?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  rewardInfoPopover?.classList.toggle("show");
+});
 
 peekRewardBtn.addEventListener("click", () => {
   const hiddenIndexes = currentRewardOptions
