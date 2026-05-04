@@ -3715,48 +3715,35 @@ h1{
 }
 
 
-.pack-card.rare {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-}
-.pack-card.rare:hover {
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
-}
-
-
-/* === Pack cover images fixed === */
+/* === Safe pack cover image styles === */
 .pack-cover{
   position:relative!important;
   overflow:hidden!important;
 }
 .pack-cover-img{
+  position:absolute!important;
+  inset:0!important;
   width:100%!important;
   height:100%!important;
   object-fit:cover!important;
   object-position:center!important;
   display:block!important;
-  position:absolute!important;
-  inset:0!important;
   z-index:1!important;
-}
-.pack-cover .pack-cover-icon{
-  position:relative!important;
-  z-index:2!important;
 }
 .pack-cover-title,
 .pack-price-badge,
 .pack-cover::after{
   z-index:3!important;
 }
-.pack-cover.cover-missing .pack-cover-icon{
-  display:grid!important;
+.pack-cover-icon{
+  position:relative!important;
+  z-index:2!important;
 }
-.pack-card.rare,
-.pack-card[data-rate-key="rare"]{
-  box-shadow:0 0 20px rgba(255,215,0,.42),0 20px 52px rgba(72,39,128,.14)!important;
+.pack-cover.rare{
+  box-shadow:inset 0 0 0 2px rgba(255,215,0,.35);
 }
-.pack-card.rare:hover,
-.pack-card[data-rate-key="rare"]:hover{
-  box-shadow:0 0 34px rgba(255,215,0,.72),0 28px 70px rgba(72,39,128,.22)!important;
+.pack-cover.rare .pack-cover-img{
+  filter:saturate(1.08) brightness(1.03);
 }
 
 </style>
@@ -4242,11 +4229,7 @@ const PACK_COVERS = {
   soyeon: "images/packs/pack_soyeon.jpg",
   yuqi: "images/packs/pack_yuqi.jpg",
   shuhua: "images/packs/pack_shuhua.jpg",
-  soojin: "images/packs/pack_soojin.jpg",
-  rare: "images/packs/pack_rare.jpg",
-  rare_all: "images/packs/pack_rare.jpg",
-  premium: "images/packs/pack_premium.jpg",
-  premium_all: "images/packs/pack_premium.jpg"
+  soojin: "images/packs/pack_soojin.jpg"
 };
 
 const MEMBERS = {
@@ -4580,38 +4563,39 @@ function getPackIcon(key, rateKey = "basic"){
   return "🎁";
 }
 
-
-function getPackCoverSrc(key, rateKey = "basic"){
-  const aliases = [];
-  if(key) aliases.push(key);
-  if(rateKey === "rare") aliases.push("rare", "rare_all");
-  if(rateKey === "premium") aliases.push("premium", "premium_all");
-  for(const alias of aliases){
-    if(PACK_COVERS[alias]) return PACK_COVERS[alias];
-  }
-  return null;
-}
-
 function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
   const kind = getPackKind(key, rateKey);
   const icon = getPackIcon(key, rateKey);
   const rateParts = text.split("/").map(item => item.trim()).filter(Boolean);
   const canBuy = points >= cost;
   const packLabel = kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic";
-  const cover = PACK_COVERS[key] || null;
-  const coverHTML = cover
-    ? `<img class="pack-cover-img" src="${cover}" alt="${title}" loading="lazy" decoding="async" onerror="this.classList.add('broken-pack-cover')">`
-    : `${coverHTML}`;
-  const coverSrc = getPackCoverSrc(key, rateKey);
+  const packCoverMap = {
+    all: "images/packs/pack_all.jpg",
+    group: "images/packs/pack_group.jpg",
+    iam: "images/packs/pack_iam.jpg",
+    imade: "images/packs/pack_imade.jpg",
+    itrust: "images/packs/pack_itrust.jpg",
+    iburn: "images/packs/pack_iburn.jpg",
+    miyeon: "images/packs/pack_miyeon.jpg",
+    minnie: "images/packs/pack_minnie.jpg",
+    soyeon: "images/packs/pack_soyeon.jpg",
+    yuqi: "images/packs/pack_yuqi.jpg",
+    shuhua: "images/packs/pack_shuhua.jpg",
+    soojin: "images/packs/pack_soojin.jpg",
+    rare: "images/packs/pack_rare.jpg",
+    rare_all: "images/packs/pack_rare.jpg",
+    premium: "images/packs/pack_premium.jpg",
+    premium_all: "images/packs/pack_premium.jpg"
+  };
+  const coverSrc = rateKey === "rare" ? packCoverMap.rare : rateKey === "premium" ? packCoverMap.premium : packCoverMap[key];
   const coverHTML = coverSrc
-    ? `<img class="pack-cover-img" src="${coverSrc}" alt="${title}" loading="lazy" decoding="async" onerror="this.style.display='none'; this.parentElement.classList.add('cover-missing');">`
-    : `${coverHTML}`;
+    ? `<img class="pack-cover-img" src="${coverSrc}" alt="${title}" loading="lazy" decoding="async" onerror="this.remove()">`
+    : `<div class="pack-cover-icon">${icon}</div>`;
   return `
-    <div class="pack-cover ${kind} ${cover ? "has-cover" : ""}">
-      ${coverHTML}
+    <div class="pack-cover ${kind}">
       <span class="pack-cover-title">${packLabel}</span>
       <span class="pack-price-badge"><i>💎</i>${cost}</span>
-      <div class="pack-cover-fallback">${coverHTML}</div>
+      ${coverHTML}
     </div>
     <div class="pack-info">
       <div class="pack-title">${title}</div>
@@ -7933,16 +7917,6 @@ loadConfig()
     board.innerHTML = `<div class="loading">Не удалось загрузить cards_config.json.<br>${error.message}</div>`;
     console.error(error);
   });
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.pack-card').forEach(el => {
-    const attr = el.getAttribute('onclick');
-    if (attr && attr.includes('rare_all')) {
-      el.classList.add('rare');
-    }
-  });
-});
-
 </script>
 </body>
 </html>
