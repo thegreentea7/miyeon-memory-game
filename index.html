@@ -3635,6 +3635,55 @@ h1{
   to{filter:brightness(1.045)}
 }
 
+
+/* === Pack card cleanup: pack opens by clicking the whole card === */
+.pack-info{
+  padding-bottom:18px!important;
+}
+.pack-price,.pack-open-pill{
+  display:none!important;
+}
+.pack-card{
+  cursor:pointer!important;
+}
+.pack-card.cant-buy{
+  cursor:not-allowed!important;
+}
+.pack-card.cant-buy::after{
+  content:"Не хватает очков";
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:14px;
+  padding:9px 12px;
+  border-radius:999px;
+  text-align:center;
+  background:rgba(255,255,255,.88);
+  color:#8b779f;
+  font-size:12px;
+  font-weight:1000;
+  box-shadow:0 10px 24px rgba(66,37,112,.12);
+}
+.pack-card.cant-buy .pack-info{
+  padding-bottom:58px!important;
+}
+
+
+.pack-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pack-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+.pack-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 </style>
 </head>
 
@@ -3809,7 +3858,7 @@ h1{
 
     <div class="collection-tabs">
       <button class="collection-tab active" id="collectionCardsTab" type="button">📚 Карты<span class="collection-tab-note">сетка коллекции</span></button>
-      <button class="collection-tab" id="collectionGiftsTab" type="button">🎁 Подарки<span class="collection-tab-note">за прогресс</span></button>
+      <button class="collection-tab" id="collectionGiftsTab" type="button">${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Подарки<span class="collection-tab-note">за прогресс</span></button>
     </div>
 
     <div class="collection-body">
@@ -3821,7 +3870,7 @@ h1{
       </div>
 
       <div class="collection-panel collection-gifts-panel" id="collectionGiftsPanel">
-        <div class="collection-gifts-title">🎁 Подарки за прогресс коллекции</div>
+        <div class="collection-gifts-title">${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Подарки за прогресс коллекции</div>
         <div class="collection-gifts">
           <div class="gift-grid" id="collectionGiftGrid"></div>
         </div>
@@ -3959,7 +4008,7 @@ h1{
 
           <div class="profile-reward-track">
             <div class="profile-reward-head">
-              <b>🎁 Дорожка наград</b>
+              <b>${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Дорожка наград</b>
               <span id="profileNextRewardText">Следующая награда</span>
             </div>
             <div class="profile-progress-block" style="margin-top:0;margin-bottom:14px">
@@ -4026,7 +4075,7 @@ h1{
 
 <section class="modal" id="win">
   <div class="win-card">
-    <div class="win-emoji">🎁</div>
+    <div class="win-emoji">${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}</div>
     <div class="reward-title-line">
       <h2>Уровень пройден!</h2>
       <button class="reward-info-btn" id="rewardInfoBtn" type="button" aria-label="Как работает выбор карты">i</button>
@@ -4065,7 +4114,7 @@ h1{
     <div class="reward-actions">
       <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
       <button class="reroll-btn" id="rerollBtn">🔁 Ещё разочек · 7 очков</button>
-      <button class="reroll-btn" id="extraPickRewardBtn">🎁 Щедрость активна</button>
+      <button class="reroll-btn" id="extraPickRewardBtn">${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Щедрость активна</button>
     </div>
     <button class="again" id="again">Сыграть ещё раз</button>
   </div>
@@ -4089,7 +4138,7 @@ h1{
 <div class="simple-booster-result" id="packResult">
   <div class="simple-booster-head">
     <div>
-      <b>🎁 Открытие пака</b>
+      <b>${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Открытие пака</b>
       <span id="packResultSubtitle">рулетка карт</span>
     </div>
     <button id="packResultClose">×</button>
@@ -4104,6 +4153,22 @@ h1{
 <div class="rarity-reaction" id="rarityReaction">♡</div>
 
 <script>
+
+const PACK_COVERS = {
+  all: "images/packs/pack_all.jpg",
+  group: "images/packs/pack_group.jpg",
+  iam: "images/packs/pack_iam.jpg",
+  imade: "images/packs/pack_imade.jpg",
+  itrust: "images/packs/pack_itrust.jpg",
+  iburn: "images/packs/pack_iburn.jpg",
+  miyeon: "images/packs/pack_miyeon.jpg",
+  minnie: "images/packs/pack_minnie.jpg",
+  soyeon: "images/packs/pack_soyeon.jpg",
+  yuqi: "images/packs/pack_yuqi.jpg",
+  shuhua: "images/packs/pack_shuhua.jpg",
+  soojin: "images/packs/pack_soojin.jpg"
+};
+
 const CONFIG_PATH = "cards_config.json";
 
 const MEMBERS = {
@@ -4434,7 +4499,7 @@ function getPackIcon(key, rateKey = "basic"){
   if(key === "soojin") return "🌹";
   if(key === "group") return "💿";
   if(["iam","imade","itrust","iburn"].includes(key)) return "💿";
-  return "🎁";
+  return "${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}";
 }
 
 function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
@@ -4453,10 +4518,6 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
       <div class="pack-title">${title}</div>
       <div class="pack-sub">${subtitle}</div>
       <div class="pack-rates">${rateParts.map(part => `<span class="pack-rate">${part}</span>`).join("")}</div>
-      <div class="pack-price">
-        <strong>${cost} очков</strong>
-        <span class="pack-open-pill">${canBuy ? "Открыть" : "Не хватает"}</span>
-      </div>
     </div>`;
 }
 
@@ -4633,7 +4694,7 @@ function renderProfileMemberStats(){
 
 const LEVEL_REWARD_PLAN = {
   2:{type:"points", icon:"💎", title:"+8 очков", desc:"валюта магазина"},
-  3:{type:"pack", icon:"🎁", title:"Basic Pack", desc:"3 случайные карты"},
+  3:{type:"pack", icon:"${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}", title:"Basic Pack", desc:"3 случайные карты"},
   4:{type:"card", icon:"🃏", title:"Random Card", desc:"1 случайная карта"},
   5:{type:"pack", icon:"💜", title:"Bias Pack", desc:"3 карты любимой участницы"},
   6:{type:"card", icon:"💌", title:"New Card", desc:"1 карта, которой нет в коллекции"},
@@ -4650,7 +4711,7 @@ const LEVEL_REWARD_PLAN = {
 
 function getPrettyLevelReward(level){
   return LEVEL_REWARD_PLAN[level] || (level % 5 === 0
-    ? {type:"pack", icon:"🎁", title:"Bonus Pack", desc:"пак за milestone"}
+    ? {type:"pack", icon:"${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}", title:"Bonus Pack", desc:"пак за milestone"}
     : {type:"points", icon:"💎", title:`+${level % 2 === 0 ? 8 : 5} очков`, desc:"валюта магазина"});
 }
 
@@ -4777,7 +4838,7 @@ function grantLevelRewardCards(cards){
   });
   const shards = awardDuplicateShards(duplicates);
   if(newCount || shards){
-    showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shards ? ` · +${shards} оск.` : ""} 🎁`);
+    showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shards ? ` · +${shards} оск.` : ""} ${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}`);
   }
   recordDailyCards?.(cards);
   return { newCount, shards };
@@ -5340,14 +5401,14 @@ async function claimCollectionReward(member, step){
 
   if(step.type === "points"){
     addShopPoints(step.points);
-    showRarityReaction(`🎁 ${getMemberTitle(member)}: подарок +${step.points} очка ♡`);
+    showRarityReaction(`${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} ${getMemberTitle(member)}: подарок +${step.points} очка ♡`);
   }
 
   if(step.type === "memberPack"){
     const pool = getMemberCards(member);
     const cards = pickWeightedCards(pool, Math.min(3, pool.length), PACK_RATES.basic);
     showPackResult(cards, { type:"collectionReward", member, step });
-    showRarityReaction(`🎁 Пак ${getMemberTitle(member)} за прогресс коллекции ♡`);
+    showRarityReaction(`${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Пак ${getMemberTitle(member)} за прогресс коллекции ♡`);
   }
 
   if(step.type === "rareCard"){
@@ -5507,7 +5568,7 @@ function getActiveBoostLabels(){
   if(preGameBoosts.combo) labels.push("🔥 Серия");
   if(preGameBoosts.member) labels.push(`🐰 ${getMemberTitle(preGameBoosts.member)}`);
   if(preGameBoosts.album) labels.push(`💿 ${getAlbumTitle(preGameBoosts.album)}`);
-  if(activeBoosts.extraPick) labels.push("🎁 Щедрость");
+  if(activeBoosts.extraPick) labels.push("${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Щедрость");
   return labels;
 }
 
@@ -5520,7 +5581,7 @@ function updateBoostStatus(){
   if(hasGenerosity){
     const otherLabels = labels.filter(label => !label.includes("Щедрость"));
     boostStatus.innerHTML = `
-      <span class="generosity-label">🎁 Щедрость активна</span>
+      <span class="generosity-label">${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Щедрость активна</span>
       <span class="generosity-sub">Миён сегодня добрая: в риск-цепочке первая карта спасается при неудаче, а равная/более высокая редкость даёт бонус.</span>
       ${otherLabels.length ? `<span class="generosity-sub">Ещё активно: ${otherLabels.join(" · ")}</span>` : ""}
     `;
@@ -5629,7 +5690,7 @@ function buildDailyTaskCatalog(){
   return [
     { id:`levels_2`, type:"levels", icon:"🧩", title:"Пройди 2 уровня", target:2, reward:6 },
     { id:`levels_3`, type:"levels", icon:"🎮", title:"Пройди 3 уровня", target:3, reward:9 },
-    { id:`open_pack_1`, type:"openPack", icon:"🎁", title:"Открой 1 пак", target:1, reward:7 },
+    { id:`open_pack_1`, type:"openPack", icon:"${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}", title:"Открой 1 пак", target:1, reward:7 },
     { id:`any_cards_3`, type:"anyCard", icon:"💌", title:"Получи любые 3 карты", target:3, reward:6 },
     { id:`hidden_1`, type:"hiddenReward", icon:"🎲", title:"Выбери скрытую карту 1 раз", target:1, reward:8 },
     { id:`peek_1`, type:"peek", icon:"👀", title:"Используй подсмотр 1 раз", target:1, reward:6 },
@@ -6285,7 +6346,7 @@ function updatePointsUI(){
 
   if(points >= 8 && !packReadyNotified){
     packReadyNotified = true;
-    showToast("Можно открыть 1 пак 🎁");
+    showToast("Можно открыть 1 пак ${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'}");
   }
 
   if(points < 8){
@@ -6420,7 +6481,7 @@ function getRewardCards(){
     const rarePlus = pickOneByRarity(getRewardPoolForLevelReward().filter(card => !used.has(card.src)), ["rare", "ultra"], { rare:85, ultra:15 });
     if(rarePlus){
       result[0] = rarePlus;
-      showRarityReaction("🎁 Гарант редкой карты сработал: в награде есть rare или ultra ♡");
+      showRarityReaction("${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Гарант редкой карты сработал: в награде есть rare или ultra ♡");
     }
   }
 
@@ -6566,7 +6627,7 @@ function continueRiskChain(){
   const generosity = !!riskChainState.generosity;
   if(outcome === "higher") showToast("✨ Редкость выше: забираешь обе карты!");
   else if(outcome === "same") showToast(generosity ? "🤝 Одинаковая редкость + щедрость: забираешь обе" : "🤝 Одинаковая редкость: забираешь первую карту");
-  else showToast(generosity ? "🎁 Щедрость спасла первую карту" : "😵 Редкость ниже: не забираешь ничего");
+  else showToast(generosity ? "${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Щедрость спасла первую карту" : "😵 Редкость ниже: не забираешь ничего");
 
   recordDailyAction?.("hiddenReward", 1);
   renderRiskChain();
@@ -6607,7 +6668,7 @@ function takeRiskChain(){
 
   if(rewardPicksLeft > 0){
     extraPickRewardBtn.classList.remove("hidden");
-    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
+    extraPickRewardBtn.textContent = `${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Осталось выбрать ${rewardPicksLeft} карту`;
     showToast(resultText);
     renderCollection();
     renderCollectionRewards();
@@ -6728,7 +6789,7 @@ function finishRewardPick(btn, image, meta = {}){
 
   if(rewardPicksLeft > 0){
     extraPickRewardBtn.classList.remove("hidden");
-    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
+    extraPickRewardBtn.textContent = `${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Осталось выбрать ${rewardPicksLeft} карту`;
     showToast(result.already ? `Повторка переработана: +${result.duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
     renderCollection();
     renderCollectionRewards();
@@ -6758,7 +6819,7 @@ function renderRewardOptions(){
   rewardPicksLeft = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
   rewardOptions.style.setProperty("--reward-count", currentRewardOptions.length);
   extraPickRewardBtn.classList.toggle("hidden", rewardPicksLeft <= 1);
-  extraPickRewardBtn.textContent = rewardPicksLeft > 1 ? `🎁 Можно выбрать ${rewardPicksLeft} карты` : "";
+  extraPickRewardBtn.textContent = rewardPicksLeft > 1 ? `${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Можно выбрать ${rewardPicksLeft} карты` : "";
 
   currentRewardOptions.forEach((image, index) => {
     const isNew = !isCardCollected(image.src);
@@ -6956,7 +7017,7 @@ function buyExtraPick(){
   spendPoints(12);
   activeBoosts.extraPick = true;
   updateBoostStatus();
-  showToast("🎁 Щедрость активирована");
+  showToast("${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Щедрость активирована");
 }
 
 function buyComboBoost(){
@@ -7050,7 +7111,7 @@ function renderUpgradeGrid(){
       </div>
 
       <div class="upgrade-card">
-        <b>🎁 Щедрость · 12 очков</b>
+        <b>${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Щедрость · 12 очков</b>
         <small>После следующего пройденного уровня можно выбрать 2 карты вместо 1.</small>
         <button id="buyExtraPick">Активировать</button>
       </div>
@@ -7092,7 +7153,7 @@ function renderUpgradeGrid(){
       </div>
 
       <div class="upgrade-card">
-        <b>🎁 Подарок для Неверленда · 60 очков</b>
+        <b>${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Подарок для Неверленда · 60 очков</b>
         <small>Один раз в день первый открытый пак становится бесплатным.</small>
         ${getPermanentUpgradeButton("neverlandGift", 60)}
       </div>
@@ -7116,7 +7177,7 @@ function renderUpgradeGrid(){
       </div>
 
       <div class="upgrade-card">
-        <b>🎁 Гарант редкой карты · 55 очков</b>
+        <b>${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Гарант редкой карты · 55 очков</b>
         <small>В награде после уровня всегда есть минимум 1 rare или ultra.</small>
         ${getPermanentUpgradeButton("guaranteeRare", 55)}
       </div>
@@ -7411,7 +7472,7 @@ async function buyPack(packKey, rateKey = "basic"){
 
   if(isFree){
     markDailyUpgradeUsed("neverlandGift");
-    showToast("🎁 Подарок для Неверленда: пак бесплатный");
+    showToast("${PACK_COVERS[key] ? `<img class="pack-cover-img" src="${PACK_COVERS[key]}" onerror="this.style.display='none'">` : '🎁'} Подарок для Неверленда: пак бесплатный");
   } else {
     spendPoints(cost);
   }
