@@ -3651,6 +3651,37 @@ h1{
   display:block;
 }
 
+
+/* === Keep opened pack cards large === */
+.pack-preview-cards.opened{
+  grid-template-columns:repeat(3,minmax(130px,190px))!important;
+  justify-content:center!important;
+  align-items:start!important;
+  gap:18px!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+.pack-preview-card-open{
+  width:100%!important;
+  aspect-ratio:3/4!important;
+  border-radius:28px!important;
+  padding:6px!important;
+}
+.pack-preview-card-open img{
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:3/4!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:22px!important;
+}
+@media(max-width:650px){
+  .pack-preview-cards.opened{
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:10px!important;
+  }
+}
+
 </style>
 </head>
 
