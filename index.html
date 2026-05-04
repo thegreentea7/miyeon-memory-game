@@ -2932,6 +2932,37 @@ h1{
 }
 
 
+/* === Daily tasks system === */
+.daily-panel{
+  grid-column:1 / -1;
+  padding:10px;
+  border-radius:22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(239,230,255,.74));
+  border:1px solid rgba(255,255,255,.86);
+  box-shadow:0 12px 30px rgba(112,78,170,.12);
+  color:var(--ann-ink);
+}
+.daily-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.daily-head b{display:block;font-size:14px;color:var(--ann-ink)}
+.daily-head small{display:block;margin-top:2px;color:var(--ann-muted);font-size:10px;font-weight:900}
+.daily-timer{padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.72);color:#74599a;font-size:10px;font-weight:1000;white-space:nowrap}
+.daily-list{display:grid;gap:7px}
+.daily-task{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border-radius:17px;background:rgba(255,255,255,.68);border:1px solid rgba(230,216,255,.72);box-shadow:0 7px 16px rgba(112,78,170,.07)}
+.daily-task.done{background:linear-gradient(135deg,#fff9df,#f1e7ff)}
+.daily-task.claimed{opacity:.72}
+.daily-icon{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#eadfff,#ffddec);font-size:14px}
+.daily-title{font-size:12px;font-weight:1000;color:#4f3670;line-height:1.2}
+.daily-progress{margin-top:5px;height:7px;border-radius:999px;background:rgba(213,199,235,.66);overflow:hidden}
+.daily-progress i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#b99cff,#ffb4df,#ffe28a);transition:width .25s ease}
+.daily-meta{margin-top:3px;color:var(--ann-muted);font-size:10px;font-weight:900}
+.daily-claim{padding:7px 9px;border-radius:999px;background:linear-gradient(135deg,#d9c7ff,#ffd2ec);color:#4f2f78;font-size:10px;font-weight:1000;white-space:nowrap;box-shadow:0 8px 18px rgba(94,55,150,.12)}
+.daily-claim:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.25)}
+.daily-bonus{margin-top:8px;padding:8px;border-radius:17px;background:rgba(255,255,255,.68);border:1px solid rgba(230,216,255,.72);display:flex;justify-content:space-between;align-items:center;gap:8px;color:#604783;font-size:11px;font-weight:900}
+.daily-bonus button{padding:7px 10px;border-radius:999px;background:linear-gradient(135deg,#fff0b8,#ffd2ec);color:#5b3d7d;font-weight:1000;font-size:10px;white-space:nowrap}
+.daily-bonus button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:850px){.daily-panel{grid-column:1/-1}.daily-task{grid-template-columns:26px minmax(0,1fr)}.daily-claim{grid-column:2;justify-self:start}.daily-head{display:block}.daily-timer{display:inline-flex;margin-top:5px}}
+
+
 /* === Shards daily shop === */
 .shard-stat{text-align:left;transition:.18s ease}
 .shard-stat:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(112,78,170,.18)!important}
@@ -3406,6 +3437,21 @@ h1{
       </button>
     </div>
 
+    <div class="daily-panel" id="dailyPanel">
+      <div class="daily-head">
+        <div>
+          <b>📅 Задания дня</b>
+          <small>выполняй задания и получай осколки</small>
+        </div>
+        <span class="daily-timer" id="dailyTaskTimer">00:00:00</span>
+      </div>
+      <div class="daily-list" id="dailyTaskList"></div>
+      <div class="daily-bonus" id="dailyBonusBox">
+        <span id="dailyBonusText">Бонус за все задания: +18 осколков</span>
+        <button id="dailyBonusBtn" type="button" disabled>Забрать</button>
+      </div>
+    </div>
+
     <div class="block-title">Режим</div>
     <button class="mode-btn active" data-cols="4" data-rows="3" data-difficulty="easy">
       <b>Лёгкий</b>
@@ -3867,6 +3913,12 @@ const shardsModalBalance = document.getElementById("shardsModalBalance");
 const shardsShopGrid = document.getElementById("shardsShopGrid");
 const shardsShopTimer = document.getElementById("shardsShopTimer");
 let shardsTimerId = null;
+const dailyTaskList = document.getElementById("dailyTaskList");
+const dailyTaskTimer = document.getElementById("dailyTaskTimer");
+const dailyBonusBox = document.getElementById("dailyBonusBox");
+const dailyBonusText = document.getElementById("dailyBonusText");
+const dailyBonusBtn = document.getElementById("dailyBonusBtn");
+let dailyTimerId = null;
 const restartBtn = document.getElementById("restart");
 const againBtn = document.getElementById("again");
 const win = document.getElementById("win");
@@ -3988,6 +4040,7 @@ let collectionVisibleLimit = 48;
 let currentFilteredCollection = [];
 let points = Number(localStorage.getItem("miyeon_shop_points") || "0");
 let duplicateShards = Number(localStorage.getItem("miyeon_duplicate_shards") || "0");
+let dailyTasksState = getStoredDailyTasks();
 let packReadyNotified = points >= 5;
 let activeBoosts = {
   extraPick: false
@@ -4444,6 +4497,7 @@ function grantLevelRewardCards(cards){
   if(newCount || shards){
     showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shards ? ` · +${shards} оск.` : ""} 🎁`);
   }
+  recordDailyCards?.(cards);
   return { newCount, shards };
 }
 
@@ -4911,6 +4965,7 @@ function recordFinishedLevel(){
   gameStats.bestCombo = Math.max(Number(gameStats.bestCombo || 0), maxComboThisGame);
   if(seconds < 40) gameStats.fastUnder40 = Number(gameStats.fastUnder40 || 0) + 1;
   saveGameStats();
+  recordDailyAction?.("levels", 1);
   checkAchievements();
 }
 
@@ -5221,6 +5276,7 @@ function spendDuplicateShards(cost){
   if(duplicateShards < cost) return false;
   duplicateShards -= cost;
   saveShards();
+  recordDailyAction?.("spendShards", cost);
   return true;
 }
 
@@ -5231,6 +5287,192 @@ function awardDuplicateShards(cards){
     addDuplicateShards(total);
   }
   return total;
+}
+
+
+function getStoredDailyTasks(){
+  try{
+    return JSON.parse(localStorage.getItem("miyeon_daily_tasks_state") || "{}");
+  }catch(error){
+    return {};
+  }
+}
+
+function saveDailyTasks(){
+  localStorage.setItem("miyeon_daily_tasks_state", JSON.stringify(dailyTasksState));
+}
+
+function getDailyTaskDateKey(){
+  return getTodayKey();
+}
+
+function pickDailyItem(list, fallback = null){
+  const arr = (list || []).filter(Boolean);
+  if(!arr.length) return fallback;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getAvailableDailyMembers(){
+  const cards = allImageCache || [];
+  const keys = Object.keys(MEMBERS).filter(key => key !== "all" && key !== "group");
+  return keys.filter(member => cards.some(card => card.member === member));
+}
+
+function getAvailableDailyAlbums(){
+  const cards = allImageCache || [];
+  const keys = Object.keys(ALBUMS).filter(key => key !== "all");
+  return keys.filter(album => cards.some(card => card.album === album));
+}
+
+function buildDailyTaskCatalog(){
+  const members = getAvailableDailyMembers();
+  const albums = getAvailableDailyAlbums();
+  const member = pickDailyItem(members, "miyeon");
+  const member2 = pickDailyItem(members.filter(item => item !== member), members[0] || "miyeon");
+  const album = pickDailyItem(albums, "iburn");
+  const album2 = pickDailyItem(albums.filter(item => item !== album), albums[0] || "itrust");
+  return [
+    { id:`levels_2`, type:"levels", icon:"🧩", title:"Пройди 2 уровня", target:2, reward:6 },
+    { id:`levels_3`, type:"levels", icon:"🎮", title:"Пройди 3 уровня", target:3, reward:9 },
+    { id:`open_pack_1`, type:"openPack", icon:"🎁", title:"Открой 1 пак", target:1, reward:7 },
+    { id:`any_cards_3`, type:"anyCard", icon:"💌", title:"Получи любые 3 карты", target:3, reward:6 },
+    { id:`hidden_1`, type:"hiddenReward", icon:"🎲", title:"Выбери скрытую карту 1 раз", target:1, reward:8 },
+    { id:`peek_1`, type:"peek", icon:"👀", title:"Используй подсмотр 1 раз", target:1, reward:6 },
+    { id:`spend_shards_10`, type:"spendShards", icon:"💎", title:"Потрать 10 осколков", target:10, reward:8 },
+    { id:`member_${member}_2`, type:"memberCard", member, icon:getBiasIcon(member), title:`Собери 2 карты ${getMemberTitle(member)}`, target:2, reward:8 },
+    { id:`member_${member2}_3`, type:"memberCard", member:member2, icon:getBiasIcon(member2), title:`Собери 3 карты ${getMemberTitle(member2)}`, target:3, reward:11 },
+    { id:`album_${album}_2`, type:"albumCard", album, icon:"💿", title:`Получи 2 карты из ${getAlbumTitle(album)}`, target:2, reward:9 },
+    { id:`album_${album2}_1`, type:"albumCard", album:album2, icon:"🎶", title:`Получи 1 карту из ${getAlbumTitle(album2)}`, target:1, reward:6 },
+    { id:`rare_1`, type:"rarityCard", rarity:"rare", icon:"💖", title:"Получи 1 rare-карту", target:1, reward:12 },
+    { id:`common_3`, type:"rarityCard", rarity:"common", icon:"🌸", title:"Получи 3 common-карты", target:3, reward:6 },
+    { id:`ultra_1`, type:"rarityCard", rarity:"ultra", icon:"✨", title:"Получить 1 ultra-карту", target:1, reward:18 }
+  ];
+}
+
+function createDailyTasks(){
+  const catalog = buildDailyTaskCatalog();
+  const easy = catalog.filter(task => ["levels","anyCard","memberCard","albumCard","openPack","common"].includes(task.type) || task.id === "common_3");
+  const mechanics = catalog.filter(task => ["hiddenReward","peek","spendShards","openPack"].includes(task.type));
+  const collection = catalog.filter(task => ["memberCard","albumCard","rarityCard"].includes(task.type));
+  const picked = [];
+  const addUnique = pool => {
+    const candidates = shuffle(pool).filter(task => !picked.some(item => item.id === task.id));
+    if(candidates[0]) picked.push(candidates[0]);
+  };
+  addUnique(easy);
+  addUnique(collection);
+  addUnique(mechanics);
+  while(picked.length < 3) addUnique(catalog);
+  return picked.slice(0,3).map(task => ({...task, progress:0, claimed:false}));
+}
+
+async function ensureDailyTasks(){
+  await getAllImages();
+  const today = getDailyTaskDateKey();
+  if(dailyTasksState.date !== today || dailyTasksState.version !== 1 || !Array.isArray(dailyTasksState.tasks)){
+    dailyTasksState = { date:today, version:1, bonusClaimed:false, tasks:createDailyTasks() };
+    saveDailyTasks();
+  }
+  return dailyTasksState.tasks;
+}
+
+function getDailyProgress(task){
+  return Math.max(0, Math.min(Number(task.target || 1), Number(task.progress || 0)));
+}
+
+function isDailyTaskDone(task){
+  return getDailyProgress(task) >= Number(task.target || 1);
+}
+
+function updateDailyTimer(){
+  if(dailyTaskTimer) dailyTaskTimer.textContent = formatCountdown(getNextLocalMidnight() - new Date());
+}
+
+async function renderDailyTasks(){
+  if(!dailyTaskList) return;
+  await ensureDailyTasks();
+  updateDailyTimer();
+  const tasks = dailyTasksState.tasks || [];
+  dailyTaskList.innerHTML = tasks.map((task, index) => {
+    const progress = getDailyProgress(task);
+    const target = Math.max(1, Number(task.target || 1));
+    const done = progress >= target;
+    const pct = Math.round(progress / target * 100);
+    return `<div class="daily-task ${done ? "done" : ""} ${task.claimed ? "claimed" : ""}">
+      <span class="daily-icon">${task.icon || "📌"}</span>
+      <div>
+        <div class="daily-title">${task.title}</div>
+        <div class="daily-progress"><i style="width:${pct}%"></i></div>
+        <div class="daily-meta">${progress}/${target} · награда +${task.reward} осколков</div>
+      </div>
+      <button class="daily-claim" data-daily-claim="${index}" ${done && !task.claimed ? "" : "disabled"}>${task.claimed ? "Получено" : (done ? "Забрать" : `+${task.reward}`)}</button>
+    </div>`;
+  }).join("");
+
+  dailyTaskList.querySelectorAll("[data-daily-claim]").forEach(btn => {
+    btn.addEventListener("click", () => claimDailyTask(Number(btn.dataset.dailyClaim)));
+  });
+
+  const allDone = tasks.length > 0 && tasks.every(isDailyTaskDone);
+  const allClaimed = tasks.length > 0 && tasks.every(task => task.claimed);
+  if(dailyBonusText) dailyBonusText.textContent = dailyTasksState.bonusClaimed ? "Бонус дня уже получен ♡" : "Бонус за все задания: +18 осколков";
+  if(dailyBonusBtn){
+    dailyBonusBtn.disabled = !(allDone && allClaimed && !dailyTasksState.bonusClaimed);
+    dailyBonusBtn.textContent = dailyTasksState.bonusClaimed ? "Получено" : "+18 оск.";
+  }
+}
+
+function bumpDailyTask(type, amount = 1, payload = {}){
+  const tasks = dailyTasksState?.tasks;
+  if(!Array.isArray(tasks)) return;
+  let changed = false;
+  tasks.forEach(task => {
+    if(task.claimed || task.type !== type) return;
+    if(type === "memberCard" && task.member !== payload.member) return;
+    if(type === "albumCard" && task.album !== payload.album) return;
+    if(type === "rarityCard" && task.rarity !== payload.rarity) return;
+    const before = Number(task.progress || 0);
+    task.progress = Math.min(Number(task.target || 1), before + amount);
+    if(task.progress !== before) changed = true;
+  });
+  if(changed){
+    saveDailyTasks();
+    renderDailyTasks?.();
+  }
+}
+
+function recordDailyCards(cards){
+  const list = Array.isArray(cards) ? cards : [cards];
+  list.filter(Boolean).forEach(card => {
+    bumpDailyTask("anyCard", 1, { card });
+    bumpDailyTask("memberCard", 1, { member:card.member, card });
+    bumpDailyTask("albumCard", 1, { album:card.album, card });
+    bumpDailyTask("rarityCard", 1, { rarity:card.rarity, card });
+  });
+}
+
+function recordDailyAction(type, amount = 1, payload = {}){
+  bumpDailyTask(type, amount, payload);
+}
+
+function claimDailyTask(index){
+  const task = dailyTasksState?.tasks?.[index];
+  if(!task || task.claimed || !isDailyTaskDone(task)) return;
+  task.claimed = true;
+  addDuplicateShards(Number(task.reward || 0));
+  saveDailyTasks();
+  showToast(`📅 Задание выполнено: +${task.reward} осколков`);
+  renderDailyTasks();
+}
+
+function claimDailyBonus(){
+  const tasks = dailyTasksState?.tasks || [];
+  if(dailyTasksState.bonusClaimed || !tasks.length || !tasks.every(isDailyTaskDone) || !tasks.every(task => task.claimed)) return;
+  dailyTasksState.bonusClaimed = true;
+  addDuplicateShards(18);
+  saveDailyTasks();
+  showRarityReaction("📅 Все задания дня закрыты: +18 осколков ♡");
+  renderDailyTasks();
 }
 
 
@@ -5365,6 +5607,7 @@ async function buyShardShopCard(cardId){
     return;
   }
   collectCard(card.src);
+  recordDailyCards?.(card);
   addXP(card.rarity === "ultra" ? 15 : card.rarity === "rare" ? 9 : 5, "карта за осколки");
   showToast("Карта куплена за осколки 💌");
   if(card.rarity === "ultra"){
@@ -5928,11 +6171,13 @@ function revealRewardCard(index){
   updatePeekRewardButton();
 }
 
-function finishRewardPick(btn, image){
+function finishRewardPick(btn, image, meta = {}){
   const picksBeforeClick = rewardPicksLeft;
   const already = isCardCollected(image.src);
   const duplicateBonus = already ? awardDuplicateShards(image) : 0;
   collectCard(image.src);
+  recordDailyCards?.(image);
+  if(meta.fromHidden) recordDailyAction?.("hiddenReward", 1);
   recordRewardPick(image, picksBeforeClick);
 
   if(hasUpgrade("collectorIntuition") && image.rarity === "common"){
@@ -6005,13 +6250,14 @@ function renderRewardOptions(){
 
     btn.addEventListener("click", () => {
       if(btn.disabled || rewardPicksLeft <= 0) return;
-      if(!rewardRevealedIndexes.has(index)){
+      const wasHidden = !rewardRevealedIndexes.has(index);
+      if(wasHidden){
         revealRewardCard(index);
         btn.classList.add("picked-from-hidden");
-        setTimeout(() => finishRewardPick(btn, image), 360);
+        setTimeout(() => finishRewardPick(btn, image, { fromHidden:true }), 360);
         return;
       }
-      finishRewardPick(btn, image);
+      finishRewardPick(btn, image, { fromHidden:false });
     });
 
     rewardOptions.appendChild(btn);
@@ -6473,6 +6719,7 @@ function claimOpenedPack({ close = true, silent = false } = {}){
   });
 
   const shardBonus = awardDuplicateShards(duplicateCards);
+  recordDailyCards?.(lastOpenedPack);
 
   if(!silent){
     if(newCount && shardBonus){
@@ -6585,6 +6832,7 @@ async function buySpecialPack(pack){
   showPackResult(cards, { type:"special", pack });
   openedPacksCount++;
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
+  recordDailyAction?.("openPack", 1);
   recordPackAchievements(cards, false);
   updateUltraPity(cards, images);
 
@@ -6651,6 +6899,7 @@ async function buyPack(packKey, rateKey = "basic"){
 
   openedPacksCount++;
   localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
+  recordDailyAction?.("openPack", 1);
   recordPackAchievements(cards, isFree);
   updateUltraPity(cards, images);
 
@@ -6883,6 +7132,7 @@ peekRewardBtn.addEventListener("click", () => {
   spendPoints(3);
   const index = hiddenIndexes[Math.floor(Math.random() * hiddenIndexes.length)];
   revealRewardCard(index);
+  recordDailyAction?.("peek", 1);
   showToast("👀 Одна закрытая карта открыта");
 });
 
@@ -6950,6 +7200,7 @@ profileBiasGrid?.addEventListener("click", event => {
   showToast(`Bias выбран: ${getBiasTitle()} ♡`);
 });
 
+dailyBonusBtn?.addEventListener("click", claimDailyBonus);
 levelUpClose?.addEventListener("click", () => levelUpModal.classList.remove("show"));
 levelUpModal?.addEventListener("click", event => { if(event.target === levelUpModal) levelUpModal.classList.remove("show"); });
 
@@ -6963,6 +7214,15 @@ loadConfig()
     updateShapePanel();
     checkAchievements();
     renderAchievements();
+    renderDailyTasks();
+    clearInterval(dailyTimerId);
+    dailyTimerId = setInterval(() => {
+      updateDailyTimer();
+      const today = getDailyTaskDateKey();
+      if(dailyTasksState.date !== today){
+        ensureDailyTasks().then(renderDailyTasks);
+      }
+    }, 1000);
     startGame(4,3);
   })
   .catch(error => {
