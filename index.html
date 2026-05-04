@@ -3436,10 +3436,6 @@ h1{
       <b>💡 Подсказка</b>
       <small>покажет одну пару за 2 очка</small>
     </button>
-    <button class="fun-btn" id="superHintBtn">
-      <b>✨ Супер-подсказка</b>
-      <small>покажет две пары за 5 очков</small>
-    </button>
     <button class="fun-btn" id="rememberAllBtn">
       <b>🧠 Вспомнить всё</b>
       <small>откроет всё поле за 8 очков</small>
@@ -4030,7 +4026,7 @@ const PACK_RATES = {
 
 
 const LEVEL_UNLOCKS = [
-  { level:2, key:"advanced_hints", title:"Расширенные подсказки", desc:"Супер-подсказка и Вспомнить всё становятся частью прогрессии" },
+  { level:2, key:"advanced_hints", title:"Расширенные подсказки", desc:"Вспомнить всё становится частью прогрессии" },
   { level:3, key:"rare_pack", title:"Редкий пак и альбомные паки", desc:"В магазине открываются альбомные паки и пак с повышенным шансом rare" },
   { level:5, key:"pre_game_focus", title:"Фокусы и групповой пак", desc:"Открываются серия, фокус на участницу, фокус на альбом и пак юниток/групповых" },
   { level:7, key:"rarity_upgrades", title:"Улучшения редкости", desc:"Редкий вкус, Охота за ультра и редкие гаранты" },
@@ -4561,9 +4557,8 @@ function getPackXP(cards){
 }
 
 function applyLevelLocks(){
-  const superHint = document.getElementById("superHintBtn");
   const rememberAllBtn = document.getElementById("rememberAllBtn");
-  [superHint, rememberAllBtn].forEach(btn => {
+  [rememberAllBtn].forEach(btn => {
     if(!btn) return;
     const locked = !isLevelUnlocked("advanced_hints");
     btn.disabled = locked;
@@ -6711,9 +6706,6 @@ function openPairsForHint(pairCount, cost, label){
   }, pairCount > 1 ? 1200 : 900);
 }
 
-function superHint(){
-  openPairsForHint(2, 5, "супер-подсказки");
-}
 
 function rememberAll(){
   if(locked) return;
@@ -6931,7 +6923,6 @@ shapeButtons.forEach(btn => {
 restartBtn.addEventListener("click", () => startGame());
 againBtn.addEventListener("click", () => startGame());
 document.getElementById("hintBtn").addEventListener("click", hint);
-document.getElementById("superHintBtn").addEventListener("click", superHint);
 document.getElementById("rememberAllBtn").addEventListener("click", rememberAll);
 shardsOpen?.addEventListener("click", openShardsModal);
 shardsClose?.addEventListener("click", closeShardsModal);
