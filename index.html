@@ -3569,95 +3569,51 @@ h1{
 }
 
 
-/* === Pack covers and preview modal === */
+/* === Pack preview minimal safe patch === */
 .pack-card{cursor:pointer!important;}
 .pack-card .pack-sub,
 .pack-card .pack-rates,
 .pack-card .pack-price,
 .pack-card .rarity-pity-note{display:none!important;}
 .pack-card .pack-info{
-  min-height:auto!important;
   padding:15px 16px 18px!important;
+  min-height:auto!important;
   display:grid!important;
   place-items:center!important;
 }
-.pack-card .pack-title{
-  text-align:center!important;
-  font-size:18px!important;
-  line-height:1.15!important;
-}
+.pack-card .pack-title{text-align:center!important;font-size:18px!important;line-height:1.15!important;}
 .pack-cover{position:relative!important;overflow:hidden!important;}
 .pack-cover-img{
-  position:absolute!important;
-  inset:0!important;
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-  object-position:center!important;
-  display:block!important;
-  z-index:1!important;
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  object-fit:cover!important;object-position:center!important;display:block!important;z-index:1!important;
 }
 .pack-cover-title,.pack-price-badge,.pack-cover::after{z-index:3!important;}
 .pack-cover-icon{position:relative!important;z-index:2!important;}
 .pack-preview-window{
-  width:min(880px,94vw);
-  max-height:min(760px,92vh);
-  overflow:auto;
-  border-radius:38px;
-  padding:22px;
-  display:grid;
-  grid-template-rows:auto auto auto auto;
-  gap:18px;
-  color:var(--ann-ink);
+  width:min(880px,94vw);max-height:min(760px,92vh);overflow:auto;border-radius:38px;padding:22px;
+  display:grid;gap:18px;color:var(--ann-ink);
   background:radial-gradient(circle at 8% 0%,rgba(255,226,247,.9),transparent 30%),radial-gradient(circle at 92% 0%,rgba(202,178,255,.9),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
-  border:1px solid rgba(237,226,255,.95);
-  box-shadow:0 36px 120px rgba(51,27,91,.35);
+  border:1px solid rgba(237,226,255,.95);box-shadow:0 36px 120px rgba(51,27,91,.35);
 }
 .pack-preview-balance{
-  padding:14px 16px;
-  border-radius:24px;
-  background:rgba(255,255,255,.74);
-  border:1px solid rgba(230,216,255,.9);
-  box-shadow:0 12px 28px rgba(72,39,128,.10);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
+  padding:14px 16px;border-radius:24px;background:rgba(255,255,255,.74);
+  border:1px solid rgba(230,216,255,.9);box-shadow:0 12px 28px rgba(72,39,128,.10);
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
 }
 .pack-preview-balance span{color:var(--ann-muted);font-size:13px;font-weight:900;}
 .pack-preview-balance b{color:var(--ann-ink);font-size:22px;}
-.pack-preview-cards{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(130px,190px));
-  justify-content:center;
-  gap:18px;
-}
+.pack-preview-cards{display:grid;grid-template-columns:repeat(3,minmax(130px,190px));justify-content:center;gap:18px;}
 .pack-preview-card-back{
-  aspect-ratio:3/4;
-  border-radius:28px;
-  display:grid;
-  place-items:center;
-  color:#fff;
-  font-weight:1000;
-  letter-spacing:.18em;
-  font-size:22px;
-  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.65),transparent 30%),linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
-  border:1px solid rgba(255,255,255,.72);
-  box-shadow:0 18px 42px rgba(86,47,145,.18), inset 0 1px 0 rgba(255,255,255,.5);
-  position:relative;
-  overflow:hidden;
+  aspect-ratio:3/4;border-radius:28px;display:grid;place-items:center;color:#fff;font-weight:1000;
+  letter-spacing:.18em;font-size:22px;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.65),transparent 30%),linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
+  border:1px solid rgba(255,255,255,.72);box-shadow:0 18px 42px rgba(86,47,145,.18), inset 0 1px 0 rgba(255,255,255,.5);
+  position:relative;overflow:hidden;
 }
-.pack-preview-card-back::before{content:"";position:absolute;inset:12px;border-radius:22px;border:1px solid rgba(255,255,255,.42);}
 .pack-preview-card-back::after{content:"?";position:absolute;font-size:64px;opacity:.28;transform:translateY(-8px);}
 .pack-preview-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .pack-preview-btn{
-  padding:14px 16px;
-  border-radius:999px;
-  background:linear-gradient(135deg,#d9c7ff,#ffd2ec);
-  color:#4f2f78;
-  font-size:14px;
-  font-weight:1000;
-  box-shadow:0 12px 24px rgba(94,55,150,.12);
+  padding:14px 16px;border-radius:999px;background:linear-gradient(135deg,#d9c7ff,#ffd2ec);
+  color:#4f2f78;font-size:14px;font-weight:1000;box-shadow:0 12px 24px rgba(94,55,150,.12);
 }
 .pack-preview-btn:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.2);}
 @media(max-width:650px){
@@ -4124,7 +4080,6 @@ h1{
     </div>
   </div>
 </section>
-
 
 <section class="modal" id="levelUpModal">
   <div class="level-window">
@@ -7195,7 +7150,7 @@ function renderUpgradeGrid(){
   });
 }
 
-async 
+
 function getPackPreviewDescription(key, title, rateKey = "basic"){
   const descriptions = {
     all: `Пак "${title}" включает в себя карты всех участниц из всей доступной коллекции.`,
@@ -7267,39 +7222,52 @@ function buyPreviewPack(count){
 async function renderPackGrid(){
   const config = await loadConfig();
   packGrid.innerHTML = "";
+
   let rendered = 0;
 
   Object.entries(config.boosters || {}).forEach(([key, pack]) => {
     if(!isPackVisible(key, "basic")) return;
     const cost = getPackCost(key, pack);
     const btn = document.createElement("button");
-    btn.type = "button";
     btn.className = `pack-card ${points >= cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML({
       key,
+      title:pack.title,
+      cost,
+      rateKey:"basic",
+      text:"70% Common / 25% Rare / 5% Ultra",
+      subtitle:key === "all"
+        ? "Базовый пак со всеми картами"
+        : (["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)
+          ? "Персональный пак участницы. Доступен с самого начала."
+          : "Тематический пак из открытой категории")
+    });
+    btn.addEventListener("click", () => openPackPreview({
+      key,
       title: pack.title,
       cost,
-      rateKey: "basic",
-      text: "70% Common / 25% Rare / 5% Ultra",
-      subtitle: ""
-    });
-    btn.addEventListener("click", () => openPackPreview({ key, title: pack.title, cost, rateKey: "basic" }));
+      rateKey: "basic"
+    }));
     packGrid.appendChild(btn);
     rendered++;
   });
 
   const specialPacks = [
-    { key: "rare_all", title: "Редкий пак", cost: 16, rateKey: "rare", text: "50% Common / 40% Rare / 10% Ultra", subtitle: "" },
-    { key: "premium_all", title: "Премиум пак", cost: 24, rateKey: "premium", text: "30% Common / 50% Rare / 20% Ultra", subtitle: "" }
+    { key:"rare_all", title:"Редкий пак", cost:16, rateKey:"rare", text:"50% Common / 40% Rare / 10% Ultra", subtitle:"Открывается на Lv. 3. Повышенный шанс rare." },
+    { key:"premium_all", title:"Премиум пак", cost:24, rateKey:"premium", text:"30% Common / 50% Rare / 20% Ultra", subtitle:"Открывается на Lv. 10. Самый красивый шанс rare и ultra." }
   ];
 
   specialPacks.forEach(pack => {
     if(!isPackVisible(pack.key, pack.rateKey)) return;
     const btn = document.createElement("button");
-    btn.type = "button";
     btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"} ${points >= pack.cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML(pack);
-    btn.addEventListener("click", () => openPackPreview({ key: pack.key, title: pack.title, cost: pack.cost, rateKey: pack.rateKey }));
+    btn.addEventListener("click", () => openPackPreview({
+      key: pack.key,
+      title: pack.title,
+      cost: pack.cost,
+      rateKey: pack.rateKey
+    }));
     packGrid.appendChild(btn);
     rendered++;
   });
