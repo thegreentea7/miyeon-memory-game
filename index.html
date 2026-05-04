@@ -3623,15 +3623,32 @@ h1{
 }
 
 
+.pack-preview-cards.opened{
+  grid-template-columns:repeat(auto-fill,minmax(116px,1fr))!important;
+  max-height:430px;
+  overflow:auto;
+  justify-content:stretch!important;
+}
 .pack-preview-card-open{
-  width:120px;
-  aspect-ratio:3/4;
+  position:relative;
+  border-radius:20px;
+  padding:5px;
+  background:linear-gradient(135deg,#eadfff,#fff7fd);
+  box-shadow:0 14px 30px rgba(112,78,170,.14);
+}
+.pack-preview-card-open.rarity-rare{
+  background:var(--rare-grad);
+}
+.pack-preview-card-open.rarity-ultra{
+  background:var(--ultra-grad);
 }
 .pack-preview-card-open img{
   width:100%;
-  height:100%;
+  aspect-ratio:3/4;
   object-fit:cover;
-  border-radius:12px;
+  object-position:center;
+  border-radius:15px;
+  display:block;
 }
 
 </style>
@@ -4326,6 +4343,7 @@ const packPreviewPoints = document.getElementById("packPreviewPoints");
 const packPreviewOpen1 = document.getElementById("packPreviewOpen1");
 const packPreviewOpen5 = document.getElementById("packPreviewOpen5");
 const packPreviewOpen10 = document.getElementById("packPreviewOpen10");
+const packPreviewCards = document.getElementById("packPreviewCards");
 let selectedPackPreview = null;
 
 
@@ -7190,6 +7208,16 @@ function openPackPreview(packData){
   packPreviewTitle.textContent = packData.title;
   packPreviewDesc.textContent = getPackPreviewDescription(packData.key, packData.title, packData.rateKey);
   packPreviewPoints.textContent = points;
+  
+  if(packPreviewCards){
+    packPreviewCards.classList.remove("opened");
+    packPreviewCards.innerHTML = `
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+    `;
+  }
+
   updatePackPreviewButtons();
   packPreviewModal.classList.add("show");
 }
@@ -7212,7 +7240,23 @@ function updatePackPreviewButtons(){
   setBtn(packPreviewOpen10, 10);
 }
 
-function buyPreviewPack(count){
+
+function renderPackPreviewOpenedCards(cards){
+  if(!packPreviewCards) return;
+  packPreviewCards.classList.add("opened");
+  packPreviewCards.innerHTML = "";
+  cards.forEach(card => {
+    const item = document.createElement("div");
+    item.className = `pack-preview-card-open rarity-${card.rarity}`;
+    item.innerHTML = `
+      <img src="${card.src}" alt="card" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML=imageErrorHTML(this.src)">
+      <span class="rarity-badge ${card.rarity}">${getRarityTitle(card.rarity)}</span>
+    `;
+    packPreviewCards.appendChild(item);
+  });
+}
+
+async function buyPreviewPack(count){
   if(!selectedPackPreview) return;
 
   const pack = { ...selectedPackPreview };
@@ -7224,42 +7268,55 @@ function buyPreviewPack(count){
     return;
   }
 
-  const container = document.getElementById("packPreviewCards");
-  container.innerHTML = "";
+  const allCards = [];
 
   for(let i = 0; i < count; i++){
-    let cards;
+    let sourceImages = [];
+    let cards = [];
 
     if(pack.rateKey === "rare" || pack.rateKey === "premium"){
-      cards = openSpecialPackDirect(pack);
+      sourceImages = await getAllImages();
+      cards = applyUltraPity(pickWeightedCards(sourceImages, 3, PACK_RATES[pack.rateKey]), sourceImages);
+      spendPoints(pack.cost);
+      recordPackAchievements(cards, false);
     } else {
-      cards = openPackDirect(pack.key);
+      sourceImages = await getPackImages(pack.key);
+      if(sourceImages.length < 3){
+        showToast("В этом паке пока меньше 3 карт ♡");
+        return;
+      }
+      cards = applyUltraPity(pickWeightedCards(sourceImages, 3, PACK_RATES.basic), sourceImages);
+      spendPoints(pack.cost);
+      recordPackAchievements(cards, false);
     }
 
-    cards.forEach(card => {
-      const el = document.createElement("div");
-      el.className = "pack-preview-card-open";
-      el.innerHTML = `<img src="${card.image}" alt="">`;
-      container.appendChild(el);
-    });
+    addXP(getPackXP(cards), "открытие пака");
+    openedPacksCount++;
+    localStorage.setItem("miyeon_opened_packs_count", String(openedPacksCount));
+    recordDailyAction?.("openPack", 1);
+    updateUltraPity(cards, sourceImages);
+
+    const repeatCards = cards.filter(card => isCardCollected(card.src));
+    cards.forEach(card => collectCard(card.src));
+    awardDuplicateShards(repeatCards);
+    recordDailyCards?.(cards);
+
+    allCards.push(...cards);
   }
 
+  renderPackPreviewOpenedCards(allCards);
+
+  if(allCards.some(card => card.rarity === "ultra")){
+    showRarityReaction("✨ Небобо, в паке ultra-карта! ♡");
+  }
+
+  launchConfetti();
+  checkRarityAchievements();
+  renderCollectionRewards();
+  renderCollection?.();
+  updatePointsUI();
   updatePackPreviewButtons();
-};
-  const totalCost = pack.cost * count;
-  if(points < totalCost){
-    showToast("Не хватает очков ♡");
-    updatePackPreviewButtons();
-    return;
-  }
-  closePackPreview();
-  for(let i = 0; i < count; i++){
-    if(pack.rateKey === "rare" || pack.rateKey === "premium"){
-      buySpecialPack(pack);
-    } else {
-      buyPack(pack.key, "basic");
-    }
-  }
+  packPreviewPoints.textContent = points;
 }
 
 async function renderPackGrid(){
@@ -7899,17 +7956,6 @@ packPreviewModal?.addEventListener("click", event => {
 packPreviewOpen1?.addEventListener("click", () => buyPreviewPack(1));
 packPreviewOpen5?.addEventListener("click", () => buyPreviewPack(5));
 packPreviewOpen10?.addEventListener("click", () => buyPreviewPack(10));
-
-
-function openPackDirect(key){
-  const result = openPack(key, "basic", true);
-  return result || [];
-}
-
-function openSpecialPackDirect(pack){
-  const result = buySpecialPack(pack, true);
-  return result || [];
-}
 
 </script>
 </body>
