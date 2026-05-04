@@ -3622,6 +3622,18 @@ h1{
   .pack-preview-actions{grid-template-columns:1fr}
 }
 
+
+.pack-preview-card-open{
+  width:120px;
+  aspect-ratio:3/4;
+}
+.pack-preview-card-open img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:12px;
+}
+
 </style>
 </head>
 
@@ -4068,7 +4080,7 @@ h1{
       <span>Сейчас у тебя</span>
       <b><span id="packPreviewPoints">0</span> очков</b>
     </div>
-    <div class="pack-preview-cards">
+    <div class="pack-preview-cards" id="packPreviewCards">
       <div class="pack-preview-card-back">MY</div>
       <div class="pack-preview-card-back">MY</div>
       <div class="pack-preview-card-back">MY</div>
@@ -7202,7 +7214,38 @@ function updatePackPreviewButtons(){
 
 function buyPreviewPack(count){
   if(!selectedPackPreview) return;
+
   const pack = { ...selectedPackPreview };
+  const totalCost = pack.cost * count;
+
+  if(points < totalCost){
+    showToast("Не хватает очков ♡");
+    updatePackPreviewButtons();
+    return;
+  }
+
+  const container = document.getElementById("packPreviewCards");
+  container.innerHTML = "";
+
+  for(let i = 0; i < count; i++){
+    let cards;
+
+    if(pack.rateKey === "rare" || pack.rateKey === "premium"){
+      cards = openSpecialPackDirect(pack);
+    } else {
+      cards = openPackDirect(pack.key);
+    }
+
+    cards.forEach(card => {
+      const el = document.createElement("div");
+      el.className = "pack-preview-card-open";
+      el.innerHTML = `<img src="${card.image}" alt="">`;
+      container.appendChild(el);
+    });
+  }
+
+  updatePackPreviewButtons();
+};
   const totalCost = pack.cost * count;
   if(points < totalCost){
     showToast("Не хватает очков ♡");
@@ -7856,6 +7899,17 @@ packPreviewModal?.addEventListener("click", event => {
 packPreviewOpen1?.addEventListener("click", () => buyPreviewPack(1));
 packPreviewOpen5?.addEventListener("click", () => buyPreviewPack(5));
 packPreviewOpen10?.addEventListener("click", () => buyPreviewPack(10));
+
+
+function openPackDirect(key){
+  const result = openPack(key, "basic", true);
+  return result || [];
+}
+
+function openSpecialPackDirect(pack){
+  const result = buySpecialPack(pack, true);
+  return result || [];
+}
 
 </script>
 </body>
