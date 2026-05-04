@@ -3714,6 +3714,14 @@ h1{
   padding-bottom:58px!important;
 }
 
+
+.pack-card.rare {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+.pack-card.rare:hover {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+}
+
 </style>
 </head>
 
@@ -7868,6 +7876,16 @@ loadConfig()
     board.innerHTML = `<div class="loading">Не удалось загрузить cards_config.json.<br>${error.message}</div>`;
     console.error(error);
   });
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.pack-card').forEach(el => {
+    const attr = el.getAttribute('onclick');
+    if (attr && attr.includes('rare_all')) {
+      el.classList.add('rare');
+    }
+  });
+});
+
 </script>
 </body>
 </html>
