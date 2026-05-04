@@ -3746,6 +3746,125 @@ h1{
   filter:saturate(1.08) brightness(1.03);
 }
 
+
+/* === Pack preview modal === */
+.pack-card{
+  cursor:pointer!important;
+}
+.pack-info{
+  padding:15px 16px 16px!important;
+  justify-content:center!important;
+}
+.pack-sub,
+.pack-rates,
+.pack-price,
+.pack-price-note{
+  display:none!important;
+}
+.pack-title{
+  font-size:18px!important;
+  text-align:center!important;
+  margin:auto 0!important;
+}
+.pack-preview-window{
+  width:min(880px,94vw);
+  max-height:min(760px,92vh);
+  overflow:auto;
+  border-radius:38px;
+  padding:22px;
+  display:grid;
+  grid-template-rows:auto auto auto auto;
+  gap:18px;
+  color:var(--ann-ink);
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,226,247,.9),transparent 30%),
+    radial-gradient(circle at 92% 0%,rgba(202,178,255,.9),transparent 32%),
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
+  border:1px solid rgba(237,226,255,.95);
+  box-shadow:0 36px 120px rgba(51,27,91,.35);
+}
+.pack-preview-balance{
+  padding:14px 16px;
+  border-radius:24px;
+  background:rgba(255,255,255,.74);
+  border:1px solid rgba(230,216,255,.9);
+  box-shadow:0 12px 28px rgba(72,39,128,.10);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+}
+.pack-preview-balance span{
+  color:var(--ann-muted);
+  font-size:13px;
+  font-weight:900;
+}
+.pack-preview-balance b{
+  color:var(--ann-ink);
+  font-size:22px;
+}
+.pack-preview-cards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(130px,190px));
+  justify-content:center;
+  gap:18px;
+}
+.pack-preview-card-back{
+  aspect-ratio:3/4;
+  border-radius:28px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-weight:1000;
+  letter-spacing:.18em;
+  font-size:22px;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.65),transparent 30%),
+    linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 18px 42px rgba(86,47,145,.18), inset 0 1px 0 rgba(255,255,255,.5);
+  position:relative;
+  overflow:hidden;
+}
+.pack-preview-card-back::before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.42);
+}
+.pack-preview-card-back::after{
+  content:"?";
+  position:absolute;
+  font-size:64px;
+  opacity:.28;
+  transform:translateY(-8px);
+}
+.pack-preview-actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.pack-preview-btn{
+  padding:14px 16px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#d9c7ff,#ffd2ec);
+  color:#4f2f78;
+  font-size:14px;
+  font-weight:1000;
+  box-shadow:0 12px 24px rgba(94,55,150,.12);
+}
+.pack-preview-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  filter:grayscale(.2);
+}
+@media(max-width:650px){
+  .pack-preview-window{width:98vw;max-height:94vh;border-radius:28px;padding:16px}
+  .pack-preview-cards{grid-template-columns:repeat(3,1fr);gap:10px}
+  .pack-preview-actions{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 
@@ -4183,6 +4302,37 @@ h1{
 </section>
 
 
+
+<section class="modal" id="packPreviewModal">
+  <div class="pack-preview-window">
+    <div class="modal-head">
+      <div>
+        <h2 id="packPreviewTitle">Пак</h2>
+        <p id="packPreviewDesc">Описание пака</p>
+      </div>
+      <button class="modal-close" id="packPreviewClose">×</button>
+    </div>
+
+    <div class="pack-preview-balance">
+      <span>Сейчас у тебя</span>
+      <b><span id="packPreviewPoints">0</span> очков</b>
+    </div>
+
+    <div class="pack-preview-cards" id="packPreviewCards">
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+    </div>
+
+    <div class="pack-preview-actions">
+      <button class="pack-preview-btn" id="packPreviewOpen1">Открыть</button>
+      <button class="pack-preview-btn" id="packPreviewOpen5">Открыть 5 паков</button>
+      <button class="pack-preview-btn" id="packPreviewOpen10">Открыть 10 паков</button>
+    </div>
+  </div>
+</section>
+
+
 <section class="modal" id="levelUpModal">
   <div class="level-window">
     <div class="win-emoji">✨</div>
@@ -4417,6 +4567,17 @@ const riskChainCount = document.getElementById("riskChainCount");
 const riskChainCards = document.getElementById("riskChainCards");
 const riskChainTakeBtn = document.getElementById("riskChainTakeBtn");
 const riskChainContinueBtn = document.getElementById("riskChainContinueBtn");
+
+const packPreviewModal = document.getElementById("packPreviewModal");
+const packPreviewClose = document.getElementById("packPreviewClose");
+const packPreviewTitle = document.getElementById("packPreviewTitle");
+const packPreviewDesc = document.getElementById("packPreviewDesc");
+const packPreviewPoints = document.getElementById("packPreviewPoints");
+const packPreviewOpen1 = document.getElementById("packPreviewOpen1");
+const packPreviewOpen5 = document.getElementById("packPreviewOpen5");
+const packPreviewOpen10 = document.getElementById("packPreviewOpen10");
+let selectedPackPreview = null;
+
 const packResult = document.getElementById("packResult");
 const packResultCards = document.getElementById("packResultCards");
 const packResultClose = document.getElementById("packResultClose");
@@ -4563,10 +4724,72 @@ function getPackIcon(key, rateKey = "basic"){
   return "🎁";
 }
 
+
+function getPackPreviewDescription(key, title, rateKey = "basic"){
+  const map = {
+    all: `Пак "${title}" включает в себя карты всех участниц из всей доступной коллекции.`,
+    group: `Пак "${title}" включает в себя юнитные и групповые карты.`,
+    iam: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I AM.`,
+    imade: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I MADE.`,
+    itrust: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I TRUST.`,
+    iburn: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I BURN.`,
+    miyeon: `Пак "${title}" включает в себя карты Миён из доступной коллекции.`,
+    minnie: `Пак "${title}" включает в себя карты Минни из доступной коллекции.`,
+    soyeon: `Пак "${title}" включает в себя карты Соён из доступной коллекции.`,
+    yuqi: `Пак "${title}" включает в себя карты Юци из доступной коллекции.`,
+    shuhua: `Пак "${title}" включает в себя карты Шухуа из доступной коллекции.`,
+    soojin: `Пак "${title}" включает в себя карты Суджин из доступной коллекции.`
+  };
+  if(rateKey === "rare") return `Пак "${title}" открывается с Lv. 3 и даёт повышенный шанс на rare-карты.`;
+  if(rateKey === "premium") return `Пак "${title}" открывается с Lv. 10 и даёт повышенный шанс на rare и ultra-карты.`;
+  return map[key] || `Пак "${title}" включает тематические карты из выбранной категории.`;
+}
+
+function openPackPreview(packData){
+  selectedPackPreview = packData;
+  if(packPreviewTitle) packPreviewTitle.textContent = packData.title;
+  if(packPreviewDesc) packPreviewDesc.textContent = getPackPreviewDescription(packData.key, packData.title, packData.rateKey);
+  if(packPreviewPoints) packPreviewPoints.textContent = points;
+  updatePackPreviewButtons();
+  packPreviewModal?.classList.add("show");
+}
+
+function closePackPreview(){
+  packPreviewModal?.classList.remove("show");
+  selectedPackPreview = null;
+}
+
+function updatePackPreviewButtons(){
+  if(!selectedPackPreview) return;
+  const cost = Number(selectedPackPreview.cost || 0);
+  const setButton = (btn, count) => {
+    if(!btn) return;
+    const total = cost * count;
+    btn.textContent = count === 1 ? `Открыть (${cost} очков)` : `Открыть ${count} паков (${total} очков)`;
+    btn.disabled = points < total;
+  };
+  setButton(packPreviewOpen1, 1);
+  setButton(packPreviewOpen5, 5);
+  setButton(packPreviewOpen10, 10);
+}
+
+function buyPreviewPack(count){
+  if(!selectedPackPreview) return;
+  const totalCost = selectedPackPreview.cost * count;
+  if(points < totalCost){
+    showToast("Не хватает очков ♡");
+    updatePackPreviewButtons();
+    return;
+  }
+  closePackPreview();
+  for(let i = 0; i < count; i++){
+    buyPack(selectedPackPreview.key, selectedPackPreview.cost, selectedPackPreview.rateKey);
+  }
+}
+
 function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
   const kind = getPackKind(key, rateKey);
   const icon = getPackIcon(key, rateKey);
-  const rateParts = text.split("/").map(item => item.trim()).filter(Boolean);
   const canBuy = points >= cost;
   const packLabel = kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic";
   const packCoverMap = {
@@ -4599,8 +4822,6 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
     </div>
     <div class="pack-info">
       <div class="pack-title">${title}</div>
-      <div class="pack-sub">${subtitle}</div>
-      <div class="pack-rates">${rateParts.map(part => `<span class="pack-rate">${part}</span>`).join("")}</div>
     </div>`;
 }
 
@@ -7439,7 +7660,7 @@ function showPackResult(cards, context = null){
   cards.forEach(() => {
     const item = document.createElement("div");
     item.className = "simple-booster-card roulette spin";
-    item.innerHTML = `<div class="pack-card-back">🐰</div>`;
+    item.innerHTML = `<div data-preview-pack-key="${key}" data-preview-pack-title="${title}" data-preview-pack-cost="${cost}" data-preview-pack-rate="${rateKey}" class="pack-card-back">🐰</div>`;
     packResultCards.appendChild(item);
   });
 
@@ -7917,6 +8138,31 @@ loadConfig()
     board.innerHTML = `<div class="loading">Не удалось загрузить cards_config.json.<br>${error.message}</div>`;
     console.error(error);
   });
+
+
+packPreviewClose?.addEventListener("click", closePackPreview);
+packPreviewModal?.addEventListener("click", event => {
+  if(event.target === packPreviewModal) closePackPreview();
+});
+packPreviewOpen1?.addEventListener("click", () => buyPreviewPack(1));
+packPreviewOpen5?.addEventListener("click", () => buyPreviewPack(5));
+packPreviewOpen10?.addEventListener("click", () => buyPreviewPack(10));
+
+
+
+packGrid?.addEventListener("click", event => {
+  const card = event.target.closest(".pack-card");
+  if(!card || !card.dataset.previewPackKey) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  openPackPreview({
+    key: card.dataset.previewPackKey,
+    title: card.dataset.previewPackTitle,
+    cost: Number(card.dataset.previewPackCost || 0),
+    rateKey: card.dataset.previewPackRate || "basic"
+  });
+}, true);
+
 </script>
 </body>
 </html>
