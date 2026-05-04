@@ -3568,6 +3568,73 @@ h1{
   .mode-btn,.fun-btn{min-height:40px!important;}
 }
 
+
+/* === Generosity polish + Miyeon message === */
+.boost-status.generosity-active{
+  display:block!important;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(255,236,248,.95),transparent 36%),
+    linear-gradient(135deg,#fff7fb,#eadfff,#fff0f7)!important;
+  outline:2px solid rgba(255,158,209,.42)!important;
+  box-shadow:0 16px 38px rgba(157,124,248,.2),0 0 26px rgba(255,158,209,.24)!important;
+  animation:generosityPulse 1.7s ease-in-out infinite alternate;
+}
+.boost-status.generosity-active::after{
+  content:"♡";
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(157,124,248,.32);
+  font-size:26px;
+  font-weight:1000;
+}
+.generosity-label{
+  display:block;
+  color:#4f3670;
+  font-weight:1000;
+  margin-bottom:3px;
+}
+.generosity-sub{
+  display:block;
+  color:#806aa2;
+  font-size:10px;
+  line-height:1.3;
+}
+.generosity-miyeon-note{
+  display:none;
+  max-width:760px;
+  margin:4px auto 8px;
+  padding:12px 15px;
+  border-radius:22px;
+  text-align:left;
+  color:#4b3568;
+  background:
+    radial-gradient(circle at 7% 0%,rgba(255,226,247,.85),transparent 38%),
+    linear-gradient(135deg,rgba(255,255,255,.94),rgba(239,229,255,.9));
+  border:1px solid rgba(231,214,255,.95);
+  box-shadow:0 14px 34px rgba(73,40,129,.12);
+}
+.generosity-miyeon-note.show{display:block;}
+.generosity-miyeon-note b{display:block;font-size:13px;color:#3f2d5a;margin-bottom:4px;}
+.generosity-miyeon-note span{display:block;color:#806aa2;font-size:12px;line-height:1.35;font-weight:900;}
+.risk-chain-panel.generosity-mode{
+  outline:2px solid rgba(255,158,209,.45);
+  box-shadow:0 18px 44px rgba(73,40,129,.14),0 0 32px rgba(255,158,209,.22);
+}
+.risk-chain-panel.generosity-mode .risk-chain-note{
+  color:#6d5192;
+  background:rgba(255,255,255,.58);
+  border-radius:16px;
+  padding:8px 10px;
+}
+@keyframes generosityPulse{
+  from{filter:brightness(1)}
+  to{filter:brightness(1.045)}
+}
+
 </style>
 </head>
 
@@ -3966,12 +4033,17 @@ h1{
     </div>
     <div class="collector-badge" id="collectorBadge">💿 Режим коллекционера</div>
     <p id="winText">Поздравляю, выберите одну карту в коллекцию ♡</p>
+    <div class="generosity-miyeon-note" id="generosityMiyeonNote">
+      <b>🐰 Миён включила щедрость</b>
+      <span>В риск-цепочке первая карта теперь не сгорит при неудаче, а при равной или более высокой редкости можно забрать бонусные карты.</span>
+    </div>
     <div class="reward-info-popover" id="rewardInfoPopover">
       <b>Как работает выбор карты?</b>
       <p>После прохождения уровня вы выбираете карту, которая попадёт в коллекцию.</p>
       <p><strong>Открытая карта</strong> — безопасный вариант: вы заранее видите, что получите.</p>
       <p><strong>Закрытые карты</strong> запускают риск-цепочку: можно забрать открытую карту или рискнуть следующей закрытой.</p>
-      <p>Если следующая карта той же редкости или выше, обе карты остаются в цепочке. Если ниже, цепочка сбрасывается до новой карты.</p>
+      <p>Если щедрость не активна: равная редкость даёт первую карту, выше даёт обе, ниже сжигает награду.</p>
+      <p>Если щедрость активна: ниже спасает первую карту, а равная или более высокая редкость даёт обе карты.</p>
       <p>Кнопка <strong>«Подсмотреть»</strong> открывает одну случайную закрытую карту до выбора за 3 очка.</p>
     </div>
     <div class="reward-options" id="rewardOptions"></div>
@@ -3988,7 +4060,7 @@ h1{
         <button class="risk-chain-btn secondary" id="riskChainTakeBtn" type="button">💌 Забрать первую карту</button>
         <button class="risk-chain-btn" id="riskChainContinueBtn" type="button">🎲 Рискнуть</button>
       </div>
-      <div class="risk-chain-note">Если следующая карта той же редкости, ты забираешь только первую. Если редкость выше, забираешь обе. Если ниже, не получаешь ничего.</div>
+      <div class="risk-chain-note" id="riskChainNote">Если щедрость не активна: равная редкость даёт первую карту, выше даёт обе, ниже сжигает награду. Если щедрость активна: ниже спасает первую карту, равная и выше дают обе.</div>
     </div>
     <div class="reward-actions">
       <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
@@ -4125,6 +4197,7 @@ const win = document.getElementById("win");
 const winText = document.getElementById("winText");
 const rewardInfoBtn = document.getElementById("rewardInfoBtn");
 const rewardInfoPopover = document.getElementById("rewardInfoPopover");
+const generosityMiyeonNote = document.getElementById("generosityMiyeonNote");
 const collectorBadge = document.getElementById("collectorBadge");
 const rewardOptions = document.getElementById("rewardOptions");
 const toast = document.getElementById("toast");
@@ -5440,7 +5513,20 @@ function getActiveBoostLabels(){
 
 function updateBoostStatus(){
   const labels = getActiveBoostLabels();
+  const hasGenerosity = !!activeBoosts.extraPick;
   boostStatus.classList.toggle("show", labels.length > 0);
+  boostStatus.classList.toggle("generosity-active", hasGenerosity);
+
+  if(hasGenerosity){
+    const otherLabels = labels.filter(label => !label.includes("Щедрость"));
+    boostStatus.innerHTML = `
+      <span class="generosity-label">🎁 Щедрость активна</span>
+      <span class="generosity-sub">Миён сегодня добрая: в риск-цепочке первая карта спасается при неудаче, а равная/более высокая редкость даёт бонус.</span>
+      ${otherLabels.length ? `<span class="generosity-sub">Ещё активно: ${otherLabels.join(" · ")}</span>` : ""}
+    `;
+    return;
+  }
+
   boostStatus.innerHTML = labels.length ? `Активно: ${labels.join(" · ")}` : "";
 }
 
@@ -6373,6 +6459,7 @@ function resetRiskChain(){
   riskChainState = null;
   win?.classList.remove("risk-chain-active");
   riskChainPanel?.classList.remove("show");
+  riskChainPanel?.classList.remove("generosity-mode");
   rewardOptions?.querySelectorAll(".risk-chain-current").forEach(btn => btn.classList.remove("risk-chain-current"));
   updatePeekRewardButton();
 }
@@ -6392,13 +6479,15 @@ function renderRiskChain(){
         ? "Редкость совпала"
         : "Риск не сработал";
 
+    const generosity = !!riskChainState.generosity;
+    riskChainPanel.classList.toggle("generosity-mode", generosity);
     riskChainText.textContent = result.outcome === "higher"
       ? "Вторая карта оказалась редкостью выше. Ты забираешь обе карты ♡"
       : result.outcome === "same"
-        ? "Вторая карта той же редкости. По правилу цепочки ты забираешь только первую карту ♡"
-        : "Вторая карта оказалась редкостью ниже. По правилу цепочки награда сгорает.";
+        ? (generosity ? "Вторая карта той же редкости. Щедрость превращает это в бонус: ты забираешь обе карты ♡" : "Вторая карта той же редкости. По правилу цепочки ты забираешь только первую карту ♡")
+        : (generosity ? "Вторая карта оказалась редкостью ниже, но щедрость спасает первую карту ♡" : "Вторая карта оказалась редкостью ниже. По правилу цепочки награда сгорает.");
 
-    riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? "1 карта" : "0 карт";
+    riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? (generosity ? "2 карты" : "1 карта") : (generosity ? "1 карта" : "0 карт");
     const shownCards = [first, result.secondCard].filter(Boolean);
     riskChainCards.innerHTML = shownCards.map(card => `
       <div class="risk-chain-mini rarity-${card.rarity}">
@@ -6412,9 +6501,11 @@ function renderRiskChain(){
     return;
   }
 
-  riskChainTitle.textContent = "Хочешь рискнуть?";
+  const generosity = !!riskChainState.generosity;
+  riskChainPanel.classList.toggle("generosity-mode", generosity);
+  riskChainTitle.textContent = generosity ? "Хочешь рискнуть со щедростью?" : "Хочешь рискнуть?";
   riskChainText.textContent = hiddenLeft
-    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или открыть ещё одну закрытую карту.`
+    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. ${generosity ? "Щедрость спасёт её при неудаче и даст бонус при равной или более высокой редкости." : "Можно забрать её сразу или открыть ещё одну закрытую карту."}`
     : "Закрытые карты закончились. Можно забрать первую карту в коллекцию ♡";
   riskChainCount.textContent = "1 карта";
   riskChainCards.innerHTML = first ? `
@@ -6438,6 +6529,7 @@ function startRiskChain(index, btn, image){
     usedIndexes:[index],
     firstIndex:index,
     lastIndex:index,
+    generosity:!!activeBoosts.extraPick,
     startedAtPicks:rewardPicksLeft
   };
   recordDailyAction?.("hiddenReward", 1);
@@ -6471,9 +6563,10 @@ function continueRiskChain(){
   riskChainState.usedIndexes.push(index);
   riskChainState.lastIndex = index;
 
+  const generosity = !!riskChainState.generosity;
   if(outcome === "higher") showToast("✨ Редкость выше: забираешь обе карты!");
-  else if(outcome === "same") showToast("🤝 Одинаковая редкость: забираешь первую карту");
-  else showToast("😵 Редкость ниже: не забираешь ничего");
+  else if(outcome === "same") showToast(generosity ? "🤝 Одинаковая редкость + щедрость: забираешь обе" : "🤝 Одинаковая редкость: забираешь первую карту");
+  else showToast(generosity ? "🎁 Щедрость спасла первую карту" : "😵 Редкость ниже: не забираешь ничего");
 
   recordDailyAction?.("hiddenReward", 1);
   renderRiskChain();
@@ -6484,7 +6577,8 @@ function getRiskChainRewardCards(){
   const result = riskChainState.result;
   if(!result) return riskChainState.firstCard ? [riskChainState.firstCard] : [];
   if(result.outcome === "higher") return [riskChainState.firstCard, result.secondCard].filter(Boolean);
-  if(result.outcome === "same") return riskChainState.firstCard ? [riskChainState.firstCard] : [];
+  if(result.outcome === "same") return riskChainState.generosity ? [riskChainState.firstCard, result.secondCard].filter(Boolean) : (riskChainState.firstCard ? [riskChainState.firstCard] : []);
+  if(result.outcome === "lower") return riskChainState.generosity && riskChainState.firstCard ? [riskChainState.firstCard] : [];
   return [];
 }
 
@@ -6525,6 +6619,7 @@ function takeRiskChain(){
   permanentBonusPick = false;
   updateBoostStatus();
   showToast(resultText);
+  generosityMiyeonNote?.classList.remove("show");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
@@ -6592,6 +6687,7 @@ function takeRiskChain(){
   extraPickRewardBtn.classList.add("hidden");
   extraPickRewardBtn.textContent = "";
   showToast(resultText);
+  generosityMiyeonNote?.classList.remove("show");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
@@ -6644,6 +6740,7 @@ function finishRewardPick(btn, image, meta = {}){
   permanentBonusPick = false;
   updateBoostStatus();
   showToast(result.already ? `Повторка переработана: +${result.duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
+  generosityMiyeonNote?.classList.remove("show");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
@@ -6697,6 +6794,15 @@ function renderRewardOptions(){
   updatePeekRewardButton();
 }
 
+function maybeActivateRandomGenerosity(){
+  if(activeBoosts.extraPick) return false;
+  if(Math.random() >= 0.08) return false;
+  activeBoosts.extraPick = true;
+  updateBoostStatus();
+  showRarityReaction("🐰 Миён решила быть щедрой: бонус активирован бесплатно!");
+  return true;
+}
+
 function finishGame(){
   stopTimer();
   addPoints();
@@ -6706,18 +6812,20 @@ function finishGame(){
 
   setTimeout(() => {
     const settings = getRewardSettings();
+    const randomGenerosity = maybeActivateRandomGenerosity();
     permanentBonusPick = hasUpgrade("collector") && Math.random() < 0.2;
     collectorBadge.textContent = "";
 
     const choicesCount = settings.count + (hasUpgrade("betterChoice") ? 1 : 0);
     const picksCount = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
     const extraText = [
-      activeBoosts.extraPick ? "Благодаря Щедрости можно выбрать дополнительную карту." : "",
+      activeBoosts.extraPick ? (randomGenerosity ? "Миён внезапно включила Щедрость: можно выбрать дополнительную карту." : "Благодаря Щедрости можно выбрать дополнительную карту.") : "",
       permanentBonusPick ? "Коллекционер сработал: +1 карта бесплатно." : ""
     ].filter(Boolean).join(" ");
 
     const pickWord = picksCount === 1 ? "карту" : "карты";
     winText.textContent = `Поздравляю, уровень пройден! Выберите ${picksCount} ${pickWord} в коллекцию ♡${extraText ? " " + extraText : ""}`;
+    generosityMiyeonNote?.classList.toggle("show", !!activeBoosts.extraPick);
     rewardInfoPopover?.classList.remove("show");
     currentRewardOptions = getRewardCards();
     rewardRevealedIndexes = new Set([0]);
