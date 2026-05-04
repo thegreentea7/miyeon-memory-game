@@ -3272,6 +3272,97 @@ h1{
 
 
 
+/* === Risk chain: take or go further === */
+.risk-chain-panel{
+  display:none;
+  width:min(760px,100%);
+  margin:2px auto 10px;
+  padding:14px 16px;
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,226,247,.78),transparent 34%),
+    linear-gradient(135deg,rgba(255,255,255,.92),rgba(241,232,255,.88));
+  border:1px solid rgba(231,214,255,.95);
+  box-shadow:0 18px 44px rgba(73,40,129,.14);
+  color:#4b3568;
+}
+.risk-chain-panel.show{display:block;}
+.risk-chain-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.risk-chain-title{font-size:15px;font-weight:1000;color:#3f2d5a;}
+.risk-chain-subtitle{margin-top:4px;color:#806aa2;font-size:12px;font-weight:900;line-height:1.35;}
+.risk-chain-count{
+  flex:0 0 auto;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.76);
+  color:#6d5192;
+  font-size:11px;
+  font-weight:1000;
+  box-shadow:0 8px 18px rgba(73,40,129,.08);
+}
+.risk-chain-cards{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:10px 0;
+}
+.risk-chain-mini{
+  width:54px;
+  aspect-ratio:3/4;
+  border-radius:13px;
+  padding:3px;
+  background:linear-gradient(135deg,#eadfff,#fff5fb);
+  box-shadow:0 10px 22px rgba(73,40,129,.12);
+  position:relative;
+}
+.risk-chain-mini.rarity-rare{background:var(--rare-grad);}
+.risk-chain-mini.rarity-ultra{background:var(--ultra-grad);}
+.risk-chain-mini img{width:100%;height:100%;object-fit:cover;border-radius:10px;display:block;}
+.risk-chain-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.risk-chain-btn{
+  padding:12px 14px;
+  border-radius:999px;
+  font-weight:1000;
+  color:#4f2f78;
+  background:linear-gradient(135deg,#d9c7ff,#ffd2ec);
+  box-shadow:0 12px 24px rgba(94,55,150,.12);
+}
+.risk-chain-btn.secondary{background:linear-gradient(135deg,#fff,#eadfff);}
+.risk-chain-btn:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.2);}
+.risk-chain-note{
+  margin-top:8px;
+  color:#806aa2;
+  font-size:11px;
+  font-weight:900;
+  line-height:1.35;
+}
+#win.risk-chain-active .reward-card:not(.risk-chain-current){
+  opacity:.48;
+  pointer-events:none;
+}
+#win.risk-chain-active .reward-card.risk-chain-current{
+  outline:3px solid rgba(255,193,223,.92)!important;
+  transform:translateY(-5px) scale(1.035)!important;
+}
+@media(max-width:560px){
+  .risk-chain-panel{padding:12px;border-radius:22px;}
+  .risk-chain-top{display:block;}
+  .risk-chain-count{display:inline-flex;margin-top:7px;}
+  .risk-chain-actions{grid-template-columns:1fr;}
+}
+
+
 /* === Reward info button === */
 .reward-title-line{
   display:flex!important;
@@ -3879,10 +3970,26 @@ h1{
       <b>Как работает выбор карты?</b>
       <p>После прохождения уровня вы выбираете карту, которая попадёт в коллекцию.</p>
       <p><strong>Открытая карта</strong> — безопасный вариант: вы заранее видите, что получите.</p>
-      <p><strong>Закрытые карты</strong> — риск-выбор: карта откроется только после клика, но внутри повышен шанс на rare и ultra-карты.</p>
+      <p><strong>Закрытые карты</strong> запускают риск-цепочку: можно забрать открытую карту или рискнуть следующей закрытой.</p>
+      <p>Если следующая карта той же редкости или выше, обе карты остаются в цепочке. Если ниже, цепочка сбрасывается до новой карты.</p>
       <p>Кнопка <strong>«Подсмотреть»</strong> открывает одну случайную закрытую карту до выбора за 3 очка.</p>
     </div>
     <div class="reward-options" id="rewardOptions"></div>
+    <div class="risk-chain-panel" id="riskChainPanel">
+      <div class="risk-chain-top">
+        <div>
+          <div class="risk-chain-title" id="riskChainTitle">Риск-цепочка</div>
+          <div class="risk-chain-subtitle" id="riskChainText">Можно забрать открытую карту или рискнуть и открыть ещё одну.</div>
+        </div>
+        <div class="risk-chain-count" id="riskChainCount">0 карт</div>
+      </div>
+      <div class="risk-chain-cards" id="riskChainCards"></div>
+      <div class="risk-chain-actions">
+        <button class="risk-chain-btn secondary" id="riskChainTakeBtn" type="button">💌 Забрать первую карту</button>
+        <button class="risk-chain-btn" id="riskChainContinueBtn" type="button">🎲 Рискнуть</button>
+      </div>
+      <div class="risk-chain-note">Если следующая карта той же редкости, ты забираешь только первую. Если редкость выше, забираешь обе. Если ниже, не получаешь ничего.</div>
+    </div>
     <div class="reward-actions">
       <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
       <button class="reroll-btn" id="rerollBtn">🔁 Ещё разочек · 7 очков</button>
@@ -4104,6 +4211,13 @@ const boostStatus = document.getElementById("boostStatus");
 const peekRewardBtn = document.getElementById("peekRewardBtn");
 const rerollBtn = document.getElementById("rerollBtn");
 const extraPickRewardBtn = document.getElementById("extraPickRewardBtn");
+const riskChainPanel = document.getElementById("riskChainPanel");
+const riskChainTitle = document.getElementById("riskChainTitle");
+const riskChainText = document.getElementById("riskChainText");
+const riskChainCount = document.getElementById("riskChainCount");
+const riskChainCards = document.getElementById("riskChainCards");
+const riskChainTakeBtn = document.getElementById("riskChainTakeBtn");
+const riskChainContinueBtn = document.getElementById("riskChainContinueBtn");
 const packResult = document.getElementById("packResult");
 const packResultCards = document.getElementById("packResultCards");
 const packResultClose = document.getElementById("packResultClose");
@@ -4145,6 +4259,8 @@ let preGameBoosts = {
 };
 let comboStreak = 0;
 let currentRewardOptions = [];
+let riskChainState = null;
+const RARITY_POWER = { common:1, rare:2, ultra:3 };
 let rewardRevealedIndexes = new Set([0]);
 let rewardPicksLeft = 1;
 let permanentBonusPick = false;
@@ -6244,10 +6360,245 @@ function getCollectorRank(){
   return "💌 Cozy Collector";
 }
 
+
+function getRiskChainHiddenIndexes(){
+  if(!riskChainState) return [];
+  const used = new Set(riskChainState.usedIndexes || []);
+  return currentRewardOptions
+    .map((_, index) => index)
+    .filter(index => index !== 0 && !used.has(index) && !rewardRevealedIndexes.has(index));
+}
+
+function resetRiskChain(){
+  riskChainState = null;
+  win?.classList.remove("risk-chain-active");
+  riskChainPanel?.classList.remove("show");
+  rewardOptions?.querySelectorAll(".risk-chain-current").forEach(btn => btn.classList.remove("risk-chain-current"));
+  updatePeekRewardButton();
+}
+
+function renderRiskChain(){
+  if(!riskChainPanel || !riskChainState) return;
+  const first = riskChainState.firstCard;
+  const result = riskChainState.result;
+  const hiddenLeft = getRiskChainHiddenIndexes().length;
+  riskChainPanel.classList.add("show");
+  win?.classList.add("risk-chain-active");
+
+  if(result){
+    riskChainTitle.textContent = result.outcome === "higher"
+      ? "Риск оправдался"
+      : result.outcome === "same"
+        ? "Редкость совпала"
+        : "Риск не сработал";
+
+    riskChainText.textContent = result.outcome === "higher"
+      ? "Вторая карта оказалась редкостью выше. Ты забираешь обе карты ♡"
+      : result.outcome === "same"
+        ? "Вторая карта той же редкости. По правилу цепочки ты забираешь только первую карту ♡"
+        : "Вторая карта оказалась редкостью ниже. По правилу цепочки награда сгорает.";
+
+    riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? "1 карта" : "0 карт";
+    const shownCards = [first, result.secondCard].filter(Boolean);
+    riskChainCards.innerHTML = shownCards.map(card => `
+      <div class="risk-chain-mini rarity-${card.rarity}">
+        <img src="${card.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+      </div>`).join("");
+
+    riskChainTakeBtn.textContent = result.outcome === "lower" ? "Закончить без награды" : "💌 Забрать награду";
+    riskChainContinueBtn.disabled = true;
+    riskChainContinueBtn.textContent = "🎲 Риск уже сыгран";
+    updatePeekRewardButton();
+    return;
+  }
+
+  riskChainTitle.textContent = "Хочешь рискнуть?";
+  riskChainText.textContent = hiddenLeft
+    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или открыть ещё одну закрытую карту.`
+    : "Закрытые карты закончились. Можно забрать первую карту в коллекцию ♡";
+  riskChainCount.textContent = "1 карта";
+  riskChainCards.innerHTML = first ? `
+    <div class="risk-chain-mini rarity-${first.rarity}">
+      <img src="${first.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+    </div>` : "";
+  riskChainTakeBtn.textContent = "💌 Забрать первую карту";
+  riskChainContinueBtn.disabled = !hiddenLeft;
+  riskChainContinueBtn.textContent = hiddenLeft ? "🎲 Рискнуть" : "🎲 Больше некуда рисковать";
+  updatePeekRewardButton();
+}
+
+function startRiskChain(index, btn, image){
+  revealRewardCard(index);
+  rewardOptions?.querySelectorAll(".risk-chain-current").forEach(item => item.classList.remove("risk-chain-current"));
+  btn.classList.add("risk-chain-current");
+  riskChainState = {
+    firstCard:image,
+    secondCard:null,
+    result:null,
+    usedIndexes:[index],
+    firstIndex:index,
+    lastIndex:index,
+    startedAtPicks:rewardPicksLeft
+  };
+  recordDailyAction?.("hiddenReward", 1);
+  showToast("🎲 Первая закрытая карта открыта. Рискнёшь?");
+  renderRiskChain();
+}
+
+function continueRiskChain(){
+  if(!riskChainState || riskChainState.result) return;
+  const hiddenIndexes = getRiskChainHiddenIndexes();
+  if(!hiddenIndexes.length){
+    showToast("Закрытые карты закончились ♡");
+    renderRiskChain();
+    return;
+  }
+
+  const index = hiddenIndexes[Math.floor(Math.random() * hiddenIndexes.length)];
+  const image = currentRewardOptions[index];
+  const first = riskChainState.firstCard;
+  const firstPower = RARITY_POWER[first?.rarity] || 0;
+  const secondPower = RARITY_POWER[image.rarity] || 0;
+  const outcome = secondPower > firstPower ? "higher" : secondPower === firstPower ? "same" : "lower";
+
+  revealRewardCard(index);
+  rewardOptions?.querySelectorAll(".risk-chain-current").forEach(item => item.classList.remove("risk-chain-current"));
+  const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
+  btn?.classList.add("risk-chain-current");
+
+  riskChainState.secondCard = image;
+  riskChainState.result = { outcome, secondCard:image };
+  riskChainState.usedIndexes.push(index);
+  riskChainState.lastIndex = index;
+
+  if(outcome === "higher") showToast("✨ Редкость выше: забираешь обе карты!");
+  else if(outcome === "same") showToast("🤝 Одинаковая редкость: забираешь первую карту");
+  else showToast("😵 Редкость ниже: не забираешь ничего");
+
+  recordDailyAction?.("hiddenReward", 1);
+  renderRiskChain();
+}
+
+function getRiskChainRewardCards(){
+  if(!riskChainState) return [];
+  const result = riskChainState.result;
+  if(!result) return riskChainState.firstCard ? [riskChainState.firstCard] : [];
+  if(result.outcome === "higher") return [riskChainState.firstCard, result.secondCard].filter(Boolean);
+  if(result.outcome === "same") return riskChainState.firstCard ? [riskChainState.firstCard] : [];
+  return [];
+}
+
+function takeRiskChain(){
+  if(!riskChainState) return;
+  const rewardCards = getRiskChainRewardCards();
+  const picksBeforeClick = riskChainState.startedAtPicks || rewardPicksLeft;
+  const usedIndexes = [...(riskChainState.usedIndexes || [])];
+  const collected = rewardCards.map(card => collectRewardImage(card, picksBeforeClick, { fromHidden:true }));
+
+  usedIndexes.forEach(index => {
+    const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
+    if(btn && rewardCards.includes(currentRewardOptions[index])) btn.classList.add("chosen-choice");
+    if(btn) btn.disabled = true;
+  });
+
+  const shardSum = collected.reduce((sum, item) => sum + (item.duplicateBonus || 0), 0);
+  const newCount = collected.filter(item => !item.already).length;
+  const burned = rewardCards.length === 0;
+  rewardPicksLeft--;
+  resetRiskChain();
+
+  const resultText = burned
+    ? "Риск не сработал: награда сгорела 😵"
+    : `${newCount ? `+${newCount} карт` : "Повторка"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`;
+
+  if(rewardPicksLeft > 0){
+    extraPickRewardBtn.classList.remove("hidden");
+    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
+    showToast(resultText);
+    renderCollection();
+    renderCollectionRewards();
+    updatePeekRewardButton();
+    return;
+  }
+
+  activeBoosts.extraPick = false;
+  permanentBonusPick = false;
+  updateBoostStatus();
+  showToast(resultText);
+  setTimeout(() => win.classList.remove("show"), 420);
+  renderCollection();
+  renderCollectionRewards();
+}
+
+function collectRewardImage(image, picksBeforeClick, meta = {}){
+  const already = isCardCollected(image.src);
+  const duplicateBonus = already ? awardDuplicateShards(image) : 0;
+  collectCard(image.src);
+  recordDailyCards?.(image);
+  recordRewardPick(image, picksBeforeClick);
+
+  if(hasUpgrade("collectorIntuition") && image.rarity === "common"){
+    collectorIntuitionTicks = Math.min(5, collectorIntuitionTicks + 1);
+    localStorage.setItem("miyeon_intuition_ticks", String(collectorIntuitionTicks));
+    showRarityReaction(`🧠 Интуиция коллекционера: ${collectorIntuitionTicks}/5 тиков`);
+  }
+
+  if(image.rarity === "ultra"){
+    launchConfetti();
+    showRarityReaction("✨ Небобо… это ultra-карта! Вот это pull ♡");
+  } else if(image.rarity === "rare"){
+    showRarityReaction("💎 Rare-карта добавлена в коллекцию ♡");
+  }
+
+  checkRarityAchievements();
+  return { already, duplicateBonus };
+}
+
+function takeRiskChain(){
+  if(!riskChainState) return;
+  const held = [...(riskChainState.heldCards || [])];
+  if(!held.length){
+    resetRiskChain();
+    return;
+  }
+
+  const picksBeforeClick = riskChainState.startedAtPicks || rewardPicksLeft;
+  const collected = held.map(card => collectRewardImage(card, picksBeforeClick, { fromHidden:true }));
+  riskChainState.usedIndexes.forEach(index => {
+    const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
+    btn?.classList.add("chosen-choice");
+    if(btn) btn.disabled = true;
+  });
+
+  const shardSum = collected.reduce((sum, item) => sum + (item.duplicateBonus || 0), 0);
+  const newCount = collected.filter(item => !item.already).length;
+  rewardPicksLeft--;
+  resetRiskChain();
+
+  if(rewardPicksLeft > 0){
+    extraPickRewardBtn.classList.remove("hidden");
+    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
+    showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`);
+    renderCollection();
+    renderCollectionRewards();
+    updatePeekRewardButton();
+    return;
+  }
+
+  activeBoosts.extraPick = false;
+  permanentBonusPick = false;
+  updateBoostStatus();
+  showToast(`${newCount ? `+${newCount} карт` : "Повторки"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`);
+  setTimeout(() => win.classList.remove("show"), 420);
+  renderCollection();
+  renderCollectionRewards();
+}
+
 function updatePeekRewardButton(){
   if(!peekRewardBtn) return;
+  const chainActive = !!riskChainState;
   const hiddenLeft = currentRewardOptions.some((_, index) => !rewardRevealedIndexes.has(index));
-  peekRewardBtn.disabled = !hiddenLeft || points < 3 || rewardPicksLeft <= 0;
+  peekRewardBtn.disabled = chainActive || !hiddenLeft || points < 3 || rewardPicksLeft <= 0;
   peekRewardBtn.classList.toggle("hidden", !hiddenLeft || rewardPicksLeft <= 0);
   peekRewardBtn.textContent = hiddenLeft ? "👀 Подсмотреть · 3 очка" : "👀 Все карты открыты";
 }
@@ -6265,28 +6616,13 @@ function revealRewardCard(index){
 }
 
 function finishRewardPick(btn, image, meta = {}){
+  if(riskChainState){
+    showToast("Сначала заверши риск-цепочку ♡");
+    return;
+  }
+
   const picksBeforeClick = rewardPicksLeft;
-  const already = isCardCollected(image.src);
-  const duplicateBonus = already ? awardDuplicateShards(image) : 0;
-  collectCard(image.src);
-  recordDailyCards?.(image);
-  if(meta.fromHidden) recordDailyAction?.("hiddenReward", 1);
-  recordRewardPick(image, picksBeforeClick);
-
-  if(hasUpgrade("collectorIntuition") && image.rarity === "common"){
-    collectorIntuitionTicks = Math.min(5, collectorIntuitionTicks + 1);
-    localStorage.setItem("miyeon_intuition_ticks", String(collectorIntuitionTicks));
-    showRarityReaction(`🧠 Интуиция коллекционера: ${collectorIntuitionTicks}/5 тиков`);
-  }
-
-  if(image.rarity === "ultra"){
-    launchConfetti();
-    showRarityReaction("✨ Небобо… это ultra-карта! Вот это pull ♡");
-  } else if(image.rarity === "rare"){
-    showRarityReaction("💎 Rare-карта добавлена в коллекцию ♡");
-  }
-
-  checkRarityAchievements();
+  const result = collectRewardImage(image, picksBeforeClick, meta);
   btn.disabled = true;
   btn.classList.add("chosen-choice");
   rewardPicksLeft--;
@@ -6294,7 +6630,7 @@ function finishRewardPick(btn, image, meta = {}){
   if(rewardPicksLeft > 0){
     extraPickRewardBtn.classList.remove("hidden");
     extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
-    showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
+    showToast(result.already ? `Повторка переработана: +${result.duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
     renderCollection();
     renderCollectionRewards();
     updatePeekRewardButton();
@@ -6304,13 +6640,14 @@ function finishRewardPick(btn, image, meta = {}){
   activeBoosts.extraPick = false;
   permanentBonusPick = false;
   updateBoostStatus();
-  showToast(already ? `Повторка переработана: +${duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
+  showToast(result.already ? `Повторка переработана: +${result.duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
 }
 
 function renderRewardOptions(){
+  resetRiskChain();
   rewardOptions.innerHTML = "";
 
   if(!currentRewardOptions.length){
@@ -6345,9 +6682,7 @@ function renderRewardOptions(){
       if(btn.disabled || rewardPicksLeft <= 0) return;
       const wasHidden = !rewardRevealedIndexes.has(index);
       if(wasHidden){
-        revealRewardCard(index);
-        btn.classList.add("picked-from-hidden");
-        setTimeout(() => finishRewardPick(btn, image, { fromHidden:true }), 360);
+        startRiskChain(index, btn, image);
         return;
       }
       finishRewardPick(btn, image, { fromHidden:false });
@@ -6383,6 +6718,7 @@ function finishGame(){
     rewardInfoPopover?.classList.remove("show");
     currentRewardOptions = getRewardCards();
     rewardRevealedIndexes = new Set([0]);
+    resetRiskChain();
     renderRewardOptions();
     resetPreGameBoosts();
     win.classList.add("show");
@@ -7207,6 +7543,9 @@ rewardInfoBtn?.addEventListener("click", (event) => {
   rewardInfoPopover?.classList.toggle("show");
 });
 
+riskChainTakeBtn?.addEventListener("click", takeRiskChain);
+riskChainContinueBtn?.addEventListener("click", continueRiskChain);
+
 peekRewardBtn.addEventListener("click", () => {
   const hiddenIndexes = currentRewardOptions
     .map((_, index) => index)
@@ -7238,6 +7577,7 @@ rerollBtn.addEventListener("click", () => {
   spendPoints(7);
   currentRewardOptions = getRewardCards();
   rewardRevealedIndexes = new Set([0]);
+  resetRiskChain();
   renderRewardOptions();
   showToast("🔁 Карты обновлены");
 });
