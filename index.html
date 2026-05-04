@@ -3722,6 +3722,43 @@ h1{
   box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
 }
 
+
+/* === Pack cover images fixed === */
+.pack-cover{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.pack-cover-img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+}
+.pack-cover .pack-cover-icon{
+  position:relative!important;
+  z-index:2!important;
+}
+.pack-cover-title,
+.pack-price-badge,
+.pack-cover::after{
+  z-index:3!important;
+}
+.pack-cover.cover-missing .pack-cover-icon{
+  display:grid!important;
+}
+.pack-card.rare,
+.pack-card[data-rate-key="rare"]{
+  box-shadow:0 0 20px rgba(255,215,0,.42),0 20px 52px rgba(72,39,128,.14)!important;
+}
+.pack-card.rare:hover,
+.pack-card[data-rate-key="rare"]:hover{
+  box-shadow:0 0 34px rgba(255,215,0,.72),0 28px 70px rgba(72,39,128,.22)!important;
+}
+
 </style>
 </head>
 
@@ -4205,7 +4242,11 @@ const PACK_COVERS = {
   soyeon: "images/packs/pack_soyeon.jpg",
   yuqi: "images/packs/pack_yuqi.jpg",
   shuhua: "images/packs/pack_shuhua.jpg",
-  soojin: "images/packs/pack_soojin.jpg"
+  soojin: "images/packs/pack_soojin.jpg",
+  rare: "images/packs/pack_rare.jpg",
+  rare_all: "images/packs/pack_rare.jpg",
+  premium: "images/packs/pack_premium.jpg",
+  premium_all: "images/packs/pack_premium.jpg"
 };
 
 const MEMBERS = {
@@ -4539,6 +4580,18 @@ function getPackIcon(key, rateKey = "basic"){
   return "🎁";
 }
 
+
+function getPackCoverSrc(key, rateKey = "basic"){
+  const aliases = [];
+  if(key) aliases.push(key);
+  if(rateKey === "rare") aliases.push("rare", "rare_all");
+  if(rateKey === "premium") aliases.push("premium", "premium_all");
+  for(const alias of aliases){
+    if(PACK_COVERS[alias]) return PACK_COVERS[alias];
+  }
+  return null;
+}
+
 function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
   const kind = getPackKind(key, rateKey);
   const icon = getPackIcon(key, rateKey);
@@ -4548,13 +4601,17 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
   const cover = PACK_COVERS[key] || null;
   const coverHTML = cover
     ? `<img class="pack-cover-img" src="${cover}" alt="${title}" loading="lazy" decoding="async" onerror="this.classList.add('broken-pack-cover')">`
-    : `<div class="pack-cover-icon">${icon}</div>`;
+    : `${coverHTML}`;
+  const coverSrc = getPackCoverSrc(key, rateKey);
+  const coverHTML = coverSrc
+    ? `<img class="pack-cover-img" src="${coverSrc}" alt="${title}" loading="lazy" decoding="async" onerror="this.style.display='none'; this.parentElement.classList.add('cover-missing');">`
+    : `${coverHTML}`;
   return `
     <div class="pack-cover ${kind} ${cover ? "has-cover" : ""}">
       ${coverHTML}
       <span class="pack-cover-title">${packLabel}</span>
       <span class="pack-price-badge"><i>💎</i>${cost}</span>
-      <div class="pack-cover-fallback"><div class="pack-cover-icon">${icon}</div></div>
+      <div class="pack-cover-fallback">${coverHTML}</div>
     </div>
     <div class="pack-info">
       <div class="pack-title">${title}</div>
