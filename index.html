@@ -4491,6 +4491,7 @@ function updatePlayerUI(){
   if(playerTitleText) playerTitleText.textContent = getPlayerTitle(level);
   if(playerXpBar) playerXpBar.style.width = `${Math.min(100, Math.round(xp / need * 100))}%`;
   updateProfileUI();
+  if(typeof applyLevelLocks === "function") applyLevelLocks();
 }
 
 function renderLevelRewardCards(reward){
@@ -5804,35 +5805,77 @@ function pickOneByRarity(images, allowedRarities = ["common", "rare", "ultra"], 
   return pickWeightedCards(images.filter(card => allowedRarities.includes(card.rarity)), 1, rates)[0] || null;
 }
 
+function getRewardPoolForLevelReward(){
+  let pool = (allImageCache && allImageCache.length) ? [...allImageCache] : [...currentLevelImages];
+
+  // Если перед уровнем был куплен фокус, он влияет и на награду, но награда больше не ограничена только картами с поля.
+  if(preGameBoosts.member){
+    const focused = pool.filter(card => card.member === preGameBoosts.member);
+    if(focused.length) pool = focused;
+  }
+
+  if(preGameBoosts.album){
+    const focused = pool.filter(card => card.album === preGameBoosts.album);
+    if(focused.length) pool = focused;
+  }
+
+  const unique = new Map();
+  pool.forEach(card => {
+    if(card && card.src && !unique.has(card.src)) unique.set(card.src, card);
+  });
+  return [...unique.values()];
+}
+
+function getRiskRewardRates(){
+  const base = getRewardRates();
+  return {
+    common: Math.max(0, base.common - 18),
+    rare: base.rare + 12,
+    ultra: base.ultra + 6
+  };
+}
+
+function takeWeightedCard(pool, rates){
+  const card = pickWeightedCards(pool, 1, rates)[0] || pool[0] || null;
+  if(!card) return null;
+  const index = pool.findIndex(item => item.src === card.src);
+  if(index >= 0) pool.splice(index, 1);
+  return card;
+}
+
 function getRewardCards(){
   const settings = getRewardSettings();
-  const unique = [];
-  const seen = new Set();
   let rewardCount = settings.count;
 
   if(hasUpgrade("betterChoice")) rewardCount += 1;
 
-  currentLevelImages.forEach(image => {
-    if(!seen.has(image.src)){
-      seen.add(image.src);
-      unique.push(image);
-    }
-  });
-
+  let pool = getRewardPoolForLevelReward();
   let result = [];
 
+  if(!pool.length) return result;
+
   if(hasUpgrade("collectorIntuition") && collectorIntuitionTicks >= 5){
-    result = pickWeightedCards(unique.filter(card => card.rarity !== "common"), rewardCount, { common:0, rare:80, ultra:20 });
+    const rarePool = pool.filter(card => card.rarity !== "common");
+    const targetPool = rarePool.length >= Math.min(rewardCount, pool.length) ? rarePool : pool;
+    result = pickWeightedCards(targetPool, Math.min(rewardCount, targetPool.length), { common:0, rare:80, ultra:20 });
     collectorIntuitionTicks = 0;
     localStorage.setItem("miyeon_intuition_ticks", "0");
     showRarityReaction("🧠 Интуиция коллекционера сработала: награда только из rare и ultra ♡");
-    return result.length ? result : pickWeightedCards(unique, rewardCount, getRewardRates());
+    return result;
   }
 
-  result = pickWeightedCards(unique, rewardCount, getRewardRates());
+  // Первая карта открытая и безопасная, остальные скрытые с повышенным шансом rare и ultra.
+  const safeCard = takeWeightedCard(pool, getRewardRates());
+  if(safeCard) result.push(safeCard);
+
+  const hiddenCount = Math.max(0, Math.min(rewardCount - result.length, pool.length));
+  if(hiddenCount > 0){
+    result = result.concat(pickWeightedCards(pool, hiddenCount, getRiskRewardRates()));
+  }
 
   if(hasUpgrade("ultraChance") && Math.random() < 0.1 && !result.some(card => card.rarity === "ultra")){
-    const ultra = pickOneByRarity(unique.filter(card => !result.some(item => item.src === card.src)), ["ultra"], { ultra:100 });
+    const used = new Set(result.map(card => card.src));
+    const ultra = pickOneByRarity(getRewardPoolForLevelReward().filter(card => !used.has(card.src)), ["ultra"], { ultra:100 });
     if(ultra){
       result[result.length - 1] = ultra;
       showRarityReaction("✨ Шанс ультра сработал: среди наград появилась ultra-карта!");
@@ -5840,11 +5883,25 @@ function getRewardCards(){
   }
 
   if(hasUpgrade("guaranteeRare") && !result.some(card => card.rarity === "rare" || card.rarity === "ultra")){
-    const rarePlus = pickOneByRarity(unique.filter(card => !result.some(item => item.src === card.src)), ["rare", "ultra"], { rare:85, ultra:15 });
+    const used = new Set(result.map(card => card.src));
+    const rarePlus = pickOneByRarity(getRewardPoolForLevelReward().filter(card => !used.has(card.src)), ["rare", "ultra"], { rare:85, ultra:15 });
     if(rarePlus){
       result[0] = rarePlus;
       showRarityReaction("🎁 Гарант редкой карты сработал: в награде есть rare или ultra ♡");
     }
+  }
+
+  // Финальная страховка от дублей внутри окна выбора.
+  const unique = new Map();
+  result.forEach(card => {
+    if(card && card.src && !unique.has(card.src)) unique.set(card.src, card);
+  });
+  result = [...unique.values()];
+
+  if(result.length < rewardCount){
+    const used = new Set(result.map(card => card.src));
+    const extraPool = getRewardPoolForLevelReward().filter(card => !used.has(card.src));
+    result = result.concat(pickWeightedCards(extraPool, rewardCount - result.length, getRiskRewardRates()));
   }
 
   return result;
