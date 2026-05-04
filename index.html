@@ -3747,24 +3747,26 @@ h1{
 }
 
 
-/* === Pack preview modal === */
+/* === Pack preview modal and clean pack cards === */
 .pack-card{
   cursor:pointer!important;
 }
-.pack-info{
-  padding:15px 16px 16px!important;
-  justify-content:center!important;
-}
-.pack-sub,
-.pack-rates,
-.pack-price,
-.pack-price-note{
+.pack-card .pack-sub,
+.pack-card .pack-rates,
+.pack-card .pack-price,
+.pack-card .rarity-pity-note{
   display:none!important;
 }
-.pack-title{
-  font-size:18px!important;
+.pack-card .pack-info{
+  min-height:auto!important;
+  padding:15px 16px 18px!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.pack-card .pack-title{
   text-align:center!important;
-  margin:auto 0!important;
+  font-size:18px!important;
+  line-height:1.15!important;
 }
 .pack-preview-window{
   width:min(880px,94vw);
@@ -3863,26 +3865,6 @@ h1{
   .pack-preview-window{width:98vw;max-height:94vh;border-radius:28px;padding:16px}
   .pack-preview-cards{grid-template-columns:repeat(3,1fr);gap:10px}
   .pack-preview-actions{grid-template-columns:1fr}
-}
-
-
-/* === Pack cards clean view: only cover, name and diamond price === */
-.pack-card .pack-sub,
-.pack-card .pack-rates,
-.pack-card .pack-price,
-.pack-card .rarity-pity-note{
-  display:none!important;
-}
-.pack-card .pack-info{
-  min-height:auto!important;
-  padding:15px 16px 18px!important;
-  display:grid!important;
-  place-items:center!important;
-}
-.pack-card .pack-title{
-  text-align:center!important;
-  font-size:18px!important;
-  line-height:1.15!important;
 }
 
 </style>
@@ -4138,6 +4120,37 @@ h1{
   </div>
 </section>
 
+
+<section class="modal" id="packPreviewModal">
+  <div class="pack-preview-window">
+    <div class="modal-head">
+      <div>
+        <h2 id="packPreviewTitle">Пак</h2>
+        <p id="packPreviewDesc">Описание пака</p>
+      </div>
+      <button class="modal-close" id="packPreviewClose">×</button>
+    </div>
+
+    <div class="pack-preview-balance">
+      <span>Сейчас у тебя</span>
+      <b><span id="packPreviewPoints">0</span> очков</b>
+    </div>
+
+    <div class="pack-preview-cards">
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+    </div>
+
+    <div class="pack-preview-actions">
+      <button class="pack-preview-btn" id="packPreviewOpen1">Открыть</button>
+      <button class="pack-preview-btn" id="packPreviewOpen5">Открыть 5 паков</button>
+      <button class="pack-preview-btn" id="packPreviewOpen10">Открыть 10 паков</button>
+    </div>
+  </div>
+</section>
+
+
 <section class="modal" id="profileModal">
   <div class="profile-window">
     <div class="profile-hero">
@@ -4318,37 +4331,6 @@ h1{
       <button class="reroll-btn" id="extraPickRewardBtn">🎁 Щедрость активна</button>
     </div>
     <button class="again" id="again">Сыграть ещё раз</button>
-  </div>
-</section>
-
-
-
-<section class="modal" id="packPreviewModal">
-  <div class="pack-preview-window">
-    <div class="modal-head">
-      <div>
-        <h2 id="packPreviewTitle">Пак</h2>
-        <p id="packPreviewDesc">Описание пака</p>
-      </div>
-      <button class="modal-close" id="packPreviewClose">×</button>
-    </div>
-
-    <div class="pack-preview-balance">
-      <span>Сейчас у тебя</span>
-      <b><span id="packPreviewPoints">0</span> очков</b>
-    </div>
-
-    <div class="pack-preview-cards" id="packPreviewCards">
-      <div class="pack-preview-card-back">MY</div>
-      <div class="pack-preview-card-back">MY</div>
-      <div class="pack-preview-card-back">MY</div>
-    </div>
-
-    <div class="pack-preview-actions">
-      <button class="pack-preview-btn" id="packPreviewOpen1">Открыть</button>
-      <button class="pack-preview-btn" id="packPreviewOpen5">Открыть 5 паков</button>
-      <button class="pack-preview-btn" id="packPreviewOpen10">Открыть 10 паков</button>
-    </div>
   </div>
 </section>
 
@@ -4587,6 +4569,12 @@ const riskChainCount = document.getElementById("riskChainCount");
 const riskChainCards = document.getElementById("riskChainCards");
 const riskChainTakeBtn = document.getElementById("riskChainTakeBtn");
 const riskChainContinueBtn = document.getElementById("riskChainContinueBtn");
+const packResult = document.getElementById("packResult");
+const packResultCards = document.getElementById("packResultCards");
+const packResultClose = document.getElementById("packResultClose");
+const packResultSubtitle = document.getElementById("packResultSubtitle");
+const claimPackBtn = document.getElementById("claimPackBtn");
+const openAgainBtn = document.getElementById("openAgainBtn");
 
 const packPreviewModal = document.getElementById("packPreviewModal");
 const packPreviewClose = document.getElementById("packPreviewClose");
@@ -4598,12 +4586,6 @@ const packPreviewOpen5 = document.getElementById("packPreviewOpen5");
 const packPreviewOpen10 = document.getElementById("packPreviewOpen10");
 let selectedPackPreview = null;
 
-const packResult = document.getElementById("packResult");
-const packResultCards = document.getElementById("packResultCards");
-const packResultClose = document.getElementById("packResultClose");
-const packResultSubtitle = document.getElementById("packResultSubtitle");
-const claimPackBtn = document.getElementById("claimPackBtn");
-const openAgainBtn = document.getElementById("openAgainBtn");
 
 let firstCard = null;
 let secondCard = null;
@@ -4744,79 +4726,10 @@ function getPackIcon(key, rateKey = "basic"){
   return "🎁";
 }
 
-
-function getPackPreviewDescription(key, title, rateKey = "basic"){
-  const map = {
-    all: `Пак "${title}" включает в себя карты всех участниц из всей доступной коллекции.`,
-    group: `Пак "${title}" включает в себя юнитные и групповые карты.`,
-    iam: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I AM.`,
-    imade: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I MADE.`,
-    itrust: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I TRUST.`,
-    iburn: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I BURN.`,
-    miyeon: `Пак "${title}" включает в себя карты Миён из доступной коллекции.`,
-    minnie: `Пак "${title}" включает в себя карты Минни из доступной коллекции.`,
-    soyeon: `Пак "${title}" включает в себя карты Соён из доступной коллекции.`,
-    yuqi: `Пак "${title}" включает в себя карты Юци из доступной коллекции.`,
-    shuhua: `Пак "${title}" включает в себя карты Шухуа из доступной коллекции.`,
-    soojin: `Пак "${title}" включает в себя карты Суджин из доступной коллекции.`
-  };
-  if(rateKey === "rare" || key === "rare_all") return `Пак "${title}" открывается с Lv. 3 и даёт повышенный шанс на rare-карты.`;
-  if(rateKey === "premium" || key === "premium_all") return `Пак "${title}" открывается с Lv. 10 и даёт повышенный шанс на rare и ultra-карты.`;
-  return map[key] || `Пак "${title}" включает тематические карты из выбранной категории.`;
-}
-
-function openPackPreview(packData){
-  selectedPackPreview = packData;
-  if(packPreviewTitle) packPreviewTitle.textContent = packData.title;
-  if(packPreviewDesc) packPreviewDesc.textContent = getPackPreviewDescription(packData.key, packData.title, packData.rateKey);
-  if(packPreviewPoints) packPreviewPoints.textContent = points;
-  updatePackPreviewButtons();
-  packPreviewModal?.classList.add("show");
-}
-
-function closePackPreview(){
-  packPreviewModal?.classList.remove("show");
-  selectedPackPreview = null;
-}
-
-function updatePackPreviewButtons(){
-  if(!selectedPackPreview) return;
-  const cost = Number(selectedPackPreview.cost || 0);
-  const setButton = (btn, count) => {
-    if(!btn) return;
-    const total = cost * count;
-    btn.textContent = count === 1 ? `Открыть (${cost} очков)` : `Открыть ${count} паков (${total} очков)`;
-    btn.disabled = points < total;
-  };
-  setButton(packPreviewOpen1, 1);
-  setButton(packPreviewOpen5, 5);
-  setButton(packPreviewOpen10, 10);
-}
-
-function buyPreviewPack(count){
-  if(!selectedPackPreview) return;
-  const totalCost = selectedPackPreview.cost * count;
-  if(points < totalCost){
-    showToast("Не хватает очков ♡");
-    updatePackPreviewButtons();
-    return;
-  }
-
-  const packToOpen = { ...selectedPackPreview };
-  closePackPreview();
-
-  for(let i = 0; i < count; i++){
-    if(packToOpen.rateKey === "rare" || packToOpen.rateKey === "premium"){
-      buySpecialPack(packToOpen);
-    } else {
-      buyPack(packToOpen.key, "basic");
-    }
-  }
-}
-
 function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
   const kind = getPackKind(key, rateKey);
   const icon = getPackIcon(key, rateKey);
+  const rateParts = text.split("/").map(item => item.trim()).filter(Boolean);
   const canBuy = points >= cost;
   const packLabel = kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic";
   const packCoverMap = {
@@ -4849,6 +4762,8 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
     </div>
     <div class="pack-info">
       <div class="pack-title">${title}</div>
+      <div class="pack-sub">${subtitle}</div>
+      <div class="pack-rates">${rateParts.map(part => `<span class="pack-rate">${part}</span>`).join("")}</div>
     </div>`;
 }
 
@@ -7546,7 +7461,77 @@ function renderUpgradeGrid(){
   });
 }
 
-async async function renderPackGrid(){
+async 
+function getPackPreviewDescription(key, title, rateKey = "basic"){
+  const descriptions = {
+    all: `Пак "${title}" включает в себя карты всех участниц из всей доступной коллекции.`,
+    group: `Пак "${title}" включает в себя юнитные и групповые карты.`,
+    iam: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I AM.`,
+    imade: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I MADE.`,
+    itrust: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I TRUST.`,
+    iburn: `Пак "${title}" включает в себя карты всех участниц из мини-альбома I BURN.`,
+    miyeon: `Пак "${title}" включает в себя карты Миён из доступной коллекции.`,
+    minnie: `Пак "${title}" включает в себя карты Минни из доступной коллекции.`,
+    soyeon: `Пак "${title}" включает в себя карты Соён из доступной коллекции.`,
+    yuqi: `Пак "${title}" включает в себя карты Юци из доступной коллекции.`,
+    shuhua: `Пак "${title}" включает в себя карты Шухуа из доступной коллекции.`,
+    soojin: `Пак "${title}" включает в себя карты Суджин из доступной коллекции.`,
+    rare_all: `Пак "${title}" открывается с Lv. 3 и даёт повышенный шанс на rare-карты.`,
+    premium_all: `Пак "${title}" открывается с Lv. 10 и даёт повышенный шанс на rare и ultra-карты.`
+  };
+  if(rateKey === "rare") return descriptions.rare_all;
+  if(rateKey === "premium") return descriptions.premium_all;
+  return descriptions[key] || `Пак "${title}" включает тематические карты из выбранной категории.`;
+}
+
+function openPackPreview(packData){
+  selectedPackPreview = packData;
+  packPreviewTitle.textContent = packData.title;
+  packPreviewDesc.textContent = getPackPreviewDescription(packData.key, packData.title, packData.rateKey);
+  packPreviewPoints.textContent = points;
+  updatePackPreviewButtons();
+  packPreviewModal.classList.add("show");
+}
+
+function closePackPreview(){
+  packPreviewModal.classList.remove("show");
+  selectedPackPreview = null;
+}
+
+function updatePackPreviewButtons(){
+  if(!selectedPackPreview) return;
+  const cost = Number(selectedPackPreview.cost || 0);
+  const setBtn = (btn, count) => {
+    const total = cost * count;
+    btn.textContent = count === 1 ? `Открыть (${cost} очков)` : `Открыть ${count} паков (${total} очков)`;
+    btn.disabled = points < total;
+  };
+  setBtn(packPreviewOpen1, 1);
+  setBtn(packPreviewOpen5, 5);
+  setBtn(packPreviewOpen10, 10);
+}
+
+function buyPreviewPack(count){
+  if(!selectedPackPreview) return;
+  const pack = { ...selectedPackPreview };
+  const totalCost = pack.cost * count;
+  if(points < totalCost){
+    showToast("Не хватает очков ♡");
+    updatePackPreviewButtons();
+    return;
+  }
+  closePackPreview();
+
+  for(let i = 0; i < count; i++){
+    if(pack.rateKey === "rare" || pack.rateKey === "premium"){
+      buySpecialPack(pack);
+    } else {
+      buyPack(pack.key, "basic");
+    }
+  }
+}
+
+async function renderPackGrid(){
   const config = await loadConfig();
   packGrid.innerHTML = "";
 
@@ -7556,45 +7541,47 @@ async async function renderPackGrid(){
     if(!isPackVisible(key, "basic")) return;
     const cost = getPackCost(key, pack);
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = `pack-card ${points >= cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML({
       key,
-      title:pack.title,
-      cost,
-      rateKey:"basic",
-      text:"70% Common / 25% Rare / 5% Ultra",
-      subtitle:key === "all"
-        ? "Базовый пак со всеми картами"
-        : (["miyeon","minnie","soyeon","yuqi","shuhua","soojin"].includes(key)
-          ? "Персональный пак участницы. Доступен с самого начала."
-          : "Тематический пак из открытой категории")
-    });
-    btn.addEventListener("click", () => openPackPreview({
-      key,
       title: pack.title,
       cost,
-      rateKey: "basic"
-    }));
+      rateKey: "basic",
+      text: "70% Common / 25% Rare / 5% Ultra",
+      subtitle: ""
+    });
+    btn.addEventListener("click", () => {
+      openPackPreview({
+        key,
+        title: pack.title,
+        cost,
+        rateKey: "basic"
+      });
+    });
     packGrid.appendChild(btn);
     rendered++;
   });
 
   const specialPacks = [
-    { key:"rare_all", title:"Редкий пак", cost:16, rateKey:"rare", text:"50% Common / 40% Rare / 10% Ultra", subtitle:"Открывается на Lv. 3. Повышенный шанс rare." },
-    { key:"premium_all", title:"Премиум пак", cost:24, rateKey:"premium", text:"30% Common / 50% Rare / 20% Ultra", subtitle:"Открывается на Lv. 10. Самый красивый шанс rare и ultra." }
+    { key: "rare_all", title: "Редкий пак", cost: 16, rateKey: "rare", text: "50% Common / 40% Rare / 10% Ultra", subtitle: "" },
+    { key: "premium_all", title: "Премиум пак", cost: 24, rateKey: "premium", text: "30% Common / 50% Rare / 20% Ultra", subtitle: "" }
   ];
 
   specialPacks.forEach(pack => {
     if(!isPackVisible(pack.key, pack.rateKey)) return;
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"} ${points >= pack.cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML(pack);
-    btn.addEventListener("click", () => openPackPreview({
-      key: pack.key,
-      title: pack.title,
-      cost: pack.cost,
-      rateKey: pack.rateKey
-    }));
+    btn.addEventListener("click", () => {
+      openPackPreview({
+        key: pack.key,
+        title: pack.title,
+        cost: pack.cost,
+        rateKey: pack.rateKey
+      });
+    });
     packGrid.appendChild(btn);
     rendered++;
   });
@@ -7697,7 +7684,7 @@ function showPackResult(cards, context = null){
   cards.forEach(() => {
     const item = document.createElement("div");
     item.className = "simple-booster-card roulette spin";
-    item.innerHTML = `<div data-preview-pack-key="${key}" data-preview-pack-title="${title}" data-preview-pack-cost="${cost}" data-preview-pack-rate="${rateKey}" class="pack-card-back">🐰</div>`;
+    item.innerHTML = `<div class="pack-card-back">🐰</div>`;
     packResultCards.appendChild(item);
   });
 
@@ -8176,7 +8163,6 @@ loadConfig()
     console.error(error);
   });
 
-
 packPreviewClose?.addEventListener("click", closePackPreview);
 packPreviewModal?.addEventListener("click", event => {
   if(event.target === packPreviewModal) closePackPreview();
@@ -8184,21 +8170,6 @@ packPreviewModal?.addEventListener("click", event => {
 packPreviewOpen1?.addEventListener("click", () => buyPreviewPack(1));
 packPreviewOpen5?.addEventListener("click", () => buyPreviewPack(5));
 packPreviewOpen10?.addEventListener("click", () => buyPreviewPack(10));
-
-
-
-packGrid?.addEventListener("click", event => {
-  const card = event.target.closest(".pack-card");
-  if(!card || !card.dataset.previewPackKey) return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
-  openPackPreview({
-    key: card.dataset.previewPackKey,
-    title: card.dataset.previewPackTitle,
-    cost: Number(card.dataset.previewPackCost || 0),
-    rateKey: card.dataset.previewPackRate || "basic"
-  });
-}, true);
 
 </script>
 </body>
