@@ -3569,194 +3569,12 @@ h1{
 }
 
 
-/* === Generosity polish + Miyeon message === */
-.boost-status.generosity-active{
-  display:block!important;
-  position:relative;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 12% 0%,rgba(255,236,248,.95),transparent 36%),
-    linear-gradient(135deg,#fff7fb,#eadfff,#fff0f7)!important;
-  outline:2px solid rgba(255,158,209,.42)!important;
-  box-shadow:0 16px 38px rgba(157,124,248,.2),0 0 26px rgba(255,158,209,.24)!important;
-  animation:generosityPulse 1.7s ease-in-out infinite alternate;
-}
-.boost-status.generosity-active::after{
-  content:"♡";
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  color:rgba(157,124,248,.32);
-  font-size:26px;
-  font-weight:1000;
-}
-.generosity-label{
-  display:block;
-  color:#4f3670;
-  font-weight:1000;
-  margin-bottom:3px;
-}
-.generosity-sub{
-  display:block;
-  color:#806aa2;
-  font-size:10px;
-  line-height:1.3;
-}
-.generosity-miyeon-note{
-  display:none;
-  max-width:760px;
-  margin:4px auto 8px;
-  padding:12px 15px;
-  border-radius:22px;
-  text-align:left;
-  color:#4b3568;
-  background:
-    radial-gradient(circle at 7% 0%,rgba(255,226,247,.85),transparent 38%),
-    linear-gradient(135deg,rgba(255,255,255,.94),rgba(239,229,255,.9));
-  border:1px solid rgba(231,214,255,.95);
-  box-shadow:0 14px 34px rgba(73,40,129,.12);
-}
-.generosity-miyeon-note.show{display:block;}
-.generosity-miyeon-note b{display:block;font-size:13px;color:#3f2d5a;margin-bottom:4px;}
-.generosity-miyeon-note span{display:block;color:#806aa2;font-size:12px;line-height:1.35;font-weight:900;}
-.risk-chain-panel.generosity-mode{
-  outline:2px solid rgba(255,158,209,.45);
-  box-shadow:0 18px 44px rgba(73,40,129,.14),0 0 32px rgba(255,158,209,.22);
-}
-.risk-chain-panel.generosity-mode .risk-chain-note{
-  color:#6d5192;
-  background:rgba(255,255,255,.58);
-  border-radius:16px;
-  padding:8px 10px;
-}
-@keyframes generosityPulse{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.045)}
-}
-
-
-/* === Pack cover images from images/packs === */
-.pack-cover.has-cover{
-  background:linear-gradient(135deg,#efe6ff,#ffdff0)!important;
-}
-.pack-cover-img{
-  position:absolute;
-  inset:0;
-  z-index:1;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-  display:block;
-  transition:transform .25s ease, filter .25s ease;
-}
-.pack-card:hover .pack-cover-img{
-  transform:scale(1.06);
-  filter:brightness(1.04) saturate(1.04);
-}
-.pack-cover.has-cover::before{
-  z-index:2!important;
-  background:
-    linear-gradient(to top,rgba(45,22,72,.46),transparent 56%),
-    radial-gradient(circle at 35% 18%,rgba(255,255,255,.42),transparent 28%)!important;
-  transform:none!important;
-  inset:0!important;
-}
-.pack-cover.has-cover .pack-cover-title,
-.pack-cover.has-cover .pack-price-badge{
-  z-index:4!important;
-}
-.pack-cover-fallback{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  display:grid;
-  place-items:center;
-}
-.pack-cover-img.broken-pack-cover{
-  display:none!important;
-}
-.pack-cover.has-cover:has(.pack-cover-img.broken-pack-cover) .pack-cover-fallback{
-  z-index:3;
-}
-
-
-/* === Pack card cleanup: pack opens by clicking the whole card === */
-.pack-info{
-  padding-bottom:18px!important;
-}
-.pack-price,.pack-open-pill{
-  display:none!important;
-}
-.pack-card{
-  cursor:pointer!important;
-}
-.pack-card.cant-buy{
-  cursor:not-allowed!important;
-}
-.pack-card.cant-buy::after{
-  content:"Не хватает очков";
-  position:absolute;
-  left:16px;
-  right:16px;
-  bottom:14px;
-  padding:9px 12px;
-  border-radius:999px;
-  text-align:center;
-  background:rgba(255,255,255,.88);
-  color:#8b779f;
-  font-size:12px;
-  font-weight:1000;
-  box-shadow:0 10px 24px rgba(66,37,112,.12);
-}
-.pack-card.cant-buy .pack-info{
-  padding-bottom:58px!important;
-}
-
-
-/* === Safe pack cover image styles === */
-.pack-cover{
-  position:relative!important;
-  overflow:hidden!important;
-}
-.pack-cover-img{
-  position:absolute!important;
-  inset:0!important;
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-  object-position:center!important;
-  display:block!important;
-  z-index:1!important;
-}
-.pack-cover-title,
-.pack-price-badge,
-.pack-cover::after{
-  z-index:3!important;
-}
-.pack-cover-icon{
-  position:relative!important;
-  z-index:2!important;
-}
-.pack-cover.rare{
-  box-shadow:inset 0 0 0 2px rgba(255,215,0,.35);
-}
-.pack-cover.rare .pack-cover-img{
-  filter:saturate(1.08) brightness(1.03);
-}
-
-
-/* === Pack preview modal and clean pack cards === */
-.pack-card{
-  cursor:pointer!important;
-}
+/* === Pack covers and preview modal === */
+.pack-card{cursor:pointer!important;}
 .pack-card .pack-sub,
 .pack-card .pack-rates,
 .pack-card .pack-price,
-.pack-card .rarity-pity-note{
-  display:none!important;
-}
+.pack-card .rarity-pity-note{display:none!important;}
 .pack-card .pack-info{
   min-height:auto!important;
   padding:15px 16px 18px!important;
@@ -3768,6 +3586,19 @@ h1{
   font-size:18px!important;
   line-height:1.15!important;
 }
+.pack-cover{position:relative!important;overflow:hidden!important;}
+.pack-cover-img{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  z-index:1!important;
+}
+.pack-cover-title,.pack-price-badge,.pack-cover::after{z-index:3!important;}
+.pack-cover-icon{position:relative!important;z-index:2!important;}
 .pack-preview-window{
   width:min(880px,94vw);
   max-height:min(760px,92vh);
@@ -3778,10 +3609,7 @@ h1{
   grid-template-rows:auto auto auto auto;
   gap:18px;
   color:var(--ann-ink);
-  background:
-    radial-gradient(circle at 8% 0%,rgba(255,226,247,.9),transparent 30%),
-    radial-gradient(circle at 92% 0%,rgba(202,178,255,.9),transparent 32%),
-    linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
+  background:radial-gradient(circle at 8% 0%,rgba(255,226,247,.9),transparent 30%),radial-gradient(circle at 92% 0%,rgba(202,178,255,.9),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
   border:1px solid rgba(237,226,255,.95);
   box-shadow:0 36px 120px rgba(51,27,91,.35);
 }
@@ -3796,15 +3624,8 @@ h1{
   align-items:center;
   gap:14px;
 }
-.pack-preview-balance span{
-  color:var(--ann-muted);
-  font-size:13px;
-  font-weight:900;
-}
-.pack-preview-balance b{
-  color:var(--ann-ink);
-  font-size:22px;
-}
+.pack-preview-balance span{color:var(--ann-muted);font-size:13px;font-weight:900;}
+.pack-preview-balance b{color:var(--ann-ink);font-size:22px;}
 .pack-preview-cards{
   display:grid;
   grid-template-columns:repeat(3,minmax(130px,190px));
@@ -3820,33 +3641,15 @@ h1{
   font-weight:1000;
   letter-spacing:.18em;
   font-size:22px;
-  background:
-    radial-gradient(circle at 30% 20%,rgba(255,255,255,.65),transparent 30%),
-    linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.65),transparent 30%),linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
   border:1px solid rgba(255,255,255,.72);
   box-shadow:0 18px 42px rgba(86,47,145,.18), inset 0 1px 0 rgba(255,255,255,.5);
   position:relative;
   overflow:hidden;
 }
-.pack-preview-card-back::before{
-  content:"";
-  position:absolute;
-  inset:12px;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.42);
-}
-.pack-preview-card-back::after{
-  content:"?";
-  position:absolute;
-  font-size:64px;
-  opacity:.28;
-  transform:translateY(-8px);
-}
-.pack-preview-actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-}
+.pack-preview-card-back::before{content:"";position:absolute;inset:12px;border-radius:22px;border:1px solid rgba(255,255,255,.42);}
+.pack-preview-card-back::after{content:"?";position:absolute;font-size:64px;opacity:.28;transform:translateY(-8px);}
+.pack-preview-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .pack-preview-btn{
   padding:14px 16px;
   border-radius:999px;
@@ -3856,11 +3659,7 @@ h1{
   font-weight:1000;
   box-shadow:0 12px 24px rgba(94,55,150,.12);
 }
-.pack-preview-btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-  filter:grayscale(.2);
-}
+.pack-preview-btn:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.2);}
 @media(max-width:650px){
   .pack-preview-window{width:98vw;max-height:94vh;border-radius:28px;padding:16px}
   .pack-preview-cards{grid-template-columns:repeat(3,1fr);gap:10px}
@@ -4120,37 +3919,6 @@ h1{
   </div>
 </section>
 
-
-<section class="modal" id="packPreviewModal">
-  <div class="pack-preview-window">
-    <div class="modal-head">
-      <div>
-        <h2 id="packPreviewTitle">Пак</h2>
-        <p id="packPreviewDesc">Описание пака</p>
-      </div>
-      <button class="modal-close" id="packPreviewClose">×</button>
-    </div>
-
-    <div class="pack-preview-balance">
-      <span>Сейчас у тебя</span>
-      <b><span id="packPreviewPoints">0</span> очков</b>
-    </div>
-
-    <div class="pack-preview-cards">
-      <div class="pack-preview-card-back">MY</div>
-      <div class="pack-preview-card-back">MY</div>
-      <div class="pack-preview-card-back">MY</div>
-    </div>
-
-    <div class="pack-preview-actions">
-      <button class="pack-preview-btn" id="packPreviewOpen1">Открыть</button>
-      <button class="pack-preview-btn" id="packPreviewOpen5">Открыть 5 паков</button>
-      <button class="pack-preview-btn" id="packPreviewOpen10">Открыть 10 паков</button>
-    </div>
-  </div>
-</section>
-
-
 <section class="modal" id="profileModal">
   <div class="profile-window">
     <div class="profile-hero">
@@ -4296,17 +4064,12 @@ h1{
     </div>
     <div class="collector-badge" id="collectorBadge">💿 Режим коллекционера</div>
     <p id="winText">Поздравляю, выберите одну карту в коллекцию ♡</p>
-    <div class="generosity-miyeon-note" id="generosityMiyeonNote">
-      <b>🐰 Миён включила щедрость</b>
-      <span>В риск-цепочке первая карта теперь не сгорит при неудаче, а при равной или более высокой редкости можно забрать бонусные карты.</span>
-    </div>
     <div class="reward-info-popover" id="rewardInfoPopover">
       <b>Как работает выбор карты?</b>
       <p>После прохождения уровня вы выбираете карту, которая попадёт в коллекцию.</p>
       <p><strong>Открытая карта</strong> — безопасный вариант: вы заранее видите, что получите.</p>
       <p><strong>Закрытые карты</strong> запускают риск-цепочку: можно забрать открытую карту или рискнуть следующей закрытой.</p>
-      <p>Если щедрость не активна: равная редкость даёт первую карту, выше даёт обе, ниже сжигает награду.</p>
-      <p>Если щедрость активна: ниже спасает первую карту, а равная или более высокая редкость даёт обе карты.</p>
+      <p>Если следующая карта той же редкости или выше, обе карты остаются в цепочке. Если ниже, цепочка сбрасывается до новой карты.</p>
       <p>Кнопка <strong>«Подсмотреть»</strong> открывает одну случайную закрытую карту до выбора за 3 очка.</p>
     </div>
     <div class="reward-options" id="rewardOptions"></div>
@@ -4323,7 +4086,7 @@ h1{
         <button class="risk-chain-btn secondary" id="riskChainTakeBtn" type="button">💌 Забрать первую карту</button>
         <button class="risk-chain-btn" id="riskChainContinueBtn" type="button">🎲 Рискнуть</button>
       </div>
-      <div class="risk-chain-note" id="riskChainNote">Если щедрость не активна: равная редкость даёт первую карту, выше даёт обе, ниже сжигает награду. Если щедрость активна: ниже спасает первую карту, равная и выше дают обе.</div>
+      <div class="risk-chain-note">Если следующая карта той же редкости, ты забираешь только первую. Если редкость выше, забираешь обе. Если ниже, не получаешь ничего.</div>
     </div>
     <div class="reward-actions">
       <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
@@ -4331,6 +4094,34 @@ h1{
       <button class="reroll-btn" id="extraPickRewardBtn">🎁 Щедрость активна</button>
     </div>
     <button class="again" id="again">Сыграть ещё раз</button>
+  </div>
+</section>
+
+
+
+<section class="modal" id="packPreviewModal">
+  <div class="pack-preview-window">
+    <div class="modal-head">
+      <div>
+        <h2 id="packPreviewTitle">Пак</h2>
+        <p id="packPreviewDesc">Описание пака</p>
+      </div>
+      <button class="modal-close" id="packPreviewClose">×</button>
+    </div>
+    <div class="pack-preview-balance">
+      <span>Сейчас у тебя</span>
+      <b><span id="packPreviewPoints">0</span> очков</b>
+    </div>
+    <div class="pack-preview-cards">
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+      <div class="pack-preview-card-back">MY</div>
+    </div>
+    <div class="pack-preview-actions">
+      <button class="pack-preview-btn" id="packPreviewOpen1">Открыть</button>
+      <button class="pack-preview-btn" id="packPreviewOpen5">Открыть 5 паков</button>
+      <button class="pack-preview-btn" id="packPreviewOpen10">Открыть 10 паков</button>
+    </div>
   </div>
 </section>
 
@@ -4368,21 +4159,6 @@ h1{
 
 <script>
 const CONFIG_PATH = "cards_config.json";
-
-const PACK_COVERS = {
-  all: "images/packs/pack_all.jpg",
-  group: "images/packs/pack_group.jpg",
-  iam: "images/packs/pack_iam.jpg",
-  imade: "images/packs/pack_imade.jpg",
-  itrust: "images/packs/pack_itrust.jpg",
-  iburn: "images/packs/pack_iburn.jpg",
-  miyeon: "images/packs/pack_miyeon.jpg",
-  minnie: "images/packs/pack_minnie.jpg",
-  soyeon: "images/packs/pack_soyeon.jpg",
-  yuqi: "images/packs/pack_yuqi.jpg",
-  shuhua: "images/packs/pack_shuhua.jpg",
-  soojin: "images/packs/pack_soojin.jpg"
-};
 
 const MEMBERS = {
   all: { title: "Все участницы" },
@@ -4475,7 +4251,6 @@ const win = document.getElementById("win");
 const winText = document.getElementById("winText");
 const rewardInfoBtn = document.getElementById("rewardInfoBtn");
 const rewardInfoPopover = document.getElementById("rewardInfoPopover");
-const generosityMiyeonNote = document.getElementById("generosityMiyeonNote");
 const collectorBadge = document.getElementById("collectorBadge");
 const rewardOptions = document.getElementById("rewardOptions");
 const toast = document.getElementById("toast");
@@ -4729,8 +4504,6 @@ function getPackIcon(key, rateKey = "basic"){
 function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 25% Rare / 5% Ultra",subtitle="3 случайные карты"}){
   const kind = getPackKind(key, rateKey);
   const icon = getPackIcon(key, rateKey);
-  const rateParts = text.split("/").map(item => item.trim()).filter(Boolean);
-  const canBuy = points >= cost;
   const packLabel = kind === "premium" ? "premium" : kind === "rare" ? "rare" : kind === "member" ? "member" : kind === "album" ? "album" : "basic";
   const packCoverMap = {
     all: "images/packs/pack_all.jpg",
@@ -4745,12 +4518,10 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
     yuqi: "images/packs/pack_yuqi.jpg",
     shuhua: "images/packs/pack_shuhua.jpg",
     soojin: "images/packs/pack_soojin.jpg",
-    rare: "images/packs/pack_rare.jpg",
     rare_all: "images/packs/pack_rare.jpg",
-    premium: "images/packs/pack_premium.jpg",
     premium_all: "images/packs/pack_premium.jpg"
   };
-  const coverSrc = rateKey === "rare" ? packCoverMap.rare : rateKey === "premium" ? packCoverMap.premium : packCoverMap[key];
+  const coverSrc = packCoverMap[key] || (rateKey === "rare" ? packCoverMap.rare_all : rateKey === "premium" ? packCoverMap.premium_all : "");
   const coverHTML = coverSrc
     ? `<img class="pack-cover-img" src="${coverSrc}" alt="${title}" loading="lazy" decoding="async" onerror="this.remove()">`
     : `<div class="pack-cover-icon">${icon}</div>`;
@@ -4762,8 +4533,6 @@ function renderPackCardHTML({key,title,cost,rateKey="basic",text="70% Common / 2
     </div>
     <div class="pack-info">
       <div class="pack-title">${title}</div>
-      <div class="pack-sub">${subtitle}</div>
-      <div class="pack-rates">${rateParts.map(part => `<span class="pack-rate">${part}</span>`).join("")}</div>
     </div>`;
 }
 
@@ -5820,20 +5589,7 @@ function getActiveBoostLabels(){
 
 function updateBoostStatus(){
   const labels = getActiveBoostLabels();
-  const hasGenerosity = !!activeBoosts.extraPick;
   boostStatus.classList.toggle("show", labels.length > 0);
-  boostStatus.classList.toggle("generosity-active", hasGenerosity);
-
-  if(hasGenerosity){
-    const otherLabels = labels.filter(label => !label.includes("Щедрость"));
-    boostStatus.innerHTML = `
-      <span class="generosity-label">🎁 Щедрость активна</span>
-      <span class="generosity-sub">Миён сегодня добрая: в риск-цепочке первая карта спасается при неудаче, а равная/более высокая редкость даёт бонус.</span>
-      ${otherLabels.length ? `<span class="generosity-sub">Ещё активно: ${otherLabels.join(" · ")}</span>` : ""}
-    `;
-    return;
-  }
-
   boostStatus.innerHTML = labels.length ? `Активно: ${labels.join(" · ")}` : "";
 }
 
@@ -6766,7 +6522,6 @@ function resetRiskChain(){
   riskChainState = null;
   win?.classList.remove("risk-chain-active");
   riskChainPanel?.classList.remove("show");
-  riskChainPanel?.classList.remove("generosity-mode");
   rewardOptions?.querySelectorAll(".risk-chain-current").forEach(btn => btn.classList.remove("risk-chain-current"));
   updatePeekRewardButton();
 }
@@ -6786,15 +6541,13 @@ function renderRiskChain(){
         ? "Редкость совпала"
         : "Риск не сработал";
 
-    const generosity = !!riskChainState.generosity;
-    riskChainPanel.classList.toggle("generosity-mode", generosity);
     riskChainText.textContent = result.outcome === "higher"
       ? "Вторая карта оказалась редкостью выше. Ты забираешь обе карты ♡"
       : result.outcome === "same"
-        ? (generosity ? "Вторая карта той же редкости. Щедрость превращает это в бонус: ты забираешь обе карты ♡" : "Вторая карта той же редкости. По правилу цепочки ты забираешь только первую карту ♡")
-        : (generosity ? "Вторая карта оказалась редкостью ниже, но щедрость спасает первую карту ♡" : "Вторая карта оказалась редкостью ниже. По правилу цепочки награда сгорает.");
+        ? "Вторая карта той же редкости. По правилу цепочки ты забираешь только первую карту ♡"
+        : "Вторая карта оказалась редкостью ниже. По правилу цепочки награда сгорает.";
 
-    riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? (generosity ? "2 карты" : "1 карта") : (generosity ? "1 карта" : "0 карт");
+    riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? "1 карта" : "0 карт";
     const shownCards = [first, result.secondCard].filter(Boolean);
     riskChainCards.innerHTML = shownCards.map(card => `
       <div class="risk-chain-mini rarity-${card.rarity}">
@@ -6808,11 +6561,9 @@ function renderRiskChain(){
     return;
   }
 
-  const generosity = !!riskChainState.generosity;
-  riskChainPanel.classList.toggle("generosity-mode", generosity);
-  riskChainTitle.textContent = generosity ? "Хочешь рискнуть со щедростью?" : "Хочешь рискнуть?";
+  riskChainTitle.textContent = "Хочешь рискнуть?";
   riskChainText.textContent = hiddenLeft
-    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. ${generosity ? "Щедрость спасёт её при неудаче и даст бонус при равной или более высокой редкости." : "Можно забрать её сразу или открыть ещё одну закрытую карту."}`
+    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или открыть ещё одну закрытую карту.`
     : "Закрытые карты закончились. Можно забрать первую карту в коллекцию ♡";
   riskChainCount.textContent = "1 карта";
   riskChainCards.innerHTML = first ? `
@@ -6836,7 +6587,6 @@ function startRiskChain(index, btn, image){
     usedIndexes:[index],
     firstIndex:index,
     lastIndex:index,
-    generosity:!!activeBoosts.extraPick,
     startedAtPicks:rewardPicksLeft
   };
   recordDailyAction?.("hiddenReward", 1);
@@ -6870,10 +6620,9 @@ function continueRiskChain(){
   riskChainState.usedIndexes.push(index);
   riskChainState.lastIndex = index;
 
-  const generosity = !!riskChainState.generosity;
   if(outcome === "higher") showToast("✨ Редкость выше: забираешь обе карты!");
-  else if(outcome === "same") showToast(generosity ? "🤝 Одинаковая редкость + щедрость: забираешь обе" : "🤝 Одинаковая редкость: забираешь первую карту");
-  else showToast(generosity ? "🎁 Щедрость спасла первую карту" : "😵 Редкость ниже: не забираешь ничего");
+  else if(outcome === "same") showToast("🤝 Одинаковая редкость: забираешь первую карту");
+  else showToast("😵 Редкость ниже: не забираешь ничего");
 
   recordDailyAction?.("hiddenReward", 1);
   renderRiskChain();
@@ -6884,8 +6633,7 @@ function getRiskChainRewardCards(){
   const result = riskChainState.result;
   if(!result) return riskChainState.firstCard ? [riskChainState.firstCard] : [];
   if(result.outcome === "higher") return [riskChainState.firstCard, result.secondCard].filter(Boolean);
-  if(result.outcome === "same") return riskChainState.generosity ? [riskChainState.firstCard, result.secondCard].filter(Boolean) : (riskChainState.firstCard ? [riskChainState.firstCard] : []);
-  if(result.outcome === "lower") return riskChainState.generosity && riskChainState.firstCard ? [riskChainState.firstCard] : [];
+  if(result.outcome === "same") return riskChainState.firstCard ? [riskChainState.firstCard] : [];
   return [];
 }
 
@@ -6926,7 +6674,6 @@ function takeRiskChain(){
   permanentBonusPick = false;
   updateBoostStatus();
   showToast(resultText);
-  generosityMiyeonNote?.classList.remove("show");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
@@ -6994,7 +6741,6 @@ function takeRiskChain(){
   extraPickRewardBtn.classList.add("hidden");
   extraPickRewardBtn.textContent = "";
   showToast(resultText);
-  generosityMiyeonNote?.classList.remove("show");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
@@ -7047,7 +6793,6 @@ function finishRewardPick(btn, image, meta = {}){
   permanentBonusPick = false;
   updateBoostStatus();
   showToast(result.already ? `Повторка переработана: +${result.duplicateBonus} оск. ♻️` : "Карта добавлена в коллекцию 💌");
-  generosityMiyeonNote?.classList.remove("show");
   setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
@@ -7101,15 +6846,6 @@ function renderRewardOptions(){
   updatePeekRewardButton();
 }
 
-function maybeActivateRandomGenerosity(){
-  if(activeBoosts.extraPick) return false;
-  if(Math.random() >= 0.08) return false;
-  activeBoosts.extraPick = true;
-  updateBoostStatus();
-  showRarityReaction("🐰 Миён решила быть щедрой: бонус активирован бесплатно!");
-  return true;
-}
-
 function finishGame(){
   stopTimer();
   addPoints();
@@ -7119,20 +6855,18 @@ function finishGame(){
 
   setTimeout(() => {
     const settings = getRewardSettings();
-    const randomGenerosity = maybeActivateRandomGenerosity();
     permanentBonusPick = hasUpgrade("collector") && Math.random() < 0.2;
     collectorBadge.textContent = "";
 
     const choicesCount = settings.count + (hasUpgrade("betterChoice") ? 1 : 0);
     const picksCount = 1 + (activeBoosts.extraPick ? 1 : 0) + (permanentBonusPick ? 1 : 0);
     const extraText = [
-      activeBoosts.extraPick ? (randomGenerosity ? "Миён внезапно включила Щедрость: можно выбрать дополнительную карту." : "Благодаря Щедрости можно выбрать дополнительную карту.") : "",
+      activeBoosts.extraPick ? "Благодаря Щедрости можно выбрать дополнительную карту." : "",
       permanentBonusPick ? "Коллекционер сработал: +1 карта бесплатно." : ""
     ].filter(Boolean).join(" ");
 
     const pickWord = picksCount === 1 ? "карту" : "карты";
     winText.textContent = `Поздравляю, уровень пройден! Выберите ${picksCount} ${pickWord} в коллекцию ♡${extraText ? " " + extraText : ""}`;
-    generosityMiyeonNote?.classList.toggle("show", !!activeBoosts.extraPick);
     rewardInfoPopover?.classList.remove("show");
     currentRewardOptions = getRewardCards();
     rewardRevealedIndexes = new Set([0]);
@@ -7521,7 +7255,6 @@ function buyPreviewPack(count){
     return;
   }
   closePackPreview();
-
   for(let i = 0; i < count; i++){
     if(pack.rateKey === "rare" || pack.rateKey === "premium"){
       buySpecialPack(pack);
@@ -7534,7 +7267,6 @@ function buyPreviewPack(count){
 async function renderPackGrid(){
   const config = await loadConfig();
   packGrid.innerHTML = "";
-
   let rendered = 0;
 
   Object.entries(config.boosters || {}).forEach(([key, pack]) => {
@@ -7551,14 +7283,7 @@ async function renderPackGrid(){
       text: "70% Common / 25% Rare / 5% Ultra",
       subtitle: ""
     });
-    btn.addEventListener("click", () => {
-      openPackPreview({
-        key,
-        title: pack.title,
-        cost,
-        rateKey: "basic"
-      });
-    });
+    btn.addEventListener("click", () => openPackPreview({ key, title: pack.title, cost, rateKey: "basic" }));
     packGrid.appendChild(btn);
     rendered++;
   });
@@ -7574,14 +7299,7 @@ async function renderPackGrid(){
     btn.type = "button";
     btn.className = `pack-card special-pack ${pack.rateKey === "premium" ? "premium-pack" : "rare-pack"} ${points >= pack.cost ? "can-buy" : "cant-buy"}`;
     btn.innerHTML = renderPackCardHTML(pack);
-    btn.addEventListener("click", () => {
-      openPackPreview({
-        key: pack.key,
-        title: pack.title,
-        cost: pack.cost,
-        rateKey: pack.rateKey
-      });
-    });
+    btn.addEventListener("click", () => openPackPreview({ key: pack.key, title: pack.title, cost: pack.cost, rateKey: pack.rateKey }));
     packGrid.appendChild(btn);
     rendered++;
   });
