@@ -3384,6 +3384,99 @@ h1{
   .level-reward-card-grid{grid-template-columns:repeat(2,minmax(92px,1fr));}
 }
 
+
+
+/* === Compact side panel after daily tasks === */
+.panel{
+  gap:5px!important;
+  padding:12px!important;
+}
+.panel-title{
+  padding:8px!important;
+  border-radius:20px!important;
+}
+.panel-title b{font-size:18px!important;}
+.panel-title span{font-size:11px!important;margin-top:2px!important;}
+.stats{
+  gap:6px!important;
+}
+.stat{
+  padding:8px!important;
+  border-radius:16px!important;
+  min-height:58px!important;
+}
+.stat span{font-size:11px!important;margin-bottom:3px!important;}
+.stat strong{font-size:19px!important;}
+.shard-stat small{font-size:10px!important;margin-top:1px!important;}
+
+.daily-panel{
+  padding:9px!important;
+  border-radius:22px!important;
+  margin:2px 0 4px!important;
+}
+.daily-head{
+  margin-bottom:6px!important;
+  align-items:center!important;
+}
+.daily-head b{font-size:13px!important;}
+.daily-head small{font-size:9px!important;margin-top:1px!important;}
+.daily-timer{font-size:9px!important;padding:4px 7px!important;}
+.daily-list{gap:5px!important;}
+.daily-task{
+  grid-template-columns:24px minmax(0,1fr) auto!important;
+  gap:6px!important;
+  padding:6px!important;
+  border-radius:15px!important;
+}
+.daily-icon{width:24px!important;height:24px!important;font-size:12px!important;}
+.daily-title{font-size:11px!important;line-height:1.12!important;}
+.daily-progress{height:5px!important;margin-top:4px!important;}
+.daily-meta{font-size:9px!important;margin-top:2px!important;line-height:1.15!important;}
+.daily-claim{padding:6px 8px!important;font-size:9px!important;}
+.daily-bonus{
+  margin-top:6px!important;
+  padding:6px!important;
+  border-radius:15px!important;
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+.daily-bonus button{padding:6px 8px!important;font-size:9px!important;}
+
+.block-title{
+  font-size:10px!important;
+  margin:4px 0 -2px!important;
+  letter-spacing:.07em!important;
+}
+.mode-btn,.fun-btn{
+  padding:7px 10px!important;
+  border-radius:15px!important;
+  min-height:43px!important;
+}
+.mode-btn b,.fun-btn b{
+  font-size:13px!important;
+  line-height:1.15!important;
+}
+.mode-btn small,.fun-btn small{
+  margin-top:2px!important;
+  font-size:10px!important;
+  line-height:1.12!important;
+}
+.shape-panel.show{padding:0!important;}
+.shape-grid{gap:5px!important;margin-top:5px!important;}
+.shape-btn{padding:7px 5px!important;border-radius:13px!important;font-size:11px!important;}
+.boost-status{padding:7px 9px!important;border-radius:15px!important;font-size:10px!important;}
+.restart{
+  padding:10px!important;
+  border-radius:16px!important;
+  min-height:42px!important;
+}
+
+@media(max-width:850px){
+  .panel{gap:6px!important;padding:9px!important;}
+  .daily-panel{grid-column:1/-1!important;}
+  .mode-btn,.fun-btn{min-height:40px!important;}
+}
+
 </style>
 </head>
 
