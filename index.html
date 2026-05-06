@@ -5122,6 +5122,247 @@ body::-webkit-scrollbar-thumb,
   }
 }
 
+
+/* === 125% zoom real layout fix: independent scroll columns === */
+
+/* Главная страница: не пытаемся впихнуть всё в 100vh без прокрутки */
+.app{
+  height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  grid-template-columns:minmax(0,1fr) clamp(270px,18vw,330px)!important;
+}
+
+/* Левая зона и правая панель скроллятся независимо */
+.game-side{
+  min-height:0!important;
+  height:100%!important;
+  overflow:auto!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+.panel{
+  min-height:0!important;
+  height:100%!important;
+  max-height:calc((var(--safe-vh, 1vh) * 100) - 28px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:10px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+.game-side::-webkit-scrollbar,
+.panel::-webkit-scrollbar{
+  width:12px!important;
+}
+
+.game-side::-webkit-scrollbar-track,
+.panel::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.35)!important;
+  border-radius:999px!important;
+}
+
+.game-side::-webkit-scrollbar-thumb,
+.panel::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d8c2ff,#ffc6e8)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,255,255,.45)!important;
+}
+
+/* Сжимаем правую панель на масштабированном/низком экране */
+@media(max-height:900px){
+  .panel{
+    gap:6px!important;
+    padding:12px 9px 12px 12px!important;
+  }
+
+  .panel-title{
+    padding:8px!important;
+    border-radius:20px!important;
+  }
+
+  .panel-title b{
+    font-size:18px!important;
+  }
+
+  .panel-title span{
+    font-size:11px!important;
+  }
+
+  .stats{
+    gap:6px!important;
+  }
+
+  .stat{
+    padding:8px!important;
+    border-radius:16px!important;
+  }
+
+  .stat strong{
+    font-size:18px!important;
+  }
+
+  .stat span{
+    font-size:11px!important;
+  }
+
+  .daily-panel{
+    padding:8px!important;
+    border-radius:20px!important;
+  }
+
+  .daily-task{
+    padding:8px!important;
+    gap:8px!important;
+  }
+
+  .daily-task-title{
+    font-size:12px!important;
+  }
+
+  .mode{
+    padding:8px 10px!important;
+    border-radius:17px!important;
+  }
+
+  .mode b{
+    font-size:13px!important;
+  }
+
+  .mode small{
+    font-size:10px!important;
+  }
+}
+
+/* Если ширина или масштаб съедают место, панель уходит вниз */
+@media(max-width:1120px){
+  .app{
+    height:auto!important;
+    min-height:100dvh!important;
+    max-height:none!important;
+    overflow:visible!important;
+    grid-template-columns:1fr!important;
+  }
+
+  .game-side,
+  .panel{
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  .panel{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    align-items:start!important;
+  }
+
+  .panel-title,
+  .stats,
+  .daily-panel{
+    grid-column:1 / -1!important;
+  }
+}
+
+@media(max-width:720px){
+  .panel{
+    display:flex!important;
+    overflow:visible!important;
+  }
+}
+
+/* === Risk modal: one simple scroll, no inner traps === */
+#riskModal{
+  overflow:auto!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+}
+
+.risk-modal-window{
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:visible!important;
+  margin:auto 0!important;
+}
+
+#riskModalBody{
+  overflow:visible!important;
+}
+
+#riskModalBody .risk-chain-panel,
+#riskModalBody .risk-chain-cards{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+#riskModalBody .risk-redesign{
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* На маленькой высоте само оверлей-окно скроллится как страница */
+@media(max-height:820px){
+  #riskModal{
+    display:block!important;
+    padding:12px!important;
+  }
+
+  .risk-modal-window{
+    width:min(980px,96vw)!important;
+    margin:0 auto!important;
+  }
+
+  #riskModalBody .risk-redesign{
+    padding-top:16px!important;
+  }
+
+  #riskModalBody .risk-redesign-main,
+  #riskModalBody .risk-redesign-main.choice-wide-main{
+    grid-template-columns:minmax(130px,180px) minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+
+  #riskModalBody .risk-first-card{
+    width:min(140px,100%)!important;
+  }
+
+  #riskModalBody .risk-rules-card{
+    padding:12px!important;
+  }
+
+  #riskModalBody .risk-rule-list{
+    gap:6px!important;
+  }
+
+  #riskModalBody .risk-rule-item{
+    padding:7px 9px!important;
+    font-size:11px!important;
+  }
+
+  #riskModalBody .risk-choice-wide-panel{
+    padding:12px!important;
+  }
+
+  #riskModalBody .risk-choice-wide-scroll{
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  #riskModalBody .risk-choice-wide-grid{
+    grid-template-columns:repeat(auto-fit,minmax(100px,1fr))!important;
+    gap:8px!important;
+  }
+
+  #riskModalBody .risk-chain-actions{
+    position:relative!important;
+    padding-bottom:12px!important;
+  }
+}
+
 </style>
 </head>
 
@@ -9727,6 +9968,16 @@ window.addEventListener("resize", updateSafeViewportHeight);
 window.addEventListener("orientationchange", updateSafeViewportHeight);
 window.visualViewport?.addEventListener("resize", updateSafeViewportHeight);
 window.visualViewport?.addEventListener("scroll", updateSafeViewportHeight);
+
+
+function updateZoomLayoutClass(){
+  const viewportH = window.visualViewport?.height || window.innerHeight || 0;
+  const viewportW = window.visualViewport?.width || window.innerWidth || 0;
+  document.body.classList.toggle("zoom-compact", viewportH < 820 || viewportW < 1280);
+}
+updateZoomLayoutClass();
+window.addEventListener("resize", updateZoomLayoutClass);
+window.visualViewport?.addEventListener("resize", updateZoomLayoutClass);
 
 </script>
 </body>
