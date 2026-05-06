@@ -3893,6 +3893,69 @@ h1{
   color:#7c5575;
 }
 
+
+/* === Separate risk modal === */
+#riskModal{
+  z-index:28!important;
+}
+.risk-modal-window{
+  width:min(760px,94vw);
+  max-height:min(620px,88vh);
+  overflow:auto;
+  border-radius:32px;
+  padding:18px;
+  position:relative;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,226,247,.9),transparent 30%),
+    radial-gradient(circle at 92% 0%,rgba(202,178,255,.9),transparent 32%),
+    linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,241,255,.98));
+  border:1px solid rgba(237,226,255,.95);
+  box-shadow:0 36px 120px rgba(51,27,91,.35);
+}
+.risk-modal-close{
+  position:absolute;
+  right:14px;
+  top:14px;
+  z-index:3;
+}
+#riskModalBody{
+  padding-top:36px;
+}
+#riskModalBody .risk-chain-panel{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  box-shadow:none!important;
+  background:rgba(255,255,255,.62)!important;
+}
+#riskModalBody .risk-chain-cards{
+  max-height:180px!important;
+  overflow:auto!important;
+}
+#riskModalBody .risk-chain-mini{
+  width:68px!important;
+}
+#win .risk-chain-panel{
+  display:none!important;
+}
+#win.risk-chain-active .reward-card:not(.risk-chain-current){
+  opacity:.6!important;
+}
+#win.risk-chain-active .reward-card.risk-chain-current{
+  transform:none!important;
+}
+@media(max-width:560px){
+  .risk-modal-window{
+    width:96vw;
+    max-height:88vh;
+    border-radius:24px;
+    padding:14px;
+  }
+  #riskModalBody .risk-chain-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
 </style>
 </head>
 
@@ -4352,6 +4415,15 @@ h1{
   </div>
 </section>
 
+
+<section class="modal" id="riskModal">
+  <div class="risk-modal-window">
+    <button class="modal-close risk-modal-close" id="riskModalClose" type="button">×</button>
+    <div id="riskModalBody"></div>
+  </div>
+</section>
+
+
 <section class="modal" id="levelUpModal">
   <div class="level-window">
     <div class="win-emoji">✨</div>
@@ -4570,6 +4642,11 @@ const riskChainCount = document.getElementById("riskChainCount");
 const riskChainCards = document.getElementById("riskChainCards");
 const riskChainTakeBtn = document.getElementById("riskChainTakeBtn");
 const riskChainContinueBtn = document.getElementById("riskChainContinueBtn");
+
+const riskModal = document.getElementById("riskModal");
+const riskModalBody = document.getElementById("riskModalBody");
+const riskModalClose = document.getElementById("riskModalClose");
+
 const packResult = document.getElementById("packResult");
 const packResultCards = document.getElementById("packResultCards");
 const packResultClose = document.getElementById("packResultClose");
@@ -6746,11 +6823,24 @@ function getRiskChainHiddenIndexes(){
 }
 
 function resetRiskChain(){
+  closeRiskModal();
   riskChainState = null;
   win?.classList.remove("risk-chain-active");
   riskChainPanel?.classList.remove("show");
   rewardOptions?.querySelectorAll(".risk-chain-current").forEach(btn => btn.classList.remove("risk-chain-current"));
   updatePeekRewardButton();
+}
+
+
+function openRiskModal(){
+  if(riskModalBody && riskChainPanel && riskChainPanel.parentElement !== riskModalBody){
+    riskModalBody.appendChild(riskChainPanel);
+  }
+  riskModal?.classList.add("show");
+}
+
+function closeRiskModal(){
+  riskModal?.classList.remove("show");
 }
 
 function renderRiskChain(){
@@ -6760,6 +6850,7 @@ function renderRiskChain(){
   const hiddenLeft = getRiskChainHiddenIndexes().length;
   riskChainPanel.classList.add("show");
   win?.classList.add("risk-chain-active");
+  openRiskModal();
 
   if(result){
     riskChainTitle.textContent = result.outcome === "higher"
@@ -8324,6 +8415,12 @@ packPreviewModal?.addEventListener("click", event => {
 packPreviewOpen1?.addEventListener("click", () => buyPreviewPack(1));
 packPreviewOpen5?.addEventListener("click", () => buyPreviewPack(5));
 packPreviewOpen10?.addEventListener("click", () => buyPreviewPack(10));
+
+
+riskModalClose?.addEventListener("click", closeRiskModal);
+riskModal?.addEventListener("click", event => {
+  if(event.target === riskModal) closeRiskModal();
+});
 
 </script>
 </body>
