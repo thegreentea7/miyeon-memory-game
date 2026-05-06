@@ -4087,6 +4087,305 @@ h1{
   }
 }
 
+
+/* === Pretty risk modal redesign === */
+.risk-modal-window{
+  width:min(980px,94vw)!important;
+  max-height:min(760px,90vh)!important;
+  padding:0!important;
+  border-radius:34px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(255,214,239,.95),transparent 34%),
+    radial-gradient(circle at 86% 2%,rgba(210,186,255,.95),transparent 36%),
+    linear-gradient(180deg,#fffafd 0%,#f7f0ff 100%)!important;
+  border:1px solid rgba(255,255,255,.8)!important;
+  box-shadow:0 36px 120px rgba(46,25,82,.34)!important;
+}
+.risk-modal-close{
+  right:18px!important;
+  top:18px!important;
+  background:rgba(255,255,255,.72)!important;
+  backdrop-filter:blur(12px)!important;
+}
+#riskModalBody{
+  padding:0!important;
+}
+#riskModalBody .risk-chain-panel{
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+  padding:0!important;
+  margin:0!important;
+}
+.risk-redesign{
+  padding:30px clamp(18px,3.2vw,38px) 28px;
+  display:grid;
+  gap:20px;
+}
+.risk-redesign-head{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:16px;
+  align-items:start;
+  padding-right:42px;
+}
+.risk-redesign-kicker{
+  display:inline-flex;
+  width:max-content;
+  align-items:center;
+  gap:7px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.68);
+  color:#8065a9;
+  font-size:12px;
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  box-shadow:0 10px 24px rgba(72,39,128,.08);
+}
+.risk-redesign-title{
+  margin:10px 0 6px;
+  color:#2d4058;
+  font-size:clamp(28px,4vw,46px);
+  line-height:1.02;
+  font-weight:1000;
+}
+.risk-redesign-sub{
+  max-width:720px;
+  color:#6f5b90;
+  font-size:15px;
+  line-height:1.45;
+  font-weight:850;
+}
+.risk-redesign-count{
+  justify-self:end;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  color:#5c467a;
+  font-size:13px;
+  font-weight:1000;
+  box-shadow:0 12px 26px rgba(72,39,128,.10);
+}
+.risk-redesign-main{
+  display:grid;
+  grid-template-columns:minmax(170px,240px) 1fr;
+  gap:24px;
+  align-items:stretch;
+}
+.risk-first-card-wrap{
+  display:grid;
+  gap:10px;
+  align-content:start;
+  justify-items:center;
+}
+.risk-card-label{
+  width:max-content;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  color:#735a99;
+  font-size:12px;
+  font-weight:1000;
+}
+.risk-first-card{
+  width:min(220px,100%);
+  aspect-ratio:3/4;
+  border-radius:28px;
+  padding:7px;
+  box-shadow:0 24px 54px rgba(75,41,130,.18);
+}
+.risk-first-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:21px;
+  display:block;
+}
+.risk-rules-card{
+  border-radius:28px;
+  padding:22px;
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 20px 50px rgba(72,39,128,.10);
+  display:grid;
+  gap:14px;
+  align-content:start;
+}
+.risk-rules-title{
+  color:#3b2d55;
+  font-size:20px;
+  font-weight:1000;
+}
+.risk-rule-list{
+  display:grid;
+  gap:10px;
+}
+.risk-rule-item{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:18px;
+  background:rgba(255,255,255,.55);
+  color:#674f88;
+  font-size:13px;
+  font-weight:900;
+  line-height:1.35;
+}
+.risk-rule-icon{
+  width:34px;
+  height:34px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#eadfff,#ffd2ec);
+}
+.risk-choice-title{
+  color:#3b2d55;
+  font-size:18px;
+  font-weight:1000;
+  text-align:center;
+  margin-top:4px;
+}
+.risk-choice-sub{
+  color:#7b669d;
+  font-size:13px;
+  font-weight:850;
+  text-align:center;
+  margin-top:-10px;
+}
+.risk-pick-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(150px,180px))!important;
+  justify-content:center!important;
+  gap:18px!important;
+  margin:0 auto!important;
+}
+.risk-pick-card{
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+  border-radius:28px!important;
+}
+.risk-pick-card:hover{
+  transform:translateY(-5px) scale(1.025)!important;
+  box-shadow:none!important;
+}
+.risk-pick-back{
+  position:relative;
+  aspect-ratio:3/4;
+  border-radius:28px!important;
+  background:
+    radial-gradient(circle at 28% 16%,rgba(255,255,255,.72),transparent 32%),
+    linear-gradient(145deg,#bca2ff 0%,#eadfff 48%,#ffd0ea 100%)!important;
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 22px 48px rgba(73,40,129,.16), inset 0 1px 0 rgba(255,255,255,.55)!important;
+  overflow:hidden;
+}
+.risk-pick-back::before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.45);
+}
+.risk-pick-back b{
+  width:70px!important;
+  height:70px!important;
+  border-radius:24px!important;
+  background:rgba(255,255,255,.20)!important;
+  font-size:38px!important;
+  z-index:1;
+}
+.risk-pick-back span{
+  z-index:1;
+  color:#fff;
+  font-size:12px!important;
+  text-shadow:0 2px 12px rgba(60,38,100,.22);
+}
+.risk-result-row{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.risk-result-card{
+  width:min(210px,34vw);
+  aspect-ratio:3/4;
+  border-radius:28px;
+  padding:7px;
+  box-shadow:0 24px 54px rgba(75,41,130,.18);
+}
+.risk-result-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:21px;
+  display:block;
+}
+.risk-result-message{
+  max-width:760px;
+  margin:0 auto;
+  padding:16px 18px;
+  border-radius:24px;
+  background:rgba(255,255,255,.65);
+  border:1px solid rgba(255,255,255,.82);
+  color:#61497f;
+  text-align:center;
+  font-size:15px;
+  line-height:1.45;
+  font-weight:900;
+}
+#riskModalBody .risk-chain-actions{
+  padding:0 clamp(18px,3.2vw,38px) 30px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:14px!important;
+  max-width:none!important;
+  margin:0!important;
+}
+#riskModalBody .risk-chain-btn{
+  min-height:54px!important;
+  border-radius:999px!important;
+  font-size:15px!important;
+}
+#riskModalBody .risk-chain-count,
+#riskModalBody .risk-chain-title,
+#riskModalBody .risk-chain-subtitle{
+  display:none!important;
+}
+@media(max-width:760px){
+  .risk-redesign{
+    padding:22px 14px 20px;
+  }
+  .risk-redesign-head{
+    grid-template-columns:1fr;
+    padding-right:42px;
+  }
+  .risk-redesign-count{
+    justify-self:start;
+  }
+  .risk-redesign-main{
+    grid-template-columns:1fr;
+  }
+  .risk-first-card{
+    width:min(180px,60vw);
+  }
+  .risk-pick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  #riskModalBody .risk-chain-actions{
+    grid-template-columns:1fr!important;
+    padding:0 14px 20px!important;
+  }
+}
+
 </style>
 </head>
 
@@ -6984,34 +7283,55 @@ function renderRiskChain(){
   win?.classList.add("risk-chain-active");
   openRiskModal();
 
+  const firstCardHTML = first ? `
+    <div class="risk-first-card-wrap">
+      <div class="risk-card-label">Первая карта · ${getRarityTitle(first.rarity)}</div>
+      <div class="risk-first-card rarity-${first.rarity}">
+        <img src="${first.src}" alt="first risk card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+      </div>
+    </div>` : "";
+
   if(result){
-    riskChainTitle.textContent = result.outcome === "higher"
-      ? "Риск оправдался"
+    const shownCards = [first, result.secondCard].filter(Boolean);
+    const title = result.outcome === "higher"
+      ? "Риск оправдался!"
       : result.outcome === "same"
         ? "Редкость совпала"
         : "Риск не сработал";
 
-    riskChainText.textContent = result.outcome === "higher"
-      ? "Вторая карта оказалась редкостью выше. Ты забираешь обе карты ♡"
+    const subtitle = result.outcome === "higher"
+      ? "Вторая карта оказалась выше по редкости, поэтому ты забираешь обе карты."
       : result.outcome === "same"
-        ? "Вторая карта той же редкости. По правилу цепочки ты забираешь только первую карту ♡"
-        : "Вторая карта оказалась редкостью ниже. По правилу цепочки награда сгорает.";
+        ? "Вторая карта той же редкости, поэтому ты забираешь первую карту."
+        : "Вторая карта ниже по редкости, поэтому награда сгорает.";
 
+    riskChainTitle.textContent = title;
+    riskChainText.textContent = subtitle;
     riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? "1 карта" : "0 карт";
-    const shownCards = [first, result.secondCard].filter(Boolean);
+
     riskChainCards.innerHTML = `
-      <div class="risk-explain-box">
-        ${result.outcome === "higher"
-          ? "Итог: вторая карта выше по редкости, поэтому в коллекцию можно забрать обе карты."
-          : result.outcome === "same"
-            ? "Итог: редкость совпала, поэтому в коллекцию забирается только первая карта."
-            : "Итог: вторая карта ниже по редкости, поэтому цепочка сгорела и награда не выдаётся."}
-      </div>
-      <div class="risk-chain-cards">
-        ${shownCards.map(card => `
-          <div class="risk-chain-mini rarity-${card.rarity}">
-            <img src="${card.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
-          </div>`).join("")}
+      <div class="risk-redesign">
+        <div class="risk-redesign-head">
+          <div>
+            <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
+            <div class="risk-redesign-title">${title}</div>
+            <div class="risk-redesign-sub">${subtitle}</div>
+          </div>
+          <div class="risk-redesign-count">${riskChainCount.textContent}</div>
+        </div>
+        <div class="risk-result-row">
+          ${shownCards.map(card => `
+            <div class="risk-result-card rarity-${card.rarity}">
+              <img src="${card.src}" alt="risk result card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+            </div>`).join("")}
+        </div>
+        <div class="risk-result-message">
+          ${result.outcome === "higher"
+            ? "Итог: забираешь первую и вторую карту ♡"
+            : result.outcome === "same"
+              ? "Итог: забираешь только первую карту ♡"
+              : "Итог: карты не добавляются в коллекцию."}
+        </div>
       </div>`;
 
     riskChainTakeBtn.textContent = result.outcome === "lower" ? "Закончить без награды" : "💌 Забрать награду";
@@ -7023,47 +7343,88 @@ function renderRiskChain(){
 
   if(riskChainState.waitingForChoice){
     riskChainTitle.textContent = "Выбери карту для риска";
-    riskChainText.textContent = "Теперь ты сама выбираешь, какую закрытую карту открыть второй. Если редкость будет выше первой, заберёшь обе. Если такая же — только первую. Если ниже — ничего.";
+    riskChainText.textContent = "Ты сама выбираешь вторую закрытую карту. От её редкости зависит результат цепочки.";
     riskChainCount.textContent = `${hiddenLeft} закрыт.`;
+
     riskChainCards.innerHTML = `
-      <div class="risk-explain-box">
-        Первая карта уже открыта: <strong>${getRarityTitle(first?.rarity || "common")}</strong>. Нажми на одну из закрытых карт ниже, чтобы проверить риск.
-      </div>
-      <div class="risk-pick-grid">
-        ${hiddenIndexes.map(index => `
-          <button class="risk-pick-card" type="button" data-risk-pick-index="${index}">
-            <div class="risk-pick-back">
-              <b>?</b>
-              <span>Закрытая карта</span>
+      <div class="risk-redesign">
+        <div class="risk-redesign-head">
+          <div>
+            <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
+            <div class="risk-redesign-title">Выбери вторую карту</div>
+            <div class="risk-redesign-sub">Нажми на одну из закрытых карт. Если она окажется редкостью выше первой, заберёшь обе. Если такой же редкости, заберёшь первую. Если ниже, награда сгорит.</div>
+          </div>
+          <div class="risk-redesign-count">${hiddenLeft} закрыт.</div>
+        </div>
+        <div class="risk-redesign-main">
+          ${firstCardHTML}
+          <div class="risk-rules-card">
+            <div class="risk-rules-title">Что может случиться?</div>
+            <div class="risk-rule-list">
+              <div class="risk-rule-item"><div class="risk-rule-icon">⬆️</div><div>Редкость выше первой: забираешь обе карты.</div></div>
+              <div class="risk-rule-item"><div class="risk-rule-icon">🟰</div><div>Редкость такая же: забираешь только первую карту.</div></div>
+              <div class="risk-rule-item"><div class="risk-rule-icon">⬇️</div><div>Редкость ниже: не получаешь ничего.</div></div>
             </div>
-          </button>`).join("")}
+          </div>
+        </div>
+        <div>
+          <div class="risk-choice-title">Закрытые карты</div>
+          <div class="risk-choice-sub">Выбери одну карту, чтобы продолжить риск</div>
+        </div>
+        <div class="risk-pick-grid">
+          ${hiddenIndexes.map(index => `
+            <button class="risk-pick-card" type="button" data-risk-pick-index="${index}">
+              <div class="risk-pick-back">
+                <b>?</b>
+                <span>открыть</span>
+              </div>
+            </button>`).join("")}
+        </div>
       </div>`;
+
     riskChainCards.querySelectorAll("[data-risk-pick-index]").forEach(btn => {
       btn.addEventListener("click", () => chooseRiskChainSecond(Number(btn.dataset.riskPickIndex)));
     });
+
     riskChainTakeBtn.textContent = "💌 Забрать первую карту";
     riskChainContinueBtn.disabled = true;
-    riskChainContinueBtn.textContent = "Выбери карту выше";
+    riskChainContinueBtn.textContent = "Сначала выбери карту";
     updatePeekRewardButton();
     return;
   }
 
   riskChainTitle.textContent = "Хочешь рискнуть?";
   riskChainText.textContent = hiddenLeft
-    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или продолжить риск и самостоятельно выбрать следующую закрытую карту.`
+    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или выбрать вторую закрытую карту.`
     : "Закрытые карты закончились. Можно забрать первую карту в коллекцию ♡";
   riskChainCount.textContent = "1 карта";
+
   riskChainCards.innerHTML = `
-    <div class="risk-explain-box">
-      Правило цепочки: такая же редкость — забираешь первую карту. Редкость выше — забираешь обе. Редкость ниже — не получаешь ничего.
-    </div>
-    ${first ? `
-      <div class="risk-chain-mini rarity-${first.rarity}">
-        <img src="${first.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
-      </div>` : ""}`;
+    <div class="risk-redesign">
+      <div class="risk-redesign-head">
+        <div>
+          <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
+          <div class="risk-redesign-title">Хочешь рискнуть?</div>
+          <div class="risk-redesign-sub">Первая карта уже открыта. Можно забрать её сразу или продолжить риск и самой выбрать вторую закрытую карту.</div>
+        </div>
+        <div class="risk-redesign-count">1 карта</div>
+      </div>
+      <div class="risk-redesign-main">
+        ${firstCardHTML}
+        <div class="risk-rules-card">
+          <div class="risk-rules-title">Правила</div>
+          <div class="risk-rule-list">
+            <div class="risk-rule-item"><div class="risk-rule-icon">⬆️</div><div>Вторая карта выше по редкости: забираешь обе.</div></div>
+            <div class="risk-rule-item"><div class="risk-rule-icon">🟰</div><div>Вторая карта той же редкости: забираешь первую.</div></div>
+            <div class="risk-rule-item"><div class="risk-rule-icon">⬇️</div><div>Вторая карта ниже по редкости: не получаешь ничего.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
   riskChainTakeBtn.textContent = "💌 Забрать первую карту";
   riskChainContinueBtn.disabled = !hiddenLeft;
-  riskChainContinueBtn.textContent = hiddenLeft ? "🎲 Продолжить риск" : "🎲 Больше некуда рисковать";
+  riskChainContinueBtn.textContent = hiddenLeft ? "🎲 Выбрать вторую карту" : "🎲 Больше некуда рисковать";
   updatePeekRewardButton();
 }
 
