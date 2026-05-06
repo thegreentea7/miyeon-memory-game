@@ -4614,6 +4614,67 @@ h1{
   }
 }
 
+
+/* === Visible scrollbar for risk modal === */
+.risk-choice-wide-scroll{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+.risk-choice-wide-scroll::-webkit-scrollbar{
+  width:12px!important;
+}
+
+.risk-choice-wide-scroll::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.35)!important;
+  border-radius:999px!important;
+}
+
+.risk-choice-wide-scroll::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d8c2ff,#ffc6e8)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,255,255,.45)!important;
+}
+
+.risk-choice-wide-scroll:hover::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#c8a7ff,#ffb4dd)!important;
+}
+
+
+/* === Scrollbar on whole risk modal window === */
+.risk-modal-window{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+.risk-modal-window::-webkit-scrollbar{
+  width:13px!important;
+}
+
+.risk-modal-window::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.35)!important;
+  border-radius:999px!important;
+}
+
+.risk-modal-window::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d8c2ff,#ffc6e8)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,255,255,.45)!important;
+}
+
+.risk-modal-window:hover::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#c8a7ff,#ffb4dd)!important;
+}
+
+/* теперь внутренняя зона закрытых карт не рисует отдельный некрасивый скролл без необходимости */
+.risk-choice-wide-scroll{
+  scrollbar-width:auto!important;
+}
+
 </style>
 </head>
 
@@ -7490,6 +7551,15 @@ function resetRiskChain(){
 }
 
 
+
+function closeRiskModalSafely(){
+  if(riskChainState){
+    takeRiskChain();
+    return;
+  }
+  closeRiskModal();
+}
+
 function openRiskModal(){
   if(riskModalBody && riskChainPanel && riskChainPanel.parentElement !== riskModalBody){
     riskModalBody.appendChild(riskChainPanel);
@@ -9190,9 +9260,9 @@ packPreviewOpen5?.addEventListener("click", () => buyPreviewPack(5));
 packPreviewOpen10?.addEventListener("click", () => buyPreviewPack(10));
 
 
-riskModalClose?.addEventListener("click", closeRiskModal);
+riskModalClose?.addEventListener("click", closeRiskModalSafely);
 riskModal?.addEventListener("click", event => {
-  if(event.target === riskModal) closeRiskModal();
+  if(event.target === riskModal) closeRiskModalSafely();
 });
 
 </script>
