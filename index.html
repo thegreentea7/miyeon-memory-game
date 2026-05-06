@@ -4903,6 +4903,225 @@ h1{
   }
 }
 
+
+/* === Global adaptive layout for browser zoom / small laptop screens === */
+:root{
+  --safe-vh: 1vh;
+}
+
+/* На масштабе 125% элементы часто не помещаются по высоте, поэтому разрешаем общий скролл */
+html,
+body{
+  min-height:100%;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  scrollbar-width:thin;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35);
+}
+
+body::-webkit-scrollbar,
+.modal::-webkit-scrollbar,
+.win-card::-webkit-scrollbar,
+.pack-preview-window::-webkit-scrollbar,
+.risk-modal-window::-webkit-scrollbar,
+#riskModalBody .risk-chain-cards::-webkit-scrollbar{
+  width:12px!important;
+  height:12px!important;
+}
+
+body::-webkit-scrollbar-track,
+.modal::-webkit-scrollbar-track,
+.win-card::-webkit-scrollbar-track,
+.pack-preview-window::-webkit-scrollbar-track,
+.risk-modal-window::-webkit-scrollbar-track,
+#riskModalBody .risk-chain-cards::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.35)!important;
+  border-radius:999px!important;
+}
+
+body::-webkit-scrollbar-thumb,
+.modal::-webkit-scrollbar-thumb,
+.win-card::-webkit-scrollbar-thumb,
+.pack-preview-window::-webkit-scrollbar-thumb,
+.risk-modal-window::-webkit-scrollbar-thumb,
+#riskModalBody .risk-chain-cards::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d8c2ff,#ffc6e8)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,255,255,.45)!important;
+}
+
+/* Все модалки должны жить внутри экрана и прокручиваться */
+.modal{
+  overflow:auto!important;
+  padding:clamp(8px,2vh,20px)!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+}
+
+.modal > *{
+  max-height:calc((var(--safe-vh, 1vh) * 100) - 24px)!important;
+}
+
+/* Главное окно награды */
+#win .win-card,
+.win-card{
+  max-height:calc((var(--safe-vh, 1vh) * 100) - 28px)!important;
+  overflow:auto!important;
+}
+
+/* Окно риск-цепочки */
+.risk-modal-window{
+  max-height:calc((var(--safe-vh, 1vh) * 100) - 28px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+/* Убираем ситуацию, когда кнопки перекрывают контент на 125% */
+#riskModalBody .risk-chain-actions{
+  position:relative!important;
+  bottom:auto!important;
+  margin-top:10px!important;
+  background:transparent!important;
+}
+
+/* Окно предпросмотра паков тоже должно прокручиваться целиком */
+.pack-preview-window{
+  max-height:calc((var(--safe-vh, 1vh) * 100) - 28px)!important;
+  overflow:auto!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+/* Игровая зона не должна ломать страницу при увеличенном масштабе */
+.board-area,
+.game-shell,
+.game-card,
+.main-card{
+  min-height:0!important;
+}
+
+.board-area{
+  overflow:hidden!important;
+}
+
+/* Компрессия интерфейса для ноутбуков, где из-за масштаба 125% высота становится маленькой */
+@media(max-height:820px){
+  .modal{
+    padding:8px!important;
+  }
+
+  #win .win-card,
+  .win-card{
+    padding:clamp(12px,1.8vw,22px)!important;
+    gap:10px!important;
+  }
+
+  .win-emoji{
+    font-size:36px!important;
+    margin:0!important;
+  }
+
+  .win-card h2,
+  #win .win-card h2{
+    font-size:clamp(28px,4vw,42px)!important;
+    line-height:1.02!important;
+  }
+
+  .reward-options{
+    gap:10px!important;
+    margin:8px auto!important;
+  }
+
+  .risk-modal-window{
+    width:min(980px,96vw)!important;
+    border-radius:28px!important;
+  }
+
+  #riskModalBody .risk-redesign{
+    padding-top:18px!important;
+    gap:10px!important;
+  }
+
+  #riskModalBody .risk-redesign-title{
+    font-size:clamp(28px,4vw,38px)!important;
+    margin:4px 0!important;
+  }
+
+  #riskModalBody .risk-redesign-sub{
+    font-size:13px!important;
+    line-height:1.3!important;
+  }
+
+  #riskModalBody .risk-first-card{
+    width:min(155px,100%)!important;
+  }
+
+  #riskModalBody .risk-rules-card{
+    padding:14px!important;
+  }
+
+  #riskModalBody .risk-rule-item{
+    padding:8px 10px!important;
+    font-size:12px!important;
+  }
+
+  #riskModalBody .risk-choice-wide-scroll{
+    max-height:190px!important;
+  }
+
+  #riskModalBody .risk-chain-btn{
+    min-height:46px!important;
+    padding:10px 14px!important;
+  }
+}
+
+/* Ещё более низкие экраны или высокий масштаб */
+@media(max-height:700px){
+  .modal{
+    align-items:flex-start!important;
+  }
+
+  #riskModalBody .risk-redesign-main,
+  #riskModalBody .risk-redesign-main.choice-wide-main{
+    grid-template-columns:1fr 1.35fr!important;
+    gap:12px!important;
+  }
+
+  #riskModalBody .risk-first-card{
+    width:min(130px,100%)!important;
+  }
+
+  #riskModalBody .risk-choice-wide-scroll{
+    max-height:150px!important;
+  }
+
+  #riskModalBody .risk-choice-wide-grid{
+    grid-template-columns:repeat(auto-fit,minmax(95px,1fr))!important;
+    gap:8px!important;
+  }
+}
+
+/* Узкие экраны */
+@media(max-width:760px){
+  .modal{
+    padding:6px!important;
+  }
+
+  .modal > *{
+    max-height:calc((var(--safe-vh, 1vh) * 100) - 12px)!important;
+  }
+
+  .risk-modal-window,
+  .pack-preview-window,
+  #win .win-card,
+  .win-card{
+    width:98vw!important;
+    max-height:calc((var(--safe-vh, 1vh) * 100) - 12px)!important;
+  }
+}
+
 </style>
 </head>
 
@@ -9493,6 +9712,21 @@ riskModalClose?.addEventListener("click", closeRiskModalSafely);
 riskModal?.addEventListener("click", event => {
   if(event.target === riskModal) closeRiskModalSafely();
 });
+
+
+function updateSafeViewportHeight(){
+  const h = (window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight) * 0.01;
+  document.documentElement.style.setProperty("--safe-vh", `${h}px`);
+  requestAnimationFrame(() => {
+    try{ fitBoard?.(); }catch(e){}
+  });
+}
+
+updateSafeViewportHeight();
+window.addEventListener("resize", updateSafeViewportHeight);
+window.addEventListener("orientationchange", updateSafeViewportHeight);
+window.visualViewport?.addEventListener("resize", updateSafeViewportHeight);
+window.visualViewport?.addEventListener("scroll", updateSafeViewportHeight);
 
 </script>
 </body>
