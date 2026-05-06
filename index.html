@@ -4782,6 +4782,127 @@ h1{
   }
 }
 
+
+/* === Compact risk modal spacing + result rarity labels === */
+.risk-modal-window{
+  height:auto!important;
+  max-height:92dvh!important;
+}
+
+#riskModalBody .risk-chain-cards{
+  overflow-y:auto!important;
+}
+
+#riskModalBody .risk-redesign{
+  gap:12px!important;
+  padding-top:22px!important;
+  padding-bottom:8px!important;
+}
+
+#riskModalBody .risk-redesign-head{
+  gap:8px!important;
+  margin-bottom:0!important;
+}
+
+#riskModalBody .risk-redesign-title{
+  margin:6px 0 4px!important;
+  font-size:clamp(30px,4vw,42px)!important;
+}
+
+#riskModalBody .risk-redesign-sub{
+  max-width:720px!important;
+  line-height:1.35!important;
+}
+
+#riskModalBody .risk-redesign-main{
+  gap:18px!important;
+  align-items:start!important;
+}
+
+#riskModalBody .risk-first-card-wrap{
+  gap:8px!important;
+}
+
+#riskModalBody .risk-first-card{
+  width:min(180px,100%)!important;
+}
+
+#riskModalBody .risk-rules-card{
+  padding:18px!important;
+  gap:10px!important;
+}
+
+#riskModalBody .risk-rules-title{
+  font-size:18px!important;
+}
+
+#riskModalBody .risk-rule-list{
+  gap:8px!important;
+}
+
+#riskModalBody .risk-rule-item{
+  min-height:0!important;
+  padding:9px 11px!important;
+}
+
+#riskModalBody .risk-choice-wide-panel{
+  padding:16px!important;
+  gap:10px!important;
+}
+
+#riskModalBody .risk-choice-wide-head{
+  align-items:center!important;
+}
+
+#riskModalBody .risk-choice-wide-scroll{
+  max-height:230px!important;
+}
+
+#riskModalBody .risk-chain-actions{
+  padding-top:10px!important;
+  padding-bottom:18px!important;
+}
+
+.risk-result-card{
+  position:relative!important;
+}
+
+.risk-result-rarity{
+  position:absolute;
+  right:12px;
+  bottom:12px;
+  padding:7px 10px;
+  border-radius:999px;
+  color:#fff;
+  font-size:11px;
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  background:rgba(118,84,165,.78);
+  box-shadow:0 8px 18px rgba(53,30,86,.20);
+  backdrop-filter:blur(8px);
+}
+
+.risk-result-rarity.common{background:linear-gradient(135deg,#9b86c8,#cdbdf2);}
+.risk-result-rarity.rare{background:linear-gradient(135deg,#ff8fc1,#ffbddc);}
+.risk-result-rarity.ultra{background:linear-gradient(135deg,#8b5cf6,#ff85c9);}
+
+@media(max-height:760px){
+  #riskModalBody .risk-redesign{
+    padding-top:18px!important;
+    gap:10px!important;
+  }
+  #riskModalBody .risk-first-card{
+    width:min(150px,100%)!important;
+  }
+  #riskModalBody .risk-rules-card{
+    padding:14px!important;
+  }
+  #riskModalBody .risk-choice-wide-scroll{
+    max-height:190px!important;
+  }
+}
+
 </style>
 </head>
 
@@ -7728,6 +7849,7 @@ function renderRiskChain(){
           ${shownCards.map(card => `
             <div class="risk-result-card rarity-${card.rarity}">
               <img src="${card.src}" alt="risk result card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+              <span class="risk-result-rarity ${card.rarity}">${getRarityTitle(card.rarity)}</span>
             </div>`).join("")}
         </div>
         <div class="risk-result-message">
@@ -7757,7 +7879,7 @@ function renderRiskChain(){
           <div>
             <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
             <div class="risk-redesign-title">Выбери вторую карту</div>
-            <div class="risk-redesign-sub">Первая карта уже открыта. Теперь выбери одну из закрытых карт ниже, чтобы проверить свою удачу.</div>
+            <div class="risk-redesign-sub">Выбери одну из закрытых карт ниже, чтобы проверить свою удачу.</div>
           </div>
           <div class="risk-redesign-count">${hiddenLeft} закрыт.</div>
         </div>
@@ -7820,7 +7942,7 @@ function renderRiskChain(){
         <div>
           <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
           <div class="risk-redesign-title">Хочешь рискнуть?</div>
-          <div class="risk-redesign-sub">Первая карта уже открыта. Можно забрать её сразу или открыть ещё одну карту и попытать удачу.</div>
+          <div class="risk-redesign-sub">Можно забрать открытую карту сразу или открыть ещё одну и попытать удачу.</div>
         </div>
         <div class="risk-redesign-count">1 карта</div>
       </div>
