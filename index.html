@@ -4675,6 +4675,113 @@ h1{
   scrollbar-width:auto!important;
 }
 
+
+/* === Reliable risk modal scrolling fix === */
+#riskModal{
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  padding:16px!important;
+}
+
+.risk-modal-window{
+  height:min(860px,92dvh)!important;
+  max-height:92dvh!important;
+  width:min(1080px,95vw)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+
+#riskModalBody{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  padding:0!important;
+}
+
+#riskModalBody .risk-chain-panel{
+  height:100%!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+#riskModalBody .risk-chain-cards{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:8px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+#riskModalBody .risk-chain-cards::-webkit-scrollbar{
+  width:12px!important;
+}
+
+#riskModalBody .risk-chain-cards::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.35)!important;
+  border-radius:999px!important;
+}
+
+#riskModalBody .risk-chain-cards::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d8c2ff,#ffc6e8)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,255,255,.45)!important;
+}
+
+#riskModalBody .risk-chain-actions{
+  flex:0 0 auto!important;
+  position:sticky!important;
+  bottom:0!important;
+  background:linear-gradient(180deg,rgba(247,240,255,.3),rgba(247,240,255,.95) 28%,rgba(255,250,253,.98))!important;
+  padding-top:14px!important;
+  z-index:5!important;
+}
+
+#riskModalBody .risk-redesign{
+  max-height:none!important;
+  overflow:visible!important;
+  padding-bottom:12px!important;
+}
+
+#riskModalBody .risk-choice-wide-scroll{
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+#riskModalBody .risk-choice-wide-panel{
+  max-height:none!important;
+}
+
+#riskModalBody .risk-chain-note,
+#riskModalBody .risk-chain-note *,
+.risk-chain-note{
+  display:none!important;
+}
+
+@media(max-height:760px){
+  .risk-modal-window{
+    height:94dvh!important;
+    max-height:94dvh!important;
+  }
+
+  #riskModalBody .risk-redesign-title{
+    font-size:clamp(26px,4vw,38px)!important;
+  }
+
+  #riskModalBody .risk-first-card{
+    width:min(170px,100%)!important;
+  }
+
+  #riskModalBody .risk-rule-item{
+    padding:8px 10px!important;
+    font-size:12px!important;
+  }
+}
+
 </style>
 </head>
 
@@ -5095,7 +5202,7 @@ h1{
         <button class="risk-chain-btn secondary" id="riskChainTakeBtn" type="button">💌 Забрать первую карту</button>
         <button class="risk-chain-btn" id="riskChainContinueBtn" type="button">🎲 Рискнуть</button>
       </div>
-      <div class="risk-chain-note">Если следующая карта той же редкости, ты забираешь только первую. Если редкость выше, забираешь обе. Если ниже, не получаешь ничего.</div>
+      <div class="risk-chain-note"></div>
     </div>
     <div class="reward-actions">
       <button class="reroll-btn" id="peekRewardBtn">👀 Подсмотреть · 3 очка</button>
@@ -7650,7 +7757,7 @@ function renderRiskChain(){
           <div>
             <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
             <div class="risk-redesign-title">Выбери вторую карту</div>
-            <div class="risk-redesign-sub">Первая карта уже открыта. Теперь выбери одну из закрытых карт ниже, чтобы проверить риск.</div>
+            <div class="risk-redesign-sub">Первая карта уже открыта. Теперь выбери одну из закрытых карт ниже, чтобы проверить свою удачу.</div>
           </div>
           <div class="risk-redesign-count">${hiddenLeft} закрыт.</div>
         </div>
@@ -7671,7 +7778,7 @@ function renderRiskChain(){
           <div class="risk-choice-wide-head">
             <div>
               <div class="risk-choice-wide-title">Закрытые карты</div>
-              <div class="risk-choice-wide-sub">Выбери одну карту. Если вариантов станет больше, они останутся в этой области и будут прокручиваться.</div>
+              <div class="risk-choice-wide-sub"></div>
             </div>
             <div class="risk-choice-wide-count">${hiddenLeft} вариант.</div>
           </div>
@@ -7713,7 +7820,7 @@ function renderRiskChain(){
         <div>
           <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
           <div class="risk-redesign-title">Хочешь рискнуть?</div>
-          <div class="risk-redesign-sub">Первая карта уже открыта. Можно забрать её сразу или продолжить риск и самой выбрать вторую закрытую карту.</div>
+          <div class="risk-redesign-sub">Первая карта уже открыта. Можно забрать её сразу или открыть ещё одну карту и попытать удачу.</div>
         </div>
         <div class="risk-redesign-count">1 карта</div>
       </div>
