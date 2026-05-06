@@ -5094,6 +5094,80 @@ body{
   background:transparent!important;
 }
 
+
+/* === Risk hidden cards must never overflow their panel === */
+.risk-choice-wide-panel{
+  min-height:0!important;
+  overflow:hidden!important;
+}
+
+.risk-choice-wide-scroll{
+  max-height:clamp(170px,28vh,260px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:2px 6px 6px 2px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#d3b7ff rgba(255,255,255,.35)!important;
+}
+
+.risk-choice-wide-scroll::-webkit-scrollbar{
+  width:10px!important;
+}
+
+.risk-choice-wide-scroll::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.35)!important;
+  border-radius:999px!important;
+}
+
+.risk-choice-wide-scroll::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d8c2ff,#ffc6e8)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,255,255,.45)!important;
+}
+
+.risk-choice-wide-grid{
+  align-items:start!important;
+}
+
+.risk-choice-wide-grid .risk-pick-card{
+  width:min(100%, clamp(92px, 13vw, 150px))!important;
+  justify-self:center!important;
+  aspect-ratio:3/4!important;
+}
+
+.risk-choice-wide-grid .risk-pick-back{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  aspect-ratio:3/4!important;
+}
+
+@media(max-height:820px){
+  .risk-choice-wide-scroll{
+    max-height:clamp(140px,24vh,210px)!important;
+  }
+
+  .risk-choice-wide-grid .risk-pick-card{
+    width:min(100%, clamp(82px, 11vw, 125px))!important;
+  }
+
+  .risk-choice-wide-grid .risk-pick-back b{
+    width:44px!important;
+    height:44px!important;
+    font-size:25px!important;
+  }
+}
+
+@media(max-height:700px){
+  .risk-choice-wide-scroll{
+    max-height:140px!important;
+  }
+
+  .risk-choice-wide-grid .risk-pick-card{
+    width:min(100%, 100px)!important;
+  }
+}
+
 </style>
 </head>
 
