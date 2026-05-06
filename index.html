@@ -3682,6 +3682,210 @@ h1{
   }
 }
 
+
+/* === Responsive safety fix for reward/risk modal === */
+#win.modal{
+  overflow:auto!important;
+  padding:clamp(8px,2vh,18px)!important;
+  align-items:flex-start!important;
+}
+
+#win .win-card{
+  width:min(1120px,96vw)!important;
+  max-height:calc(100dvh - 24px)!important;
+  overflow:auto!important;
+  gap:clamp(8px,1.4vh,14px)!important;
+  padding:clamp(14px,2vw,28px)!important;
+}
+
+#win .reward-options{
+  width:100%!important;
+  max-width:980px!important;
+  margin:10px auto!important;
+  grid-template-columns:repeat(var(--reward-count,3),minmax(150px,1fr))!important;
+  align-items:start!important;
+  gap:clamp(10px,1.6vw,18px)!important;
+}
+
+#win .reward-card{
+  max-width:300px!important;
+  min-height:0!important;
+  aspect-ratio:3/4!important;
+}
+
+#win .reward-card img,
+#win .reward-card img.reward-real-img{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:cover!important;
+}
+
+#win .risk-chain-panel{
+  position:relative!important;
+  z-index:6!important;
+  width:min(820px,100%)!important;
+  margin:8px auto 10px!important;
+  clear:both!important;
+}
+
+#win.risk-chain-active .reward-options{
+  margin-bottom:12px!important;
+}
+
+#win .risk-chain-cards{
+  max-height:118px!important;
+  overflow:auto!important;
+}
+
+#win .reward-actions{
+  width:min(780px,100%)!important;
+  margin:8px auto!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+
+#win .again{
+  margin-top:2px!important;
+}
+
+@media(max-height:800px){
+  #win .win-emoji{
+    font-size:38px!important;
+    margin:0!important;
+  }
+
+  #win .win-card h2{
+    font-size:clamp(26px,3vw,38px)!important;
+  }
+
+  #win .win-card p{
+    font-size:13px!important;
+    line-height:1.35!important;
+    margin:0 auto!important;
+  }
+
+  #win .reward-options{
+    grid-template-columns:repeat(var(--reward-count,3),minmax(128px,190px))!important;
+    justify-content:center!important;
+    gap:10px!important;
+  }
+
+  #win .reward-card{
+    max-width:190px!important;
+  }
+
+  #win .risk-chain-panel{
+    padding:10px 12px!important;
+    border-radius:22px!important;
+    margin:6px auto!important;
+  }
+
+  #win .risk-chain-top{
+    margin-bottom:6px!important;
+  }
+
+  #win .risk-chain-subtitle,
+  #win .risk-chain-note{
+    font-size:10px!important;
+    line-height:1.25!important;
+  }
+
+  #win .risk-chain-mini{
+    width:44px!important;
+  }
+
+  #win .risk-chain-actions{
+    gap:8px!important;
+  }
+
+  #win .risk-chain-btn{
+    padding:10px 12px!important;
+    font-size:12px!important;
+  }
+}
+
+@media(max-width:980px){
+  #win .reward-options{
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;
+    max-width:720px!important;
+  }
+
+  #win .reward-card{
+    max-width:220px!important;
+  }
+
+  #win .reward-actions{
+    grid-template-columns:1fr!important;
+    width:min(420px,100%)!important;
+  }
+}
+
+@media(max-width:560px){
+  #win.modal{
+    padding:8px!important;
+  }
+
+  #win .win-card{
+    width:98vw!important;
+    max-height:calc(100dvh - 16px)!important;
+    border-radius:24px!important;
+    padding:14px 10px!important;
+  }
+
+  #win .reward-options{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    max-width:340px!important;
+    gap:9px!important;
+  }
+
+  #win .reward-card{
+    max-width:none!important;
+  }
+
+  #win .risk-chain-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:980px) and (max-height:760px){
+  #win .reward-options{
+    grid-template-columns:repeat(3,minmax(100px,150px))!important;
+  }
+
+  #win .reward-card{
+    max-width:150px!important;
+  }
+
+  #win .risk-chain-panel{
+    max-height:220px!important;
+    overflow:auto!important;
+  }
+}
+
+
+/* === Focus compatibility notes === */
+.focus-helper-note{
+  margin-top:7px;
+  padding:8px 10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.62);
+  color:#806aa2;
+  font-size:11px;
+  font-weight:900;
+  line-height:1.3;
+}
+.focus-helper-note.warning{
+  background:linear-gradient(135deg,#fff0f7,#fff8df);
+  color:#7c5575;
+}
+.upgrade-card select:disabled,
+.upgrade-card button:disabled{
+  opacity:.52!important;
+  cursor:not-allowed!important;
+}
+
 </style>
 </head>
 
@@ -7033,10 +7237,111 @@ function buyComboBoost(){
   showToast("🔥 Серия активирована");
 }
 
-function buyMemberFocus(member){
+
+function getNeededCardsForCurrentLevel(){
+  return getBoardCardCount(currentCols, currentRows) / 2;
+}
+
+async function getFocusAvailableCards(member = null, album = null){
+  let cards = await getAllImages();
+  if(member) cards = cards.filter(card => card.member === member);
+  if(album) cards = cards.filter(card => card.album === album);
+  return cards;
+}
+
+async function canBuildFocusCombination(member = null, album = null){
+  const cards = await getFocusAvailableCards(member, album);
+  return cards.length >= getNeededCardsForCurrentLevel();
+}
+
+async function getValidMemberFocusOptions(album = preGameBoosts.album){
+  const needed = getNeededCardsForCurrentLevel();
+  const result = [];
+  for(const [key, item] of Object.entries(MEMBERS)){
+    if(key === "all" || key === "group") continue;
+    const cards = await getFocusAvailableCards(key, album || null);
+    if(cards.length >= needed){
+      result.push({ key, title:item.title, count:cards.length });
+    }
+  }
+  return result;
+}
+
+async function getValidAlbumFocusOptions(member = preGameBoosts.member){
+  const needed = getNeededCardsForCurrentLevel();
+  const result = [];
+  for(const [key, item] of Object.entries(ALBUMS)){
+    if(key === "all") continue;
+    const cards = await getFocusAvailableCards(member || null, key);
+    if(cards.length >= needed){
+      result.push({ key, title:item.title, count:cards.length });
+    }
+  }
+  return result;
+}
+
+function renderFocusOptions(options, selectedKey = null){
+  return options
+    .map(item => `<option value="${item.key}" ${item.key === selectedKey ? "selected" : ""}>${item.title} · ${item.count} карт</option>`)
+    .join("");
+}
+
+async function refreshFocusSelectOptions(){
+  const memberSelect = document.getElementById("memberFocusSelect");
+  const albumSelect = document.getElementById("albumFocusSelect");
+  if(!memberSelect || !albumSelect) return;
+
+  const currentMemberChoice = memberSelect.value || preGameBoosts.member || null;
+  const currentAlbumChoice = albumSelect.value || preGameBoosts.album || null;
+
+  const validAlbums = await getValidAlbumFocusOptions(currentMemberChoice || preGameBoosts.member || null);
+  const validMembers = await getValidMemberFocusOptions(currentAlbumChoice || preGameBoosts.album || null);
+
+  const albumStillValid = validAlbums.some(item => item.key === currentAlbumChoice);
+  const memberStillValid = validMembers.some(item => item.key === currentMemberChoice);
+
+  albumSelect.innerHTML = renderFocusOptions(validAlbums, albumStillValid ? currentAlbumChoice : null);
+  memberSelect.innerHTML = renderFocusOptions(validMembers, memberStillValid ? currentMemberChoice : null);
+
+  const buyAlbumBtn = document.getElementById("buyAlbumFocus");
+  const buyMemberBtn = document.getElementById("buyMemberFocus");
+
+  if(buyAlbumBtn) buyAlbumBtn.disabled = validAlbums.length === 0;
+  if(buyMemberBtn) buyMemberBtn.disabled = validMembers.length === 0;
+
+  const albumNote = document.getElementById("albumFocusNote");
+  const memberNote = document.getElementById("memberFocusNote");
+  const needed = getNeededCardsForCurrentLevel();
+
+  if(albumNote){
+    albumNote.textContent = validAlbums.length
+      ? `Показаны только альбомы, где хватает минимум ${needed} карт с выбранной участницей.`
+      : `Нет альбомов, где хватает ${needed} карт с выбранной участницей.`;
+    albumNote.classList.toggle("warning", validAlbums.length === 0);
+  }
+
+  if(memberNote){
+    memberNote.textContent = validMembers.length
+      ? `Показаны только участницы, у которых хватает минимум ${needed} карт с выбранным альбомом.`
+      : `Нет участниц, у которых хватает ${needed} карт с выбранным альбомом.`;
+    memberNote.classList.toggle("warning", validMembers.length === 0);
+  }
+}
+
+async function buyMemberFocus(member){
   if(!member) return;
   if(preGameBoosts.member === member){
     showToast("Этот фокус уже выбран ♡");
+    return;
+  }
+
+  const album = preGameBoosts.album || null;
+  const cards = await getFocusAvailableCards(member, album);
+  const needed = getNeededCardsForCurrentLevel();
+
+  if(cards.length < needed){
+    showToast(`Такой фокус нельзя выбрать: найдено ${cards.length}/${needed} карт ♡`);
+    await refreshFocusSelectOptions();
     return;
   }
 
@@ -7050,12 +7355,23 @@ function buyMemberFocus(member){
   recordFocusUsed();
   updateBoostStatus();
   showToast(`🐰 Фокус: ${getMemberTitle(member)}`);
+  await renderUpgradeGrid?.();
 }
 
-function buyAlbumFocus(album){
+async function buyAlbumFocus(album){
   if(!album) return;
   if(preGameBoosts.album === album){
     showToast("Этот альбом уже выбран ♡");
+    return;
+  }
+
+  const member = preGameBoosts.member || null;
+  const cards = await getFocusAvailableCards(member, album);
+  const needed = getNeededCardsForCurrentLevel();
+
+  if(cards.length < needed){
+    showToast(`Такой фокус нельзя выбрать: найдено ${cards.length}/${needed} карт ♡`);
+    await refreshFocusSelectOptions();
     return;
   }
 
@@ -7069,18 +7385,15 @@ function buyAlbumFocus(album){
   recordFocusUsed();
   updateBoostStatus();
   showToast(`💿 Эра: ${getAlbumTitle(album)}`);
+  await renderUpgradeGrid?.();
 }
 
-function renderUpgradeGrid(){
-  const memberOptions = Object.entries(MEMBERS)
-    .filter(([key]) => key !== "all" && key !== "group")
-    .map(([key, item]) => `<option value="${key}">${item.title}</option>`)
-    .join("");
-
-  const albumOptions = Object.entries(ALBUMS)
-    .filter(([key]) => key !== "all")
-    .map(([key, item]) => `<option value="${key}">${item.title}</option>`)
-    .join("");
+async function renderUpgradeGrid(){
+  const validMemberOptions = await getValidMemberFocusOptions(preGameBoosts.album);
+  const validAlbumOptions = await getValidAlbumFocusOptions(preGameBoosts.member);
+  const memberOptions = renderFocusOptions(validMemberOptions, preGameBoosts.member);
+  const albumOptions = renderFocusOptions(validAlbumOptions, preGameBoosts.album);
+  const neededForFocus = getNeededCardsForCurrentLevel();
 
   const blocks = [];
 
@@ -7096,14 +7409,16 @@ function renderUpgradeGrid(){
         <b>🐰 Фокус на участницу · 10 очков</b>
         <small>На следующий уровень. Поле и награда будут собраны из карт выбранной участницы.</small>
         <select id="memberFocusSelect">${memberOptions}</select>
-        <button id="buyMemberFocus">Купить фокус</button>
+        <div class="focus-helper-note" id="memberFocusNote">Показаны только участницы, у которых хватает минимум ${neededForFocus} карт.</div>
+        <button id="buyMemberFocus" ${memberOptions ? "" : "disabled"}>Купить фокус</button>
       </div>
 
       <div class="upgrade-card">
         <b>💿 Фокус на альбом · 10 очков</b>
         <small>На следующий уровень. Поле и награда будут собраны из выбранной эры.</small>
         <select id="albumFocusSelect">${albumOptions}</select>
-        <button id="buyAlbumFocus">Купить фокус</button>
+        <div class="focus-helper-note" id="albumFocusNote">Показаны только альбомы, где хватает минимум ${neededForFocus} карт.</div>
+        <button id="buyAlbumFocus" ${albumOptions ? "" : "disabled"}>Купить фокус</button>
       </div>
 
       <div class="upgrade-card">
@@ -7202,9 +7517,12 @@ function renderUpgradeGrid(){
   upgradeGrid.innerHTML = blocks.join("") || `<div class="shop-empty-note">Улучшения откроются на Lv. 5 ♡</div>`;
 
   document.getElementById("buyComboBoost")?.addEventListener("click", buyComboBoost);
-  document.getElementById("buyMemberFocus")?.addEventListener("click", () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
-  document.getElementById("buyAlbumFocus")?.addEventListener("click", () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
+  document.getElementById("buyMemberFocus")?.addEventListener("click", async () => buyMemberFocus(document.getElementById("memberFocusSelect").value));
+  document.getElementById("buyAlbumFocus")?.addEventListener("click", async () => buyAlbumFocus(document.getElementById("albumFocusSelect").value));
   document.getElementById("buyExtraPick")?.addEventListener("click", buyExtraPick);
+  document.getElementById("memberFocusSelect")?.addEventListener("change", refreshFocusSelectOptions);
+  document.getElementById("albumFocusSelect")?.addEventListener("change", refreshFocusSelectOptions);
+  refreshFocusSelectOptions?.();
 
   upgradeGrid.querySelectorAll("[data-permanent-key]").forEach(button => {
     button.addEventListener("click", () => buyPermanentUpgrade(button.dataset.permanentKey, Number(button.dataset.permanentCost)));
