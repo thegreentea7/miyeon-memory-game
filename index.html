@@ -3956,6 +3956,137 @@ h1{
   }
 }
 
+
+/* === Bigger manual risk modal === */
+.risk-modal-window{
+  width:min(1040px,96vw)!important;
+  max-height:min(820px,92vh)!important;
+  padding:24px!important;
+  border-radius:38px!important;
+}
+#riskModalBody{
+  padding-top:44px!important;
+}
+#riskModalBody .risk-chain-panel{
+  padding:22px!important;
+  border-radius:30px!important;
+}
+#riskModalBody .risk-chain-title{
+  font-size:24px!important;
+  text-align:center!important;
+}
+#riskModalBody .risk-chain-subtitle{
+  font-size:14px!important;
+  line-height:1.45!important;
+  text-align:center!important;
+}
+#riskModalBody .risk-chain-count{
+  font-size:13px!important;
+  padding:9px 13px!important;
+}
+#riskModalBody .risk-chain-cards{
+  max-height:none!important;
+  overflow:visible!important;
+  justify-content:center!important;
+}
+#riskModalBody .risk-chain-mini{
+  width:120px!important;
+  border-radius:22px!important;
+  padding:6px!important;
+}
+#riskModalBody .risk-chain-mini img{
+  border-radius:17px!important;
+}
+.risk-pick-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,170px));
+  justify-content:center;
+  gap:16px;
+  margin:16px auto 10px;
+}
+.risk-pick-card{
+  position:relative;
+  aspect-ratio:3/4;
+  border-radius:26px;
+  padding:6px;
+  background:linear-gradient(135deg,#eadfff,#fff5fb);
+  border:1px solid rgba(255,255,255,.86);
+  box-shadow:0 18px 42px rgba(73,40,129,.14);
+  transition:.18s ease;
+}
+.risk-pick-card:hover{
+  transform:translateY(-6px) scale(1.03);
+  box-shadow:0 26px 58px rgba(73,40,129,.24),0 0 0 3px rgba(255,193,223,.42);
+}
+.risk-pick-back{
+  width:100%;
+  height:100%;
+  border-radius:20px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:10px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.72),transparent 34%),
+    linear-gradient(145deg,#b99cff,#eadfff 52%,#ffd2ec);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
+  text-align:center;
+  font-weight:1000;
+}
+.risk-pick-back b{
+  width:62px;
+  height:62px;
+  border-radius:22px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.20);
+  border:1px solid rgba(255,255,255,.50);
+  font-size:34px;
+}
+.risk-pick-back span{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.risk-explain-box{
+  margin:12px auto;
+  padding:12px 14px;
+  border-radius:20px;
+  background:rgba(255,255,255,.62);
+  color:#6f5b90;
+  font-size:13px;
+  line-height:1.4;
+  font-weight:900;
+  text-align:center;
+}
+#riskModalBody .risk-chain-actions{
+  max-width:760px;
+  margin:14px auto 0!important;
+}
+#riskModalBody .risk-chain-btn{
+  padding:14px 18px!important;
+  font-size:14px!important;
+}
+@media(max-width:700px){
+  .risk-modal-window{
+    width:97vw!important;
+    max-height:92vh!important;
+    padding:14px!important;
+    border-radius:26px!important;
+  }
+  .risk-pick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  }
+  #riskModalBody .risk-chain-mini{
+    width:92px!important;
+  }
+  #riskModalBody .risk-chain-actions{
+    grid-template-columns:1fr!important;
+  }
+}
+
 </style>
 </head>
 
@@ -6847,7 +6978,8 @@ function renderRiskChain(){
   if(!riskChainPanel || !riskChainState) return;
   const first = riskChainState.firstCard;
   const result = riskChainState.result;
-  const hiddenLeft = getRiskChainHiddenIndexes().length;
+  const hiddenIndexes = getRiskChainHiddenIndexes();
+  const hiddenLeft = hiddenIndexes.length;
   riskChainPanel.classList.add("show");
   win?.classList.add("risk-chain-active");
   openRiskModal();
@@ -6867,10 +6999,20 @@ function renderRiskChain(){
 
     riskChainCount.textContent = result.outcome === "higher" ? "2 карты" : result.outcome === "same" ? "1 карта" : "0 карт";
     const shownCards = [first, result.secondCard].filter(Boolean);
-    riskChainCards.innerHTML = shownCards.map(card => `
-      <div class="risk-chain-mini rarity-${card.rarity}">
-        <img src="${card.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
-      </div>`).join("");
+    riskChainCards.innerHTML = `
+      <div class="risk-explain-box">
+        ${result.outcome === "higher"
+          ? "Итог: вторая карта выше по редкости, поэтому в коллекцию можно забрать обе карты."
+          : result.outcome === "same"
+            ? "Итог: редкость совпала, поэтому в коллекцию забирается только первая карта."
+            : "Итог: вторая карта ниже по редкости, поэтому цепочка сгорела и награда не выдаётся."}
+      </div>
+      <div class="risk-chain-cards">
+        ${shownCards.map(card => `
+          <div class="risk-chain-mini rarity-${card.rarity}">
+            <img src="${card.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+          </div>`).join("")}
+      </div>`;
 
     riskChainTakeBtn.textContent = result.outcome === "lower" ? "Закончить без награды" : "💌 Забрать награду";
     riskChainContinueBtn.disabled = true;
@@ -6879,18 +7021,49 @@ function renderRiskChain(){
     return;
   }
 
+  if(riskChainState.waitingForChoice){
+    riskChainTitle.textContent = "Выбери карту для риска";
+    riskChainText.textContent = "Теперь ты сама выбираешь, какую закрытую карту открыть второй. Если редкость будет выше первой, заберёшь обе. Если такая же — только первую. Если ниже — ничего.";
+    riskChainCount.textContent = `${hiddenLeft} закрыт.`;
+    riskChainCards.innerHTML = `
+      <div class="risk-explain-box">
+        Первая карта уже открыта: <strong>${getRarityTitle(first?.rarity || "common")}</strong>. Нажми на одну из закрытых карт ниже, чтобы проверить риск.
+      </div>
+      <div class="risk-pick-grid">
+        ${hiddenIndexes.map(index => `
+          <button class="risk-pick-card" type="button" data-risk-pick-index="${index}">
+            <div class="risk-pick-back">
+              <b>?</b>
+              <span>Закрытая карта</span>
+            </div>
+          </button>`).join("")}
+      </div>`;
+    riskChainCards.querySelectorAll("[data-risk-pick-index]").forEach(btn => {
+      btn.addEventListener("click", () => chooseRiskChainSecond(Number(btn.dataset.riskPickIndex)));
+    });
+    riskChainTakeBtn.textContent = "💌 Забрать первую карту";
+    riskChainContinueBtn.disabled = true;
+    riskChainContinueBtn.textContent = "Выбери карту выше";
+    updatePeekRewardButton();
+    return;
+  }
+
   riskChainTitle.textContent = "Хочешь рискнуть?";
   riskChainText.textContent = hiddenLeft
-    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или открыть ещё одну закрытую карту.`
+    ? `Первая карта открыта: ${getRarityTitle(first?.rarity || "common")}. Можно забрать её сразу или продолжить риск и самостоятельно выбрать следующую закрытую карту.`
     : "Закрытые карты закончились. Можно забрать первую карту в коллекцию ♡";
   riskChainCount.textContent = "1 карта";
-  riskChainCards.innerHTML = first ? `
-    <div class="risk-chain-mini rarity-${first.rarity}">
-      <img src="${first.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
-    </div>` : "";
+  riskChainCards.innerHTML = `
+    <div class="risk-explain-box">
+      Правило цепочки: такая же редкость — забираешь первую карту. Редкость выше — забираешь обе. Редкость ниже — не получаешь ничего.
+    </div>
+    ${first ? `
+      <div class="risk-chain-mini rarity-${first.rarity}">
+        <img src="${first.src}" alt="risk chain card" decoding="async" onerror="this.parentElement.innerHTML='♡'">
+      </div>` : ""}`;
   riskChainTakeBtn.textContent = "💌 Забрать первую карту";
   riskChainContinueBtn.disabled = !hiddenLeft;
-  riskChainContinueBtn.textContent = hiddenLeft ? "🎲 Рискнуть" : "🎲 Больше некуда рисковать";
+  riskChainContinueBtn.textContent = hiddenLeft ? "🎲 Продолжить риск" : "🎲 Больше некуда рисковать";
   updatePeekRewardButton();
 }
 
@@ -6921,7 +7094,20 @@ function continueRiskChain(){
     return;
   }
 
-  const index = hiddenIndexes[Math.floor(Math.random() * hiddenIndexes.length)];
+  riskChainState.waitingForChoice = true;
+  showToast("Выбери закрытую карту для риска 🎲");
+  renderRiskChain();
+}
+
+function chooseRiskChainSecond(index){
+  if(!riskChainState || riskChainState.result || !riskChainState.waitingForChoice) return;
+  const hiddenIndexes = getRiskChainHiddenIndexes();
+  if(!hiddenIndexes.includes(index)){
+    showToast("Эту карту уже нельзя выбрать ♡");
+    renderRiskChain();
+    return;
+  }
+
   const image = currentRewardOptions[index];
   const first = riskChainState.firstCard;
   const firstPower = RARITY_POWER[first?.rarity] || 0;
@@ -6933,6 +7119,7 @@ function continueRiskChain(){
   const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
   btn?.classList.add("risk-chain-current");
 
+  riskChainState.waitingForChoice = false;
   riskChainState.secondCard = image;
   riskChainState.result = { outcome, secondCard:image };
   riskChainState.usedIndexes.push(index);
