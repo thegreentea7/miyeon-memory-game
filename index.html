@@ -4494,6 +4494,126 @@ h1{
   }
 }
 
+
+/* === Risk choice redesign v2: wide bottom area === */
+.risk-modal-window{
+  width:min(1080px,95vw)!important;
+}
+.risk-redesign.choice-wide{
+  gap:18px!important;
+}
+.risk-redesign-main.choice-wide-main{
+  grid-template-columns:minmax(170px,230px) minmax(360px,1fr)!important;
+  align-items:stretch!important;
+}
+.risk-choice-wide-panel{
+  border-radius:30px;
+  padding:18px;
+  background:rgba(255,255,255,.60);
+  border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 20px 50px rgba(72,39,128,.10);
+  display:grid;
+  gap:14px;
+}
+.risk-choice-wide-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:14px;
+}
+.risk-choice-wide-title{
+  color:#3b2d55;
+  font-size:20px;
+  font-weight:1000;
+}
+.risk-choice-wide-sub{
+  color:#7b669d;
+  font-size:13px;
+  font-weight:850;
+  line-height:1.35;
+  margin-top:4px;
+}
+.risk-choice-wide-count{
+  flex:0 0 auto;
+  padding:9px 13px;
+  border-radius:999px;
+  background:rgba(255,255,255,.78);
+  color:#6f58a0;
+  font-size:12px;
+  font-weight:1000;
+}
+.risk-choice-wide-scroll{
+  max-height:260px;
+  overflow:auto;
+  padding:2px 4px 6px;
+}
+.risk-choice-wide-scroll::-webkit-scrollbar{
+  height:8px;
+  width:8px;
+}
+.risk-choice-wide-scroll::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#d7c6ff,#ffc8e9);
+  border-radius:999px;
+}
+.risk-choice-wide-scroll::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.42);
+  border-radius:999px;
+}
+.risk-choice-wide-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:14px;
+  align-items:start;
+}
+.risk-choice-wide-grid .risk-pick-card{
+  width:100%;
+  min-width:0!important;
+}
+.risk-choice-wide-grid .risk-pick-back{
+  border-radius:24px!important;
+}
+.risk-choice-wide-grid .risk-pick-back b{
+  width:58px!important;
+  height:58px!important;
+  border-radius:20px!important;
+  font-size:32px!important;
+}
+.risk-choice-wide-grid .risk-pick-back span{
+  font-size:11px!important;
+}
+@media(min-width:900px){
+  .risk-choice-wide-grid[data-count="1"],
+  .risk-choice-wide-grid[data-count="2"],
+  .risk-choice-wide-grid[data-count="3"]{
+    grid-template-columns:repeat(var(--risk-count),minmax(150px,180px));
+    justify-content:center;
+  }
+}
+@media(max-width:820px){
+  .risk-redesign-main.choice-wide-main{
+    grid-template-columns:1fr!important;
+  }
+  .risk-first-card{
+    width:min(180px,58vw)!important;
+  }
+  .risk-choice-wide-scroll{
+    max-height:330px;
+  }
+  .risk-choice-wide-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+  }
+}
+@media(max-width:560px){
+  .risk-choice-wide-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .risk-choice-wide-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+
 </style>
 </head>
 
@@ -7455,16 +7575,17 @@ function renderRiskChain(){
     riskChainCount.textContent = `${hiddenLeft} закрыт.`;
 
     riskChainCards.innerHTML = `
-      <div class="risk-redesign">
+      <div class="risk-redesign choice-wide">
         <div class="risk-redesign-head">
           <div>
             <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
             <div class="risk-redesign-title">Выбери вторую карту</div>
-            <div class="risk-redesign-sub">Закрытые карты теперь находятся справа в отдельной области. Если их станет больше, список будет прокручиваться внутри окна.</div>
+            <div class="risk-redesign-sub">Первая карта уже открыта. Теперь выбери одну из закрытых карт ниже, чтобы проверить риск.</div>
           </div>
           <div class="risk-redesign-count">${hiddenLeft} закрыт.</div>
         </div>
-        <div class="risk-redesign-main choice-mode">
+
+        <div class="risk-redesign-main choice-wide-main">
           ${firstCardHTML}
           <div class="risk-rules-card">
             <div class="risk-rules-title">Что может случиться?</div>
@@ -7474,10 +7595,19 @@ function renderRiskChain(){
               <div class="risk-rule-item"><div class="risk-rule-icon">⬇️</div><div>Редкость ниже: не получаешь ничего.</div></div>
             </div>
           </div>
-          <div class="risk-choice-panel">
-            <div class="risk-choice-title">Закрытые карты</div>
-            <div class="risk-choice-sub">Выбери одну карту, чтобы продолжить риск</div>
-            <div class="risk-pick-grid">
+        </div>
+
+        <div class="risk-choice-wide-panel">
+          <div class="risk-choice-wide-head">
+            <div>
+              <div class="risk-choice-wide-title">Закрытые карты</div>
+              <div class="risk-choice-wide-sub">Выбери одну карту. Если вариантов станет больше, они останутся в этой области и будут прокручиваться.</div>
+            </div>
+            <div class="risk-choice-wide-count">${hiddenLeft} вариант.</div>
+          </div>
+
+          <div class="risk-choice-wide-scroll">
+            <div class="risk-choice-wide-grid" data-count="${hiddenLeft}" style="--risk-count:${Math.min(hiddenLeft,3)}">
               ${hiddenIndexes.map(index => `
                 <button class="risk-pick-card" type="button" data-risk-pick-index="${index}">
                   <div class="risk-pick-back">
