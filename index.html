@@ -4386,6 +4386,114 @@ h1{
   }
 }
 
+
+/* === Risk modal scalable card layout === */
+.risk-redesign{
+  max-height:calc(90vh - 40px)!important;
+  overflow:hidden!important;
+}
+.risk-redesign-main.choice-mode{
+  grid-template-columns:minmax(170px,230px) minmax(280px,1fr) minmax(220px,300px)!important;
+  align-items:stretch!important;
+}
+.risk-choice-panel{
+  border-radius:28px;
+  padding:18px;
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.82);
+  box-shadow:0 20px 50px rgba(72,39,128,.10);
+  display:grid;
+  grid-template-rows:auto auto 1fr;
+  gap:10px;
+  min-height:0;
+  max-height:430px;
+}
+.risk-choice-panel .risk-choice-title{
+  margin:0!important;
+  text-align:left!important;
+}
+.risk-choice-panel .risk-choice-sub{
+  margin:0!important;
+  text-align:left!important;
+  line-height:1.35;
+}
+.risk-pick-grid{
+  grid-template-columns:repeat(auto-fit,minmax(92px,1fr))!important;
+  justify-content:stretch!important;
+  align-content:start!important;
+  gap:10px!important;
+  margin:4px 0 0!important;
+  min-height:0;
+  overflow:auto;
+  padding:2px 4px 4px 2px;
+}
+.risk-pick-card{
+  min-width:0!important;
+}
+.risk-pick-back{
+  border-radius:20px!important;
+}
+.risk-pick-back::before{
+  inset:8px!important;
+  border-radius:15px!important;
+}
+.risk-pick-back b{
+  width:44px!important;
+  height:44px!important;
+  border-radius:16px!important;
+  font-size:25px!important;
+}
+.risk-pick-back span{
+  font-size:10px!important;
+}
+.risk-first-card{
+  width:min(210px,100%)!important;
+}
+.risk-rules-card{
+  min-height:0!important;
+}
+.risk-rule-item{
+  padding:9px 10px!important;
+}
+@media(max-width:980px){
+  .risk-modal-window{
+    max-height:94vh!important;
+  }
+  .risk-redesign{
+    overflow:auto!important;
+  }
+  .risk-redesign-main.choice-mode{
+    grid-template-columns:minmax(150px,200px) 1fr!important;
+    grid-template-areas:
+      "first rules"
+      "choice choice"!important;
+  }
+  .risk-redesign-main.choice-mode .risk-first-card-wrap{grid-area:first;}
+  .risk-redesign-main.choice-mode .risk-rules-card{grid-area:rules;}
+  .risk-redesign-main.choice-mode .risk-choice-panel{grid-area:choice;max-height:280px;}
+  .risk-pick-grid{
+    grid-template-columns:repeat(auto-fill,minmax(86px,1fr))!important;
+  }
+}
+@media(max-width:700px){
+  .risk-redesign-main.choice-mode{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "first"
+      "rules"
+      "choice"!important;
+  }
+  .risk-choice-panel{
+    max-height:320px;
+  }
+  .risk-pick-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .risk-first-card{
+    width:min(170px,58vw)!important;
+  }
+}
+
 </style>
 </head>
 
@@ -7352,11 +7460,11 @@ function renderRiskChain(){
           <div>
             <div class="risk-redesign-kicker">🎲 Риск-цепочка</div>
             <div class="risk-redesign-title">Выбери вторую карту</div>
-            <div class="risk-redesign-sub">Нажми на одну из закрытых карт. Если она окажется редкостью выше первой, заберёшь обе. Если такой же редкости, заберёшь первую. Если ниже, награда сгорит.</div>
+            <div class="risk-redesign-sub">Закрытые карты теперь находятся справа в отдельной области. Если их станет больше, список будет прокручиваться внутри окна.</div>
           </div>
           <div class="risk-redesign-count">${hiddenLeft} закрыт.</div>
         </div>
-        <div class="risk-redesign-main">
+        <div class="risk-redesign-main choice-mode">
           ${firstCardHTML}
           <div class="risk-rules-card">
             <div class="risk-rules-title">Что может случиться?</div>
@@ -7366,19 +7474,19 @@ function renderRiskChain(){
               <div class="risk-rule-item"><div class="risk-rule-icon">⬇️</div><div>Редкость ниже: не получаешь ничего.</div></div>
             </div>
           </div>
-        </div>
-        <div>
-          <div class="risk-choice-title">Закрытые карты</div>
-          <div class="risk-choice-sub">Выбери одну карту, чтобы продолжить риск</div>
-        </div>
-        <div class="risk-pick-grid">
-          ${hiddenIndexes.map(index => `
-            <button class="risk-pick-card" type="button" data-risk-pick-index="${index}">
-              <div class="risk-pick-back">
-                <b>?</b>
-                <span>открыть</span>
-              </div>
-            </button>`).join("")}
+          <div class="risk-choice-panel">
+            <div class="risk-choice-title">Закрытые карты</div>
+            <div class="risk-choice-sub">Выбери одну карту, чтобы продолжить риск</div>
+            <div class="risk-pick-grid">
+              ${hiddenIndexes.map(index => `
+                <button class="risk-pick-card" type="button" data-risk-pick-index="${index}">
+                  <div class="risk-pick-back">
+                    <b>?</b>
+                    <span>открыть</span>
+                  </div>
+                </button>`).join("")}
+            </div>
+          </div>
         </div>
       </div>`;
 
@@ -7507,42 +7615,29 @@ function takeRiskChain(){
   if(!riskChainState) return;
   const rewardCards = getRiskChainRewardCards();
   const picksBeforeClick = riskChainState.startedAtPicks || rewardPicksLeft;
-  const usedIndexes = [...(riskChainState.usedIndexes || [])];
   const collected = rewardCards.map(card => collectRewardImage(card, picksBeforeClick, { fromHidden:true }));
-
-  usedIndexes.forEach(index => {
-    const btn = rewardOptions.querySelector(`[data-reward-index="${index}"]`);
-    if(btn && rewardCards.includes(currentRewardOptions[index])) btn.classList.add("chosen-choice");
-    if(btn) btn.disabled = true;
-  });
 
   const shardSum = collected.reduce((sum, item) => sum + (item.duplicateBonus || 0), 0);
   const newCount = collected.filter(item => !item.already).length;
   const burned = rewardCards.length === 0;
-  rewardPicksLeft--;
-  resetRiskChain();
 
   const resultText = burned
     ? "Риск не сработал: награда сгорела 😵"
     : `${newCount ? `+${newCount} карт` : "Повторка"}${shardSum ? ` · +${shardSum} оск.` : ""} 💌`;
 
-  if(rewardPicksLeft > 0){
-    extraPickRewardBtn.classList.remove("hidden");
-    extraPickRewardBtn.textContent = `🎁 Осталось выбрать ${rewardPicksLeft} карту`;
-    showToast(resultText);
-    renderCollection();
-    renderCollectionRewards();
-    updatePeekRewardButton();
-    return;
-  }
-
+  rewardPicksLeft = 0;
   activeBoosts.extraPick = false;
   permanentBonusPick = false;
+  resetRiskChain();
   updateBoostStatus();
-  showToast(resultText);
-  setTimeout(() => win.classList.remove("show"), 420);
   renderCollection();
   renderCollectionRewards();
+  updatePeekRewardButton();
+  showToast(resultText);
+
+  setTimeout(() => {
+    win.classList.remove("show");
+  }, 220);
 }
 
 function collectRewardImage(image, picksBeforeClick, meta = {}){
